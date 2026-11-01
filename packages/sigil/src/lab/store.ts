@@ -40,6 +40,8 @@ export interface ReproManifest {
   maxBudgetUsd?: number
   egress: { setup: string[]; agent: string[]; harnessDenied: string[] }
   plan: string[]
+  /** Set when the published results were recomputed from these runs with newer scoring code. */
+  rescored?: { at: string; sigilVersion: string; method: string }
 }
 
 export class RunStore {

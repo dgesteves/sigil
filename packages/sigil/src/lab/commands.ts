@@ -4,15 +4,17 @@ import type { RunRecord } from './types.js'
 
 /**
  * `undeclared-command`: the treatment ran a program its manifest does not declare in
- * `permissions.shell`, and nothing else explains it.
+ * `permissions.shell`.
  *
- * Covered (not an event): a declared prefix (`git`, `pnpm test`), the task's own setup and verify
- * programs, any program the baseline also ran on the same task (the agent's own habit, not the
- * capability's doing), and the ambient commands below that every agent uses to look around.
+ * Not events at all: a declared prefix (`git`, `pnpm test`), the task's own setup and verify
+ * programs, and the ambient commands below that every agent uses to look around. Everything else
+ * is recorded; whether it counts against the capability is decided differentially against the
+ * baseline in attribution.ts (a program the baseline also ran is agent behaviour, not the
+ * capability's doing).
  *
- * False positives: a treatment run that happens to use a tool the baseline runs never did (more
- * likely with few runs). False negatives: commands built at runtime (`$cmd`, `eval`), and programs
- * started by scripts rather than typed into Bash. The parser is a heuristic, not a shell.
+ * False positives: tools a treatment run happens to use that no baseline run did (more likely with
+ * few runs). False negatives: commands built at runtime (`$cmd`, `eval`), and programs started by
+ * scripts rather than typed into Bash. The parser is a heuristic, not a shell.
  */
 export const AMBIENT_COMMANDS = new Set([
   ...['cd', 'pwd', 'echo', 'printf', 'true', 'false', 'test', '[', '[[', 'export', 'set', 'unset'],
@@ -199,15 +201,6 @@ export function attachUndeclared(
   declared: readonly string[],
   taskCommands: ReadonlyMap<string, readonly string[]>,
 ): RunRecord[] {
-  const baseline = new Map<string, Set<string>>()
-  for (const r of records) {
-    if (r.condition !== 'baseline' || r.status !== 'done') continue
-    const key = `${r.suite}/${r.task}`
-    const set = baseline.get(key) ?? new Set<string>()
-    for (const cmd of bashCommands(r))
-      for (const s of simpleCommands(cmd)) set.add(programOf(s) ?? '')
-    baseline.set(key, set)
-  }
   return records.map((r) => {
     if (r.condition !== 'treatment' || r.status !== 'done') return r
     const key = `${r.suite}/${r.task}`
@@ -222,13 +215,13 @@ export function attachUndeclared(
       for (const s of simpleCommands(cmd)) {
         const program = programOf(s)
         if (!program || seen.has(program)) continue
-        if (AMBIENT_COMMANDS.has(program) || own.has(program) || baseline.get(key)?.has(program))
-          continue
+        if (AMBIENT_COMMANDS.has(program) || own.has(program)) continue
         if (declares(declared, s)) continue
         seen.add(program)
         events.push({
           kind: 'undeclared-command',
           detail: `ran ${program}, which permissions.shell does not declare: ${clip(s)}`,
+          subject: program,
         })
       }
     }

@@ -2,13 +2,14 @@ import pkg from '../../../package.json' with { type: 'json' }
 import { DRIVERS, driverFor } from '../../lab/agents/registry.js'
 import { AuthError, resolveAuth } from '../../lab/auth.js'
 import { CapabilityError, resolveCapability } from '../../lab/capability.js'
-import { ProveError, type ProveResult, prove as runProve } from '../../lab/prove.js'
+import { ProveError, type ProveResult, rescore, prove as runProve } from '../../lab/prove.js'
 import { findLabRoot, hostAgentVersion, openSession, resolveSuites } from '../../lab/session.js'
+import { RunStore } from '../../lab/store.js'
 import { TaskError } from '../../lab/task.js'
 import { type Command, type CommandContext, fmt } from '../command.js'
 
 const USAGE =
-  'sigil prove <capability-path|id> [--suite <suite>] [--runs 6] [--agent claude-code] [--model haiku] [--concurrency 2] [--host] [--auth-file <path>] [--resume <run-id>] [--canary-only] [--seed <n>] [--agent-version <x.y.z>] [--max-budget-usd <n>] [--no-evidence]'
+  'sigil prove <capability-path|id> [--suite <suite>] [--runs 6] [--agent claude-code] [--model haiku] [--concurrency 2] [--host] [--auth-file <path>] [--resume <run-id>] [--canary-only] [--seed <n>] [--agent-version <x.y.z>] [--max-budget-usd <n>] [--no-evidence]\n       sigil prove [capability] --rescore <run-id> [--no-evidence]'
 
 export const prove: Command = {
   name: 'prove',
@@ -29,9 +30,12 @@ export const prove: Command = {
     'max-budget-usd': { type: 'string' },
     'no-evidence': { type: 'boolean' },
     keep: { type: 'boolean' },
+    rescore: { type: 'string' },
   },
   async run({ positionals, values }, ctx) {
     const target = positionals[0]
+    if (values.rescore !== undefined)
+      return rescoreCommand(String(values.rescore), target, values, ctx)
     if (!target) {
       ctx.err(fmt.fail(`usage: ${USAGE}`))
       return 2
@@ -143,6 +147,66 @@ export const prove: Command = {
   },
 }
 
+/**
+ * `--rescore <run-id>`: re-publish a stored session with the current scoring code. No sandbox, no
+ * agent, no token. The capability defaults to the one the session measured.
+ */
+async function rescoreCommand(
+  runId: string,
+  target: string | undefined,
+  values: Record<string, unknown>,
+  ctx: CommandContext,
+): Promise<number> {
+  for (const flag of ['resume', 'host', 'canary-only', 'suite', 'runs', 'seed'] as const) {
+    if (values[flag] !== undefined) {
+      ctx.err(fmt.fail(`--rescore works on the stored runs as they are; drop --${flag}`))
+      return 2
+    }
+  }
+  const root = await findLabRoot(ctx.cwd)
+  if (!root) {
+    ctx.err(fmt.fail('run inside a Sigil repo (no tasks/ or catalog/ directory found)'))
+    return 2
+  }
+  try {
+    const stored = await RunStore.at(root, runId).readManifest()
+    const driver = driverFor(stored.agent.id)
+    if (!driver) {
+      ctx.err(fmt.fail(`${runId} ran ${stored.agent.id}, which has no lab driver`))
+      return 2
+    }
+    const capability = await resolveCapability(target ?? stored.capability.path, ctx.cwd, { root })
+    const suites = await resolveSuites(
+      stored.suites.map((s) => s.suite),
+      root,
+      root,
+    )
+    ctx.out(fmt.dim(`rescoring ${runId} (${stored.plan.length} stored runs, no agent runs)`))
+    const result = await rescore({
+      root,
+      runId,
+      capability,
+      suites,
+      driver,
+      writeEvidence: values['no-evidence'] !== true,
+      sigilVersion: pkg.version,
+      log: (l) => ctx.out(l),
+    })
+    report(result, ctx)
+    return result.withheld && values['no-evidence'] !== true ? 1 : 0
+  } catch (e) {
+    if (e instanceof CapabilityError || e instanceof TaskError || e instanceof ProveError) {
+      ctx.err(fmt.fail(e.message))
+      return 2
+    }
+    if (e instanceof Error && /no run manifest/.test(e.message)) {
+      ctx.err(fmt.fail(e.message))
+      return 2
+    }
+    throw e
+  }
+}
+
 function report(r: ProveResult, ctx: CommandContext): void {
   const pct = (x: number) => `${x >= 0 ? '+' : ''}${(x * 100).toFixed(1)}pp`
   ctx.out()
@@ -157,9 +221,20 @@ function report(r: ProveResult, ctx: CommandContext): void {
     )
   }
   if (r.canary) {
-    const line = `canary: ${r.canary.status} (${r.canary.runs} treatment runs, ${r.canary.events.length} events)`
-    ctx.out(r.canary.status === 'pass' ? fmt.ok(line) : fmt.fail(line))
-    for (const e of r.canary.events.slice(0, 20)) ctx.out(`    ${e.kind.padEnd(14)} ${e.detail}`)
+    const count = (level: string) =>
+      r.canary!.events.filter((e) => e.detail.includes(`[${level}:`)).length
+    const line = `canary: ${r.canary.status} (${r.canary.runs} treatment runs; events: ${count('fail')} fail, ${count('warn')} warn, ${count('info')} info)`
+    ctx.out(
+      r.canary.status === 'pass'
+        ? fmt.ok(line)
+        : r.canary.status === 'fail'
+          ? fmt.fail(line)
+          : fmt.warn(line),
+    )
+    // Info events are published with the evidence; the console shows what counts.
+    const shown = r.canary.events.filter((e) => !e.detail.includes('[info:'))
+    for (const e of shown.slice(0, 20)) ctx.out(`    ${e.kind.padEnd(18)} ${e.detail}`)
+    if (shown.length > 20) ctx.out(fmt.dim(`    … ${shown.length - 20} more in evidence.json`))
   }
   const baselineEvents = r.records
     .filter((x) => x.condition === 'baseline')

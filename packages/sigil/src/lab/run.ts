@@ -9,6 +9,7 @@ import type { LabCapability } from './capability.js'
 import { claimsDone } from './falsedone.js'
 import { type Redactor, redactDeep, redactor } from './redact.js'
 import type { PreparedImage, Sandbox, SandboxFactory } from './sandbox/types.js'
+import { scoreRun } from './scoring.js'
 import type { LoadedTask } from './task.js'
 import { EVENT_TEXT_MAX, tail, truncateMiddle, VERIFY_OUTPUT_MAX } from './text.js'
 import { assessProtected, diffTrees, protectedPaths } from './tree.js'
@@ -219,8 +220,8 @@ export async function runOne(ctx: RunContext): Promise<RunRecord> {
       project: changes,
       driver,
     })
-    const passed = verifyExit === 0 && tampered.length === 0
     const claimed = claimsDone(outcome.finalMessage)
+    const { passed, falseDone } = scoreRun({ verifyExit, claimedDone: claimed })
     record.facts = await sb.facts()
     return finish({
       ...record,
@@ -236,7 +237,7 @@ export async function runOne(ctx: RunContext): Promise<RunRecord> {
       tamperedFiles: tampered.map((c) => `${c.change} ${c.path}`),
       touchedProtected: verdict.touched,
       claimedDone: claimed,
-      falseDone: claimed && !passed,
+      falseDone,
       canary: canary.map((c) => ({ ...c, detail: redact(c.detail) })),
       changes,
       egress: proxy
