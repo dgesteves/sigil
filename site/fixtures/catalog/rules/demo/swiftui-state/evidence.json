@@ -1,0 +1,64 @@
+{
+  "sigil": 1,
+  "capability": "demo/swiftui-state",
+  "version": "1.0.0",
+  "digest": "sha256:1d3ba6328a0dd45e2f05dc74ed562d6fcdabddbf8123779be9f51b7be94a20ec",
+  "generatedAt": "2026-10-28T09:00:00.000Z",
+  "structure": {
+    "status": "pass",
+    "tool": {
+      "name": "sigil",
+      "version": "0.0.0-demo"
+    },
+    "at": "2026-10-28T09:00:00.000Z",
+    "findings": []
+  },
+  "security": {
+    "status": "pass",
+    "tool": {
+      "name": "sigil",
+      "version": "0.0.0-demo"
+    },
+    "at": "2026-10-28T09:00:00.000Z",
+    "findings": []
+  },
+  "canary": {
+    "status": "not-run",
+    "agent": {
+      "id": "claude-code",
+      "version": "0.0.0-demo"
+    },
+    "model": "demo-model",
+    "at": "2026-10-28T09:00:00.000Z",
+    "runs": 0,
+    "events": []
+  },
+  "compat": {
+    "claude-code": {
+      "compiled": true,
+      "evaluated": false
+    },
+    "codex": {
+      "compiled": true,
+      "evaluated": false
+    },
+    "cursor": {
+      "compiled": true,
+      "evaluated": false
+    },
+    "github-copilot": {
+      "compiled": true,
+      "evaluated": false
+    },
+    "gemini-cli": {
+      "compiled": true,
+      "evaluated": false
+    },
+    "opencode": {
+      "compiled": true,
+      "evaluated": false
+    }
+  },
+  "uplift": [],
+  "reviews": []
+}

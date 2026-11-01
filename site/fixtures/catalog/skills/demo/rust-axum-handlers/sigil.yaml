@@ -1,0 +1,42 @@
+sigil: 1
+id: demo/rust-axum-handlers
+type: skill
+version: 1.0.0
+name: Axum Handlers
+summary: Idiomatic Axum extractors, error types and state sharing for HTTP
+  services in Rust.
+description: "Idiomatic Axum extractors, error types and state sharing for HTTP
+  services in Rust. DEMO fixture: every number attached to this capability was
+  simulated for site development."
+domains:
+  - backend
+  - api-design
+industries: []
+lifecycle:
+  - build
+technologies:
+  - rust
+  - axum
+  - tokio
+license: MIT
+authors:
+  - github: sigil-demo
+payload:
+  format: agent-skill
+  entry: SKILL.md
+targets:
+  - claude-code
+  - codex
+  - cursor
+  - github-copilot
+  - gemini-cli
+  - opencode
+permissions:
+  network: []
+  shell: []
+  filesystem: read
+  env: []
+proof:
+  suites: []
+limitations:
+  - "DEMO fixture: not a real capability and never measured."

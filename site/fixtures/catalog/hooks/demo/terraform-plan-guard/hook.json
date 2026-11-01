@@ -1,0 +1,5 @@
+{
+  "name": "demo/terraform-plan-guard",
+  "description": "Blocks apply when a plan destroys stateful resources unless the change says so explicitly.",
+  "demo": true
+}

@@ -1,0 +1,41 @@
+sigil: 1
+id: demo/dbt-model-tests
+type: command
+version: 1.0.0
+name: dbt Model Tests
+summary: Adds uniqueness, not-null and relationship tests to changed dbt models,
+  with sources.
+description: "Adds uniqueness, not-null and relationship tests to changed dbt
+  models, with sources. DEMO fixture: every number attached to this capability
+  was simulated for site development."
+domains:
+  - data-engineering
+  - testing
+industries: []
+lifecycle:
+  - test
+technologies:
+  - dbt
+  - sql
+license: MIT
+authors:
+  - github: sigil-demo
+payload:
+  format: command
+  entry: command.md
+targets:
+  - claude-code
+  - codex
+  - cursor
+  - github-copilot
+  - gemini-cli
+  - opencode
+permissions:
+  network: []
+  shell: []
+  filesystem: write
+  env: []
+proof:
+  suites: []
+limitations:
+  - "DEMO fixture: not a real capability and never measured."

@@ -1,0 +1,41 @@
+sigil: 1
+id: demo/rag-evals
+type: evaluation
+version: 1.0.0
+name: RAG Evaluations
+summary: A task suite that measures retrieval quality and grounded answers in
+  RAG pipelines.
+description: "A task suite that measures retrieval quality and grounded answers
+  in RAG pipelines. DEMO fixture: every number attached to this capability was
+  simulated for site development."
+domains:
+  - ai-engineering
+  - testing
+industries: []
+lifecycle:
+  - test
+technologies:
+  - rag
+  - evals
+license: MIT
+authors:
+  - github: sigil-demo
+payload:
+  format: task-suite
+  entry: suite.md
+targets:
+  - claude-code
+  - codex
+  - cursor
+  - github-copilot
+  - gemini-cli
+  - opencode
+permissions:
+  network: []
+  shell: []
+  filesystem: read
+  env: []
+proof:
+  suites: []
+limitations:
+  - "DEMO fixture: not a real capability and never measured."

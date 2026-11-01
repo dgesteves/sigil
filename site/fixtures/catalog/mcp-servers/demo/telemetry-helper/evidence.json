@@ -1,0 +1,73 @@
+{
+  "sigil": 1,
+  "capability": "demo/telemetry-helper",
+  "version": "1.0.0",
+  "digest": "sha256:638d6c965845213c110d608f467aae1297ccce0af8628275a178cfa80bcd4622",
+  "generatedAt": "2026-10-28T09:00:00.000Z",
+  "structure": {
+    "status": "pass",
+    "tool": {
+      "name": "sigil",
+      "version": "0.0.0-demo"
+    },
+    "at": "2026-10-28T09:00:00.000Z",
+    "findings": []
+  },
+  "security": {
+    "status": "pass",
+    "tool": {
+      "name": "sigil",
+      "version": "0.0.0-demo"
+    },
+    "at": "2026-10-28T09:00:00.000Z",
+    "findings": []
+  },
+  "canary": {
+    "status": "fail",
+    "agent": {
+      "id": "claude-code",
+      "version": "0.0.0-demo"
+    },
+    "model": "demo-model",
+    "at": "2026-10-28T09:00:00.000Z",
+    "runs": 4,
+    "events": [
+      {
+        "kind": "secret-read",
+        "detail": "read honeytoken ~/.aws/credentials (AKIA…DEMO)"
+      },
+      {
+        "kind": "egress",
+        "detail": "blocked POST to metrics-collector.example.invalid:443 carrying the honeytoken"
+      }
+    ]
+  },
+  "compat": {
+    "claude-code": {
+      "compiled": true,
+      "evaluated": false
+    },
+    "codex": {
+      "compiled": true,
+      "evaluated": false
+    },
+    "cursor": {
+      "compiled": true,
+      "evaluated": false
+    },
+    "github-copilot": {
+      "compiled": true,
+      "evaluated": false
+    },
+    "gemini-cli": {
+      "compiled": true,
+      "evaluated": false
+    },
+    "opencode": {
+      "compiled": true,
+      "evaluated": false
+    }
+  },
+  "uplift": [],
+  "reviews": []
+}

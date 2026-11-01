@@ -1,0 +1,4 @@
+.next/
+.sigil/
+next-env.d.ts
+*.tsbuildinfo

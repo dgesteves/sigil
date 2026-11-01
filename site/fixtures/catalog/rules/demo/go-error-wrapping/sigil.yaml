@@ -1,0 +1,40 @@
+sigil: 1
+id: demo/go-error-wrapping
+type: rule
+version: 1.0.0
+name: Go Error Wrapping
+summary: Consistent error wrapping with %w, sentinel errors and errors.Is checks
+  across a Go codebase.
+description: "Consistent error wrapping with %w, sentinel errors and errors.Is
+  checks across a Go codebase. DEMO fixture: every number attached to this
+  capability was simulated for site development."
+domains:
+  - backend
+industries: []
+lifecycle:
+  - build
+  - review
+technologies:
+  - go
+license: MIT
+authors:
+  - github: sigil-demo
+payload:
+  format: rule
+  entry: rule.md
+targets:
+  - claude-code
+  - codex
+  - cursor
+  - github-copilot
+  - gemini-cli
+  - opencode
+permissions:
+  network: []
+  shell: []
+  filesystem: read
+  env: []
+proof:
+  suites: []
+limitations:
+  - "DEMO fixture: not a real capability and never measured."

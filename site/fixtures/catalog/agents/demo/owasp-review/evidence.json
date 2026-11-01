@@ -1,0 +1,125 @@
+{
+  "sigil": 1,
+  "capability": "demo/owasp-review",
+  "version": "1.0.0",
+  "digest": "sha256:01e84c6fc137416564e8a133ccd94a882cd2678c19be533adfffe7eafeaed7cb",
+  "generatedAt": "2026-10-28T09:00:00.000Z",
+  "structure": {
+    "status": "pass",
+    "tool": {
+      "name": "sigil",
+      "version": "0.0.0-demo"
+    },
+    "at": "2026-10-28T09:00:00.000Z",
+    "findings": []
+  },
+  "security": {
+    "status": "pass",
+    "tool": {
+      "name": "sigil",
+      "version": "0.0.0-demo"
+    },
+    "at": "2026-10-28T09:00:00.000Z",
+    "findings": []
+  },
+  "canary": {
+    "status": "pass",
+    "agent": {
+      "id": "claude-code",
+      "version": "0.0.0-demo"
+    },
+    "model": "demo-model",
+    "at": "2026-10-28T09:00:00.000Z",
+    "runs": 4,
+    "events": []
+  },
+  "compat": {
+    "claude-code": {
+      "compiled": true,
+      "evaluated": true
+    },
+    "codex": {
+      "compiled": true,
+      "evaluated": false
+    },
+    "cursor": {
+      "compiled": true,
+      "evaluated": false
+    },
+    "github-copilot": {
+      "compiled": true,
+      "evaluated": false
+    },
+    "gemini-cli": {
+      "compiled": true,
+      "evaluated": false
+    },
+    "opencode": {
+      "compiled": true,
+      "evaluated": false
+    }
+  },
+  "uplift": [
+    {
+      "agent": {
+        "id": "claude-code",
+        "version": "0.0.0-demo"
+      },
+      "model": "demo-model",
+      "suite": "demo/owasp-review",
+      "suiteDigest": "sha256:fbddb0564495a5d7e3a06602b63f8095b090531db645368baa86a44ad15d90eb",
+      "at": "2026-10-28T09:00:00.000Z",
+      "tasks": [
+        {
+          "task": "rate-limit-login",
+          "baseline": {
+            "passed": 2,
+            "runs": 4,
+            "tampered": 0,
+            "falseDone": 0,
+            "medianTokens": 64702,
+            "medianSeconds": 283.5,
+            "medianCostUsd": 0.106
+          },
+          "treatment": {
+            "passed": 1,
+            "runs": 4,
+            "tampered": 0,
+            "falseDone": 2,
+            "medianTokens": 62859.5,
+            "medianSeconds": 281,
+            "medianCostUsd": 0.30400000000000005
+          }
+        },
+        {
+          "task": "backfill-column",
+          "baseline": {
+            "passed": 2,
+            "runs": 4,
+            "tampered": 1,
+            "falseDone": 0,
+            "medianTokens": 63911.5,
+            "medianSeconds": 318.5,
+            "medianCostUsd": 0.14200000000000002
+          },
+          "treatment": {
+            "passed": 3,
+            "runs": 4,
+            "tampered": 0,
+            "falseDone": 0,
+            "medianTokens": 45708,
+            "medianSeconds": 360,
+            "medianCostUsd": 0.2555
+          }
+        }
+      ],
+      "delta": 0,
+      "ci95": [
+        -0.4027453071631501,
+        0.4027453071631501
+      ],
+      "verdict": "inconclusive"
+    }
+  ],
+  "reviews": []
+}

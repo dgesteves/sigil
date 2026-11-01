@@ -1,0 +1,41 @@
+sigil: 1
+id: demo/pr-review-companion
+type: agent
+version: 1.0.0
+name: PR Review Companion
+summary: "A reviewer that comments on every changed hunk. Measured as harmful:
+  it talks agents out of correct fixes."
+description: "A reviewer that comments on every changed hunk. Measured as
+  harmful: it talks agents out of correct fixes. DEMO fixture: every number
+  attached to this capability was simulated for site development."
+domains:
+  - code-review
+  - developer-workflow
+industries: []
+lifecycle:
+  - review
+technologies:
+  - git
+  - code-review
+license: MIT
+authors:
+  - github: sigil-demo
+payload:
+  format: subagent
+  entry: agent.md
+targets:
+  - claude-code
+  - codex
+  - cursor
+  - github-copilot
+  - gemini-cli
+  - opencode
+permissions:
+  network: []
+  shell: []
+  filesystem: write
+  env: []
+proof:
+  suites: []
+limitations:
+  - "DEMO fixture: not a real capability and never measured."

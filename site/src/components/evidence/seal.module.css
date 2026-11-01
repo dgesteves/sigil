@@ -1,0 +1,193 @@
+.seal {
+  display: grid;
+  gap: 18px;
+}
+.stage {
+  position: relative;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+  max-width: 100%;
+}
+.glyph {
+  max-width: 100%;
+  height: auto;
+  filter: drop-shadow(0 0 18px color-mix(in srgb, currentColor 0%, transparent));
+  transition: filter 0.8s var(--ease);
+}
+.glyph[data-lit="true"] {
+  filter: drop-shadow(0 0 10px rgba(255, 170, 69, 0.9))
+    drop-shadow(0 0 42px rgba(255, 140, 40, 0.45));
+}
+.stroke {
+  transition: stroke-dashoffset 0.45s var(--ease);
+}
+.broken {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  animation: slip 0.9s var(--ease) both;
+}
+.broken .glyph {
+  filter: drop-shadow(0 0 12px rgba(255, 77, 61, 0.7));
+}
+@keyframes slip {
+  from {
+    opacity: 0;
+    transform: scale(0.94) rotate(-6deg);
+  }
+}
+.ring {
+  position: absolute;
+  inset: 4%;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  pointer-events: none;
+}
+.seal[data-phase="running"] .ring {
+  border-color: transparent;
+  border-top-color: var(--flare);
+  animation: spin 1s linear infinite;
+  box-shadow: 0 -8px 24px -12px var(--flare);
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.seal[data-phase="match"] .ring {
+  border-color: rgba(255, 170, 69, 0.4);
+  box-shadow: 0 0 40px -10px rgba(255, 170, 69, 0.6) inset;
+}
+.seal[data-phase="mismatch"] .ring {
+  border-color: rgba(255, 77, 61, 0.5);
+}
+.readout {
+  display: grid;
+  gap: 6px;
+}
+.digest {
+  white-space: pre;
+  font-size: 13px;
+  line-height: 1.55;
+  letter-spacing: 0.06em;
+  color: var(--bone);
+  font-variant-numeric: tabular-nums;
+  font-variation-settings: "wdth" 100;
+}
+.verdictOk,
+.verdictBad {
+  margin-top: 6px;
+  padding: 10px 12px;
+  font-size: 12px;
+  line-height: 1.5;
+}
+.verdictOk {
+  border-left: 2px solid var(--flare);
+  background: var(--flare-dim);
+  color: var(--bone);
+}
+.verdictBad {
+  border-left: 2px solid var(--harm);
+  background: var(--harm-dim);
+  color: var(--bone);
+}
+.verdictBad code,
+.verdictOk code {
+  color: var(--bone);
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 18px;
+}
+.verify {
+  padding: 10px 18px;
+  border: 1px solid var(--flare);
+  border-radius: 3px;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--flare);
+  font-variation-settings: "wdth" 100;
+  transition:
+    background 0.2s,
+    color 0.2s;
+}
+.verify:hover:not(:disabled) {
+  background: var(--flare);
+  color: var(--flare-ink);
+}
+.verify:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+.tamper {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 11px;
+  color: var(--bone-2);
+}
+.tamper span {
+  color: var(--flare);
+}
+.tamper input {
+  accent-color: var(--harm);
+}
+.cannot {
+  font-size: 11.5px;
+  color: var(--bone-3);
+}
+.files {
+  list-style: none;
+  display: grid;
+  gap: 2px;
+  font-size: 11px;
+}
+.files li {
+  display: grid;
+  grid-template-columns: 1fr auto auto 16px;
+  gap: 10px;
+  align-items: baseline;
+  padding: 5px 0;
+  border-bottom: 1px solid var(--line);
+  color: var(--bone-2);
+}
+.fpath {
+  overflow-wrap: anywhere;
+  color: var(--bone);
+}
+.fbytes {
+  color: var(--bone-3);
+  font-variant-numeric: tabular-nums;
+}
+.fhash {
+  color: var(--bone-3);
+  font-variant-numeric: tabular-nums;
+}
+.files li[data-status="ok"] .fhash,
+.files li[data-status="ok"] .fstate {
+  color: var(--flare);
+}
+.files li[data-status="bad"] .fhash,
+.files li[data-status="bad"] .fstate,
+.files li[data-status="error"] .fstate {
+  color: var(--harm);
+}
+.algo {
+  font-size: 10.5px;
+  color: var(--bone-3);
+}
+.algo code {
+  color: var(--bone-2);
+}
+
+@media (max-width: 960px) {
+  .stage {
+    width: min(300px, 100%);
+    justify-self: center;
+  }
+}
