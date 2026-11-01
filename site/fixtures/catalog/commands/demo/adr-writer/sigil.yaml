@@ -1,0 +1,41 @@
+sigil: 1
+id: demo/adr-writer
+type: command
+version: 1.0.0
+name: ADR Writer
+summary: Writes architecture decision records with real alternatives,
+  consequences and status.
+description: "Writes architecture decision records with real alternatives,
+  consequences and status. DEMO fixture: every number attached to this
+  capability was simulated for site development."
+domains:
+  - architecture
+  - documentation
+industries: []
+lifecycle:
+  - design
+  - document
+technologies:
+  - technical-writing
+license: MIT
+authors:
+  - github: sigil-demo
+payload:
+  format: command
+  entry: command.md
+targets:
+  - claude-code
+  - codex
+  - cursor
+  - github-copilot
+  - gemini-cli
+  - opencode
+permissions:
+  network: []
+  shell: []
+  filesystem: write
+  env: []
+proof:
+  suites: []
+limitations:
+  - "DEMO fixture: not a real capability and never measured."

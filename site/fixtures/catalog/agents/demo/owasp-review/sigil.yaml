@@ -1,0 +1,41 @@
+sigil: 1
+id: demo/owasp-review
+type: agent
+version: 1.0.0
+name: OWASP Code Review
+summary: "A security reviewer for diffs: injection, authz gaps, SSRF and unsafe
+  deserialisation."
+description: "A security reviewer for diffs: injection, authz gaps, SSRF and
+  unsafe deserialisation. DEMO fixture: every number attached to this capability
+  was simulated for site development."
+domains:
+  - security
+  - code-review
+industries: []
+lifecycle:
+  - review
+  - secure
+technologies:
+  - owasp
+license: MIT
+authors:
+  - github: sigil-demo
+payload:
+  format: subagent
+  entry: agent.md
+targets:
+  - claude-code
+  - codex
+  - cursor
+  - github-copilot
+  - gemini-cli
+  - opencode
+permissions:
+  network: []
+  shell: []
+  filesystem: write
+  env: []
+proof:
+  suites: []
+limitations:
+  - "DEMO fixture: not a real capability and never measured."

@@ -1,0 +1,40 @@
+sigil: 1
+id: demo/otel-instrumentation
+type: skill
+version: 1.0.0
+name: OpenTelemetry Instrumentation
+summary: Adds traces and metrics with semantic conventions, without
+  high-cardinality labels.
+description: "Adds traces and metrics with semantic conventions, without
+  high-cardinality labels. DEMO fixture: every number attached to this
+  capability was simulated for site development."
+domains:
+  - observability
+industries: []
+lifecycle:
+  - operate
+technologies:
+  - opentelemetry
+  - nodejs
+license: MIT
+authors:
+  - github: sigil-demo
+payload:
+  format: agent-skill
+  entry: SKILL.md
+targets:
+  - claude-code
+  - codex
+  - cursor
+  - github-copilot
+  - gemini-cli
+  - opencode
+permissions:
+  network: []
+  shell: []
+  filesystem: read
+  env: []
+proof:
+  suites: []
+limitations:
+  - "DEMO fixture: not a real capability and never measured."

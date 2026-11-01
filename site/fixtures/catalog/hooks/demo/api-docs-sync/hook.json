@@ -1,0 +1,5 @@
+{
+  "name": "demo/api-docs-sync",
+  "description": "Regenerates reference docs when the OpenAPI spec changes. Evidence is for an older digest.",
+  "demo": true
+}

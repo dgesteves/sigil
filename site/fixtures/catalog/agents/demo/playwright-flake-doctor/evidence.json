@@ -1,0 +1,155 @@
+{
+  "sigil": 1,
+  "capability": "demo/playwright-flake-doctor",
+  "version": "1.0.0",
+  "digest": "sha256:3e32a4d25a740f661aa6240dcdfe744489e7002830ef13130610203af313f4fc",
+  "generatedAt": "2026-10-28T09:00:00.000Z",
+  "structure": {
+    "status": "pass",
+    "tool": {
+      "name": "sigil",
+      "version": "0.0.0-demo"
+    },
+    "at": "2026-10-28T09:00:00.000Z",
+    "findings": []
+  },
+  "security": {
+    "status": "warn",
+    "tool": {
+      "name": "sigil",
+      "version": "0.0.0-demo"
+    },
+    "at": "2026-10-28T09:00:00.000Z",
+    "findings": [
+      {
+        "rule": "SIG-SEC-012",
+        "severity": "low",
+        "message": "instructions mention reading .env files; declared env is empty",
+        "file": "agent.md",
+        "line": 9,
+        "owasp": "AST03"
+      }
+    ]
+  },
+  "canary": {
+    "status": "pass",
+    "agent": {
+      "id": "claude-code",
+      "version": "0.0.0-demo"
+    },
+    "model": "demo-model",
+    "at": "2026-10-28T09:00:00.000Z",
+    "runs": 4,
+    "events": []
+  },
+  "compat": {
+    "claude-code": {
+      "compiled": true,
+      "evaluated": true
+    },
+    "codex": {
+      "compiled": true,
+      "evaluated": false
+    },
+    "cursor": {
+      "compiled": true,
+      "evaluated": false
+    },
+    "github-copilot": {
+      "compiled": true,
+      "evaluated": false
+    },
+    "gemini-cli": {
+      "compiled": true,
+      "evaluated": false
+    },
+    "opencode": {
+      "compiled": true,
+      "evaluated": false
+    }
+  },
+  "uplift": [
+    {
+      "agent": {
+        "id": "claude-code",
+        "version": "0.0.0-demo"
+      },
+      "model": "demo-model",
+      "suite": "demo/playwright-flake-doctor",
+      "suiteDigest": "sha256:95919534689b1018f68c13c05479302039c5279da044d9c410f7ac8aab183603",
+      "at": "2026-10-28T09:00:00.000Z",
+      "tasks": [
+        {
+          "task": "rate-limit-login",
+          "baseline": {
+            "passed": 3,
+            "runs": 6,
+            "tampered": 0,
+            "falseDone": 2,
+            "medianTokens": 38601.5,
+            "medianSeconds": 275.5,
+            "medianCostUsd": 0.214
+          },
+          "treatment": {
+            "passed": 3,
+            "runs": 6,
+            "tampered": 0,
+            "falseDone": 0,
+            "medianTokens": 48554,
+            "medianSeconds": 281.5,
+            "medianCostUsd": 0.289
+          }
+        },
+        {
+          "task": "backfill-column",
+          "baseline": {
+            "passed": 3,
+            "runs": 6,
+            "tampered": 0,
+            "falseDone": 0,
+            "medianTokens": 34350.5,
+            "medianSeconds": 293.5,
+            "medianCostUsd": 0.14750000000000002
+          },
+          "treatment": {
+            "passed": 5,
+            "runs": 6,
+            "tampered": 0,
+            "falseDone": 0,
+            "medianTokens": 48932,
+            "medianSeconds": 378,
+            "medianCostUsd": 0.239
+          }
+        },
+        {
+          "task": "fix-stale-cache",
+          "baseline": {
+            "passed": 2,
+            "runs": 6,
+            "tampered": 1,
+            "falseDone": 1,
+            "medianTokens": 63348,
+            "medianSeconds": 183.5,
+            "medianCostUsd": 0.175
+          },
+          "treatment": {
+            "passed": 1,
+            "runs": 6,
+            "tampered": 0,
+            "falseDone": 2,
+            "medianTokens": 65488,
+            "medianSeconds": 264.5,
+            "medianCostUsd": 0.2155
+          }
+        }
+      ],
+      "delta": 0.05555555555555558,
+      "ci95": [
+        -0.24720608192162402,
+        0.34453796916694035
+      ],
+      "verdict": "inconclusive"
+    }
+  ],
+  "reviews": []
+}

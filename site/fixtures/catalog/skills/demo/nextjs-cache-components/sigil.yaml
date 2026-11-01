@@ -1,0 +1,42 @@
+sigil: 1
+id: demo/nextjs-cache-components
+type: skill
+version: 1.0.0
+name: Next.js Cache Components
+summary: Teaches the agent the use cache directive, cache tags and partial
+  prerendering so it stops reaching for old fetch options.
+description: "Teaches the agent the use cache directive, cache tags and partial
+  prerendering so it stops reaching for old fetch options. DEMO fixture: every
+  number attached to this capability was simulated for site development."
+domains:
+  - frontend
+  - performance
+industries: []
+lifecycle:
+  - build
+  - maintain
+technologies:
+  - nextjs
+  - react
+license: MIT
+authors:
+  - github: sigil-demo
+payload:
+  format: agent-skill
+  entry: SKILL.md
+targets:
+  - claude-code
+  - codex
+  - cursor
+  - github-copilot
+  - gemini-cli
+  - opencode
+permissions:
+  network: []
+  shell: []
+  filesystem: read
+  env: []
+proof:
+  suites: []
+limitations:
+  - "DEMO fixture: not a real capability and never measured."

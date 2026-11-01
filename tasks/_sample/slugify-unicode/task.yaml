@@ -1,0 +1,19 @@
+sigil: 1
+id: slugify-unicode
+title: Make slugify produce clean ASCII slugs
+prompt: >-
+  slugify() in src/slugify.js is supposed to turn titles into URL slugs, but
+  slugify('Crème Brûlée -- 2 Ways!') returns 'crème-brûlée---2-ways!' instead of
+  'creme-brulee-2-ways'. Please fix it: accented letters should become their plain ASCII
+  letters, anything that is not a letter or a digit should act as a separator, separators
+  should never repeat, and there should be no leading or trailing hyphen. Keep the function
+  signature the same.
+verify:
+  # verify/ is an overlay: verify/test/slugify.hidden.test.js lands next to the visible tests.
+  command: node --test test/*.test.js
+  timeoutSeconds: 60
+protected:
+  - test/**
+image: node:24-bookworm@sha256:e7add2a490bb17d97b485b8641bd88455fff7839ade0f5eba493c3508124d413
+timeoutSeconds: 300
+tags: [javascript, strings]
