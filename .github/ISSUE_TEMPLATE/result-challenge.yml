@@ -1,0 +1,24 @@
+name: Result challenge
+description: Contest a result, a task or a verdict. Fairness is part of the method.
+labels: ["result-challenge"]
+body:
+  - type: input
+    id: capability
+    attributes:
+      label: Capability and version
+      placeholder: react/server-components@1.2.0
+    validations:
+      required: true
+  - type: textarea
+    id: claim
+    attributes:
+      label: What is wrong?
+      description: Which task, run or verdict, and why it is unfair or incorrect. Link traces where you can.
+    validations:
+      required: true
+  - type: checkboxes
+    id: author
+    attributes:
+      label: Affiliation
+      options:
+        - label: I am an author or maintainer of this capability.

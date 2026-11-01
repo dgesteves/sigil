@@ -1,0 +1,22 @@
+name: Capability request
+description: Ask for a capability, or for an existing one to be measured.
+labels: ["capability-request"]
+body:
+  - type: textarea
+    id: need
+    attributes:
+      label: What should your agent be better at?
+      description: The task, the stack, and what agents get wrong today. Concrete failures are the most useful part.
+    validations:
+      required: true
+  - type: input
+    id: existing
+    attributes:
+      label: Existing capability to measure (optional)
+      description: A link to a skill, rule or MCP server you want Sigil to evaluate.
+  - type: dropdown
+    id: agents
+    attributes:
+      label: Agents you use
+      multiple: true
+      options: [Claude Code, Codex, Cursor, GitHub Copilot, Gemini CLI, OpenCode, Windsurf, Other]
