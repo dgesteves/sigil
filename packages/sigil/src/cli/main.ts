@@ -11,6 +11,7 @@ import { init } from './commands/init.js'
 import { list } from './commands/list.js'
 import { registry } from './commands/registry.js'
 import { remove } from './commands/remove.js'
+import { scan } from './commands/scan.js'
 import { validate } from './commands/validate.js'
 
 /** Every command lives in ./commands/<name>.ts and is registered here, in help order. */
@@ -21,6 +22,7 @@ export const COMMANDS: Command[] = [
   list,
   exportCommand,
   validate,
+  scan,
   digest,
   registry,
 ]
