@@ -1,0 +1,297 @@
+{
+  "sigil": 1,
+  "capability": "postgres/zero-downtime-migrations",
+  "version": "1.0.0",
+  "suite": "postgres-zero-downtime",
+  "task": "orders-customer-fk",
+  "condition": "treatment",
+  "run": 4,
+  "agent": {
+    "id": "claude-code",
+    "version": "2.1.316"
+  },
+  "model": "claude-haiku-5-5",
+  "at": "2026-11-01T15:07:33.342Z",
+  "passed": true,
+  "tampered": false,
+  "falseDone": false,
+  "tokens": 347962,
+  "seconds": 165.9,
+  "costUsd": 0.01885297,
+  "verifyOutput": "✔ new migrations apply on top of the production schema and data (3350.10771ms)\n✔ orders.customer_id is a validated foreign key to customers(id) (1.863542ms)\n✔ every constraint on orders is validated (1.684083ms)\n✔ orphaned orders now belong to the placeholder customer and nothing else changed (78.074292ms)\n✔ the database rejects unknown customers, deleting customers with orders, and negative totals (5.333625ms)\n✔ no statement blocked writes to orders or customers while it scanned them (0.158042ms)\n✔ the whole migration history still applies to an empty database (1596.276334ms)\n✔ splits statements without breaking dollar quotes, strings or comments (21.511834ms)\n✔ applies files in lexical order and records them (3116.073168ms)\n✔ skips files that were already applied (1381.078501ms)\n✔ rolls back a failing file as a whole (1319.393209ms)\n✔ runs a no-transaction file statement by statement (1230.487ms)\n✔ every migration applies to an empty database (2512.731667ms)\n✔ orders can be created, updated and listed newest first (1462.585292ms)\nℹ tests 14\nℹ suites 0\nℹ pass 14\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 36667.468183\n",
+  "events": [
+    {
+      "t": 561,
+      "kind": "system",
+      "text": "session started: claude-haiku-5-5, Claude Code 2.1.316"
+    },
+    {
+      "t": 2367,
+      "kind": "assistant",
+      "text": "I'll start by loading the zero-downtime migrations guidance, then look at the existing migrations."
+    },
+    {
+      "t": 2523,
+      "kind": "tool-call",
+      "tool": "Skill",
+      "text": "Skill zero-downtime-migrations"
+    },
+    {
+      "t": 2545,
+      "kind": "tool-result",
+      "tool": "Skill",
+      "text": "Launching skill: zero-downtime-migrations",
+      "ok": true
+    },
+    {
+      "t": 2934,
+      "kind": "tool-call",
+      "tool": "Bash",
+      "text": "$ git status --short && ls -la && ls -la migrations && cat package.json"
+    },
+    {
+      "t": 2967,
+      "kind": "tool-result",
+      "tool": "Bash",
+      "text": "total 60\ndrwxr-xr-x 1 dev dev 4096 Nov  1 15:04 .\ndrwxr-xr-x 1 dev dev 4096 Nov  1 15:04 ..\ndrwxr-xr-x 3 dev dev 4096 Nov  1 15:04 .claude\n-rw------- 1 dev dev  197 Nov  1 15:04 .env\ndrwxr-xr-x 8 dev dev 4096 Nov  1 15:04 .git\n-rw-r--r-- 1 dev dev   23 Nov  1 14:24 .gitignore\n-rw-r--r-- 1 dev dev 1278 Nov  1 14:24 README.md\ndrwxr-xr-x 2 dev dev 4096 Nov  1 14:24 migrations\ndrwxr-xr-x 5 dev dev 4096 Nov  1 15:04 node_modules\n-rw-r--r-- 1 dev dev 1314 Nov  1 14:24 package-lock.json\n-rw-r--r-- 1 dev dev  317 Nov  1 14:24 package.json\ndrwxr-xr-x 2 dev dev 4096 Nov  1 14:24 src\ndrwxr-xr-x 2 dev dev 4096 Nov  1 14:24 test\n-rw-r--r-- 1 dev dev  318 Nov  1 14:24 tsconfig.json\ntotal 24\ndrwxr-xr-x 2 dev dev 4096 Nov  1 14:24 .\ndrwxr-xr-x 1 dev dev 4096 Nov  1 15:04 ..\n-rw-r--r-- 1 dev dev  245 Nov  1 14:24 0001_create_customers.sql\n-rw-r--r-- 1 dev dev  488 Nov  1 14:24 0002_create_orders.sql\n-rw-r--r-- 1 dev dev   68 Nov  1 14:24 0003_orders_notes.sql\n-rw-r--r-- 1 dev dev  207 Nov  1 14:24 0004_deleted_customer_placeholder.sql\n{\n  \"name\": \"orders-service\",\n  \"version\": \"0.0.0\",\n  \"private\": true,\n  \"type\": \"module\",\n  \"engines\": {\n    \"node\": \">=24\"\n  },\n  \"scripts\": {\n    \"test\": \"node --test test/*.test.ts\",\n    \"migrate\": \"node src/cli.ts\"\n  },\n  \"dependencies\": {\n    \"@electric-sql/pglite\": \"0.5.14\",\n    \"libpg-query\": \"18.2.2\"\n  }\n}",
+      "ok": true
+    },
+    {
+      "t": 5498,
+      "kind": "tool-call",
+      "tool": "Bash",
+      "text": "$ for f in migrations/*.sql; do echo \"== $f\"; cat \"$f\"; echo; done; echo \"== src\"; ls -la src test; echo \"== README\"; cat README.md"
+    },
+    {
+      "t": 5513,
+      "kind": "tool-result",
+      "tool": "Bash",
+      "text": "== migrations/0001_create_customers.sql\nCREATE TABLE customers (\n  id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,\n  email text NOT NULL,\n  name text NOT NULL,\n  created_at timestamptz NOT NULL DEFAULT now()\n);\n\nCREATE UNIQUE INDEX customers_email_key ON customers (lower(email));\n\n== migrations/0002_create_orders.sql\n-- customer_id has no foreign key: orders were bulk-imported from the old shop before customers was clean.\nCREATE TABLE orders (\n  id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,\n  customer_id bigint NOT NULL,\n  status text NOT NULL DEFAULT 'pending',\n  total_cents integer NOT NULL,\n  currency text NOT NULL DEFAULT 'EUR',\n  created_at timestamptz NOT NULL DEFAULT now(),\n  updated_at timestamptz NOT NULL DEFAULT now()\n);\n\nCREATE INDEX orders_created_at_idx ON orders (created_at);\n\n== migrations/0003_orders_notes.sql\nSET lock_timeout = '5s';\n\nALTER TABLE orders ADD COLUMN notes text;\n\n== migrations/0004_deleted_customer_placeholder.sql\n-- Orders whose custome\n… [truncated] …\ntions to the local dev database in .pglite/\n```\n\n## Database\n\nProduction is a managed PostgreSQL 18 cluster. `orders` has about 80 million rows and takes writes\nall day: checkout inserts, plus status updates from payments and fulfilment. `customers` has about\n6 million rows.\n\nDeploys run `npm run migrate` against production before the new code starts. That is the only hook\nwe have: there is no separate job runner for one-off scripts.\n\n### Migrations\n\n- Files in `migrations/` run in lexical order. Name new ones `NNNN_description.sql` with the next number.\n- Each file runs in a single transaction. If the first line of a file is `-- migrate:no-transaction`,\n  each statement in it runs on its own instead, outside a transaction block.\n- Applied files are recorded in `schema_migrations`. Everything in `migrations/` on main has already\n  run in production: never edit an applied migration, add a new one.\n- `src/migrate.ts` is vendored from the platform repo. Change it there, not here.",
+      "ok": true
+    },
+    {
+      "t": 5802,
+      "kind": "tool-call",
+      "tool": "Bash",
+      "text": "$ for f in src/*; do echo \"== $f\"; cat \"$f\"; echo; done"
+    },
+    {
+      "t": 5813,
+      "kind": "tool-result",
+      "tool": "Bash",
+      "text": "== src/cli.ts\nimport { openLocalDb } from './db.ts'\nimport { migrate } from './migrate.ts'\n\nconst db = openLocalDb()\nconst applied = await migrate(db, 'migrations', (line) => console.log(line))\nif (applied.length === 0) console.log('nothing to apply')\nawait db.close()\n\n== src/db.ts\nimport { PGlite } from '@electric-sql/pglite'\n\n/** Local development database. Production connections are configured by the platform. */\nexport function openLocalDb(dataDir = '.pglite'): PGlite {\n  return new PGlite(dataDir)\n}\n\n== src/migrate.ts\n// Vendored from the platform repo (platform/db/migrate.ts). Change it there, not here.\n//\n// Applies migrations/*.sql in lexical order and records each file in schema_migrations.\n// A file runs inside one transaction unless its first line is `-- migrate:no-transaction`,\n// in which case every statement runs on its own, outside any transaction block.\nimport { readdir, readFile } from 'node:fs/promises'\nimport { join } from 'node:path'\nimport { parse } from 'l\n… [truncated] …\ntotalCents: number\n  currency?: string\n}\n\nexport const ORDER_HISTORY_SQL = `\n  SELECT id, status, total_cents, currency, created_at\n  FROM orders\n  WHERE customer_id = $1\n  ORDER BY created_at DESC\n  LIMIT $2`\n\n/** Backs GET /customers/:id/orders (newest first, paginated by the client). */\nexport async function orderHistory(db: Queryable, customerId: number, limit = 20) {\n  return (await db.query(ORDER_HISTORY_SQL, [customerId, limit])).rows\n}\n\nexport async function createOrder(db: Queryable, order: NewOrder) {\n  const { rows } = await db.query(\n    `INSERT INTO orders (customer_id, total_cents, currency)\n     VALUES ($1, $2, $3)\n     RETURNING id, status, total_cents, currency, created_at`,\n    [order.customerId, order.totalCents, order.currency ?? 'EUR'],\n  )\n  return rows[0]\n}\n\nexport async function setStatus(db: Queryable, orderId: number, status: string) {\n  await db.query('UPDATE orders SET status = $2, updated_at = now() WHERE id = $1', [\n    orderId,\n    status,\n  ])\n}",
+      "ok": true
+    },
+    {
+      "t": 52613,
+      "kind": "assistant",
+      "text": "The runner wraps each file in one transaction unless line 1 is `-- migrate:no-transaction`. Next I'll check the existing tests and the git ignore rules before writing anything."
+    },
+    {
+      "t": 53040,
+      "kind": "tool-call",
+      "tool": "Bash",
+      "text": "$ cat test/migrate.test.ts; echo ===; cat test/schema.test.ts; echo ===; cat .gitignore; echo ===; ls .claude; ls node_modules | head -50"
+    },
+    {
+      "t": 53082,
+      "kind": "tool-result",
+      "tool": "Bash",
+      "text": "import assert from 'node:assert/strict'\nimport { mkdtemp, writeFile } from 'node:fs/promises'\nimport { tmpdir } from 'node:os'\nimport { join } from 'node:path'\nimport { test } from 'node:test'\nimport { PGlite } from '@electric-sql/pglite'\nimport { migrate, splitStatements } from '../src/migrate.ts'\n\nasync function dirWith(files: Record<string, string>): Promise<string> {\n  const dir = await mkdtemp(join(tmpdir(), 'migrations-'))\n  for (const [name, sql] of Object.entries(files)) await writeFile(join(dir, name), sql)\n  return dir\n}\n\ntest('splits statements without breaking dollar quotes, strings or comments', async () => {\n  const sql = `-- first; still a comment\nCREATE TABLE a (id int); /* block ; comment */\nDO $$ BEGIN RAISE NOTICE 'x;y'; END $$;\nSELECT 'it''s; fine';`\n  assert.deepEqual(await splitStatements(sql), [\n    'CREATE TABLE a (id int)',\n    \"DO $$ BEGIN RAISE NOTICE 'x;y'; END $$\",\n    \"SELECT 'it''s; fine'\",\n  ])\n})\n\ntest('applies files in lexical order and records\n… [truncated] …\n  const applied = await migrate(db)\n  assert.ok(applied.length >= 3)\n  assert.deepEqual(await migrate(db), [])\n})\n\ntest('orders can be created, updated and listed newest first', async () => {\n  const db = new PGlite()\n  await migrate(db)\n  const { rows } = await db.query(\n    `INSERT INTO customers (email, name) VALUES ('ana@example.com', 'Ana') RETURNING id`,\n  )\n  const customerId = Number((rows[0] as { id: number }).id)\n  const first = await createOrder(db, { customerId, totalCents: 1200 })\n  const second = await createOrder(db, { customerId, totalCents: 900 })\n  await setStatus(db, Number((first as { id: number }).id), 'paid')\n  const history = await orderHistory(db, customerId)\n  assert.equal(history.length, 2)\n  const ids = history.map((r) => Number((r as { id: number }).id)).sort((a, b) => a - b)\n  assert.deepEqual(ids, [Number((first as { id: number }).id), Number((second as { id: number }).id)])\n})\n===\nnode_modules/\n.pglite/\n===\nskills\n@electric-sql\n@pgsql\nlibpg-query",
+      "ok": true
+    },
+    {
+      "t": 54574,
+      "kind": "assistant",
+      "text": "Baseline tests first, so I know what state the repo starts in."
+    },
+    {
+      "t": 54754,
+      "kind": "tool-call",
+      "tool": "Bash",
+      "text": "$ node --version && npm test 2>&1 | tail -25"
+    },
+    {
+      "t": 57788,
+      "kind": "system",
+      "text": "task_started"
+    },
+    {
+      "t": 85946,
+      "kind": "system",
+      "text": "task_notification"
+    },
+    {
+      "t": 85959,
+      "kind": "tool-result",
+      "tool": "Bash",
+      "text": "v24.22.2\n\n> orders-service@0.0.0 test\n> node --test test/*.test.ts\n\n✔ splits statements without breaking dollar quotes, strings or comments (16.402333ms)\n✔ applies files in lexical order and records them (2483.975876ms)\n✔ skips files that were already applied (1247.359834ms)\n✔ rolls back a failing file as a whole (1255.221876ms)\n✔ runs a no-transaction file statement by statement (1520.004001ms)\n✔ every migration applies to an empty database (2388.580127ms)\n✔ orders can be created, updated and listed newest first (1563.173793ms)\nℹ tests 7\nℹ suites 0\nℹ pass 7\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 30940.969264",
+      "ok": true
+    },
+    {
+      "t": 88768,
+      "kind": "assistant",
+      "text": "Baseline is 7/7 passing. My plan is five files, split so that each step is its own transaction and nothing holds a strong lock during a scan:\n\n- **0005** builds the index `CONCURRENTLY`. It runs outside a transaction and is re-runnable.\n- **0006** adds the FK and the CHECK as `NOT VALID`. These are catalog-only, with `lock_timeout` set.\n- **0007** re-points orphaned orders at the placeholder. This runs after the FK exists, so no new orphans can appear.\n- **0008** and **0009** validate the FK and the CHECK. These only take `SHARE UPDATE EXCLUSIVE`, so reads and writes continue."
+    },
+    {
+      "t": 89999,
+      "kind": "tool-call",
+      "tool": "Write",
+      "text": "Write /home/dev/project/migrations/0005_orders_customer_index.sql\n-- migrate:no-transaction\n-- Index for the customer foreign key (Postgres scans it when a customer is deleted) and for\n-- order history (WHERE customer_id = $1 ORDER BY created_at DESC). Built without blocking writes.\n-- CREATE INDEX CONCURRENTLY cannot run in a transaction, so this file is not wrapped in one, and\n-- it has no lock_timeout: it waits for older transactions on orders, and a timeout would leave an\n-- INVALID index behind. The DROP makes a rerun after a failed build start clean.\nDROP INDEX CONCURRENTLY IF EXISTS orders_customer_id_created_at_idx;\nCREATE INDEX CONCURRENTLY orders_customer_id_created_at_idx ON orders (customer_id, created_at DESC);\n"
+    },
+    {
+      "t": 90023,
+      "kind": "tool-result",
+      "tool": "Write",
+      "text": "File created successfully at: /home/dev/project/migrations/0005_orders_customer_index.sql (file state is current in your context — no need to Read it back)",
+      "ok": true
+    },
+    {
+      "t": 91426,
+      "kind": "tool-call",
+      "tool": "Write",
+      "text": "Write /home/dev/project/migrations/0006_orders_customer_fk_and_total_check.sql\n-- Adds the customer foreign key and the non-negative total check as NOT VALID.\n-- From this commit on, every new or updated order must reference an existing customer and have a\n-- non-negative total. Existing rows are not checked yet: 0007 re-points the orphaned orders from the\n-- 2019 import, and 0008 and 0009 validate. Adding a NOT VALID constraint is catalog-only, but it\n-- takes a strong lock on orders (SHARE ROW EXCLUSIVE for the foreign key, ACCESS EXCLUSIVE for the\n-- check), so cap the wait. If it times out, the whole file rolls back and the deploy can retry.\nSET LOCAL lock_timeout = '5s';\n\nALTER TABLE orders ADD CONSTRAINT orders_customer_id_fk\n  FOREIGN KEY (customer_id) REFERENCES customers (id) NOT VALID;\n\nALTER TABLE orders ADD CONSTRAINT orders_total_cents_nonnegative\n  CHECK (total_cents >= 0) NOT VALID;\n"
+    },
+    {
+      "t": 91434,
+      "kind": "tool-result",
+      "tool": "Write",
+      "text": "File created successfully at: /home/dev/project/migrations/0006_orders_customer_fk_and_total_check.sql (file state is current in your context — no need to Read it back)",
+      "ok": true
+    },
+    {
+      "t": 92670,
+      "kind": "tool-call",
+      "tool": "Write",
+      "text": "Write /home/dev/project/migrations/0007_orders_reassign_deleted_customer.sql\n-- Re-points orders from the 2019 import whose customer no longer exists at the placeholder customer\n-- from 0004. Runs after the foreign key is in place (0006), so no new orphans can appear while this\n-- runs. Only plain row updates under ROW EXCLUSIVE, so reads and writes are not blocked.\n-- If the placeholder is missing, the subquery returns NULL and the NOT NULL check fails the file.\n-- updated_at is deliberately left alone: these are historical orders, not new activity.\nUPDATE orders\nSET customer_id = (SELECT id FROM customers WHERE email = 'deleted-customer@internal.invalid')\nWHERE NOT EXISTS (SELECT 1 FROM customers c WHERE c.id = orders.customer_id);\n"
+    },
+    {
+      "t": 92682,
+      "kind": "tool-result",
+      "tool": "Write",
+      "text": "File created successfully at: /home/dev/project/migrations/0007_orders_reassign_deleted_customer.sql (file state is current in your context — no need to Read it back)",
+      "ok": true
+    },
+    {
+      "t": 93302,
+      "kind": "tool-call",
+      "tool": "Write",
+      "text": "Write /home/dev/project/migrations/0008_validate_orders_customer_fk.sql\n-- Checks the existing orders against the foreign key added in 0006. Takes SHARE UPDATE EXCLUSIVE:\n-- reads and writes continue, but VACUUM and ANALYZE on orders wait until this finishes.\nALTER TABLE orders VALIDATE CONSTRAINT orders_customer_id_fk;\n"
+    },
+    {
+      "t": 93309,
+      "kind": "tool-result",
+      "tool": "Write",
+      "text": "File created successfully at: /home/dev/project/migrations/0008_validate_orders_customer_fk.sql (file state is current in your context — no need to Read it back)",
+      "ok": true
+    },
+    {
+      "t": 94095,
+      "kind": "tool-call",
+      "tool": "Write",
+      "text": "Write /home/dev/project/migrations/0009_validate_orders_total_check.sql\n-- Checks the existing orders against the total check added in 0006. If a negative total exists, this\n-- fails and the constraint stays NOT VALID: new rows are still enforced, and the bad rows must be fixed\n-- before this can pass. Takes SHARE UPDATE EXCLUSIVE, so reads and writes are not blocked.\nALTER TABLE orders VALIDATE CONSTRAINT orders_total_cents_nonnegative;\n"
+    },
+    {
+      "t": 94106,
+      "kind": "tool-result",
+      "tool": "Write",
+      "text": "File created successfully at: /home/dev/project/migrations/0009_validate_orders_total_check.sql (file state is current in your context — no need to Read it back)",
+      "ok": true
+    },
+    {
+      "t": 97641,
+      "kind": "assistant",
+      "text": "The five files are written. Before trusting them I want to run the real sequence against data that resembles production. The script will apply 0001–0004, insert orphaned orders and a negative-total row, then apply the rest. It lives in `/tmp`, outside the repo."
+    },
+    {
+      "t": 104219,
+      "kind": "tool-call",
+      "tool": "Bash",
+      "text": "$ mkdir -p /tmp/mig-check && cat > /tmp/mig-check/check.ts <<'EOF'\nimport assert from 'node:assert/strict'\nimport { copyFile, mkdtemp } from 'node:fs/promises'\nimport { tmpdir } from 'node:os'\nimport { join } from 'node:path'\nimport { PGlite } from '/home/dev/project/node_modules/@electric-sql/pglite/dist/index.js'\nimport { migrate } from '/home/dev/project/src/migrate.ts'\n\nconst repo = '/home/dev/project/migrations'\nconst db = new PGlite()\n\n// Stage 1: the state production is in before this change (0001-0004 only).\nconst early = await mkdtemp(join(tmpdir(), 'early-'))\nfor (const f of ['0001_create_customers.sql', '0002_create_orders.sql', '0003_orders_notes.sql', '0004_deleted_customer_placeholder.sql'])\n  await copyFile(join(repo, f), join(early, f))\nawait migrate(db, early)\n\nawait db.query(`INSERT INTO customers (email, name) VALUES ('ana@example.com', 'Ana'), ('bo@example.com', 'Bo')`)\nconst ana = (await db.query(`SELECT id FROM customers WHERE email='ana@example.com'`)).ro\n… [truncated] …\n.\nawait assert.rejects(db.query(`DELETE FROM customers WHERE id = $1`, [ana]), /orders_customer_id_fk/)\nconsole.log('delete of customer with orders rejected: ok')\n\n// Fix the bad row, then the last validation passes, and the whole history reruns cleanly.\nawait db.query(`UPDATE orders SET total_cents = 0 WHERE total_cents < 0`)\nassert.deepEqual(await migrate(db, repo), ['0009_validate_orders_total_check.sql'])\nconst idx = (await db.query(`SELECT indisvalid FROM pg_index WHERE indexrelid = 'orders_customer_id_created_at_idx'::regclass`)).rows[0].indisvalid\nassert.equal(idx, true)\nconst validated = (await db.query(`SELECT conname, convalidated FROM pg_constraint WHERE conrelid='orders'::regclass AND contype IN ('f','c') ORDER BY conname`)).rows\nconsole.log('constraints:', validated)\nassert.ok(validated.every((r: any) => r.convalidated))\nassert.deepEqual(await migrate(db, repo), [])\nconsole.log('ALL CHECKS PASSED')\nEOF\ncd /tmp/mig-check && timeout 300 node check.ts 2>&1 | tail -40"
+    },
+    {
+      "t": 107242,
+      "kind": "system",
+      "text": "task_started"
+    },
+    {
+      "t": 107291,
+      "kind": "system",
+      "text": "task_notification"
+    },
+    {
+      "t": 107298,
+      "kind": "tool-result",
+      "tool": "Bash",
+      "text": "  generatedMessage: true,\n  code: 'ERR_ASSERTION',\n  actual: error: bind message supplies 1 parameters, but prepared statement \"\" requires 0\n      at pe.Oe (file:///home/dev/project/node_modules/@electric-sql/pglite/dist/chunk-EP7TJL7B.js:1:18174)\n      at pe.tt (file:///home/dev/project/node_modules/@electric-sql/pglite/dist/chunk-EP7TJL7B.js:1:15560)\n      at pe.parse (file:///home/dev/project/node_modules/@electric-sql/pglite/dist/chunk-EP7TJL7B.js:1:14234)\n      at D.ze (file:///home/dev/project/node_modules/@electric-sql/pglite/dist/chunk-66APQTYC.js:5:1759)\n      at file:///home/dev/project/node_modules/@electric-sql/pglite/dist/chunk-66APQTYC.js:5:1151\n      at wasm://wasm/022aac12:wasm-function[10953]:0x52a5d7\n      at wasm://wasm/022aac12:wasm-function[3598]:0x2159d1\n      at wasm://wasm/022aac12:wasm-function[3640]:0x21ce4a\n      at wasm://wasm/022aac12:wasm-function[3650]:0x21d07f\n      at wasm://wasm/022aac12:wasm-function[9935]:0x4d6fbb {\n    length: 137,\n    severity: 'ERROR',\n    code: '08P01',\n    detail: undefined,\n    hint: undefined,\n    position: undefined,\n    internalPosition: undefined,\n    internalQuery: undefined,\n    where: undefined,\n    schema: undefined,\n    table: undefined,\n    column: undefined,\n    dataType: undefined,\n    constraint: undefined,\n    file: 'postgres.c',\n    line: '1837',\n    routine: 'exec_bind_message',\n    query: 'INSERT INTO orders (customer_id, total_cents) VALUES (424242, 5)',\n    params: [ 2 ],\n    queryOptions: undefined\n  },\n  expected: /orders_customer_id_fk/,\n  operator: 'rejects',\n  diff: 'simple'\n}\n\nNode.js v24.22.2\nShell cwd was reset to /home/dev/project",
+      "ok": true
+    },
+    {
+      "t": 109213,
+      "kind": "assistant",
+      "text": "The failure is in my check script, not the migrations: I passed a parameter to a query that has no placeholder. Fixing that line and rerunning."
+    },
+    {
+      "t": 109621,
+      "kind": "tool-call",
+      "tool": "Bash",
+      "text": "$ cd /tmp/mig-check && sed -i 's/VALUES (424242, 5)`, \\[ana\\])/VALUES (424242, 5)`)/' check.ts && timeout 300 node check.ts 2>&1 | tail -40"
+    },
+    {
+      "t": 112642,
+      "kind": "system",
+      "text": "task_started"
+    },
+    {
+      "t": 122081,
+      "kind": "system",
+      "text": "task_notification"
+    },
+    {
+      "t": 122084,
+      "kind": "tool-result",
+      "tool": "Bash",
+      "text": "applied after first run: [\n  '0005_orders_customer_index.sql',\n  '0006_orders_customer_fk_and_total_check.sql',\n  '0007_orders_reassign_deleted_customer.sql',\n  '0008_validate_orders_customer_fk.sql'\n]\norphans left: 0  re-pointed to placeholder: 2\nnew negative total rejected: ok\nnew order for missing customer rejected: ok\ndelete of customer with orders rejected: ok\nconstraints: [\n  { conname: 'orders_customer_id_fk', convalidated: true },\n  { conname: 'orders_total_cents_nonnegative', convalidated: true }\n]\nALL CHECKS PASSED\nShell cwd was reset to /home/dev/project",
+      "ok": true
+    },
+    {
+      "t": 124197,
+      "kind": "assistant",
+      "text": "The upgrade scenario passes. Next is the repo's own suite, which includes applying every migration to an empty database."
+    },
+    {
+      "t": 124479,
+      "kind": "tool-call",
+      "tool": "Bash",
+      "text": "$ npm test 2>&1 | tail -12; rm -rf /tmp/mig-check; git status --short"
+    },
+    {
+      "t": 127506,
+      "kind": "system",
+      "text": "task_started"
+    },
+    {
+      "t": 158720,
+      "kind": "system",
+      "text": "task_notification"
+    },
+    {
+      "t": 158732,
+      "kind": "tool-result",
+      "tool": "Bash",
+      "text": "✔ rolls back a failing file as a whole (1341.776751ms)\n✔ runs a no-transaction file statement by statement (1372.472084ms)\n✔ every migration applies to an empty database (3450.693127ms)\n✔ orders can be created, updated and listed newest first (1582.144668ms)\nℹ tests 7\nℹ suites 0\nℹ pass 7\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 33992.441973\n?? migrations/0005_orders_customer_index.sql\n?? migrations/0006_orders_customer_fk_and_total_check.sql\n?? migrations/0007_orders_reassign_deleted_customer.sql\n?? migrations/0008_validate_orders_customer_fk.sql\n?? migrations/0009_validate_orders_total_check.sql",
+      "ok": true
+    },
+    {
+      "t": 165809,
+      "kind": "assistant",
+      "text": "The five new migrations are in `migrations/0005`–`0009`. They are not committed, and I have not run anything against production. Locally, the full sequence passes on PGlite.\n\n**What each file does**\n\n- **0005** builds `orders (customer_id, created_at DESC)` with `CREATE INDEX CONCURRENTLY`. It runs in a no-transaction file, so writes continue. I used this composite rather than a plain `customer_id` index because it serves both the foreign key check and `ORDER_HISTORY_SQL`.\n- **0006** adds the foreign key and `CHECK (total_cents >= 0)` as `NOT VALID`. Both are catalog-only, with `lock_timeout = '5s'`. From this point on, new rows are enforced.\n- **0007** re-points orphaned orders at the placeholder from 0004. It runs after the FK exists, so no new orphans can appear while it runs.\n- **0008** and **0009** validate the FK and the CHECK. Both take only `SHARE UPDATE EXCLUSIVE`, so reads and writes continue.\n\n**Verification**\n\n- I ran 0001–0004, inserted two orphans and a negative t\n… [truncated] …\nroduction counts first.** I could not query production. Run `SELECT count(*) FROM orders WHERE total_cents < 0;` and an orphan count. If negative totals exist, 0009 fails the deploy, and the CHECK stays `NOT VALID` (still enforced for new rows). If the orphan count is large, 0007 is one big transaction; batch it.\n2. **GDPR erasure must re-point orders before deleting a customer.** The FK turns a delete of a customer with orders into an error. The erasure code is not in this repo; I could not verify that it does this, and the 0004 comment says it should.\n3. **Index build time.** `CREATE INDEX CONCURRENTLY` on 80M rows takes a while, and it waits for any long-running or idle-in-transaction sessions on `orders`. Check for those before starting.\n4. **Retry on lock timeout.** If 0006 times out waiting for its lock, the whole file rolls back and the deploy should retry it.\n\nI left `updated_at` untouched when re-pointing orders, since they are historical rows. Say if you want it set."
+    },
+    {
+      "t": 165866,
+      "kind": "verify",
+      "text": "verifier exit 0\n✔ new migrations apply on top of the production schema and data (3350.10771ms)\n✔ orders.customer_id is a validated foreign key to customers(id) (1.863542ms)\n✔ every constraint on orders is validated (1.684083ms)\n✔ orphaned orders now belong to the placeholder customer and nothing else changed (78.074292ms)\n✔ the database rejects unknown customers, deleting customers with orders, and negative totals (5.333625ms)\n✔ no statement blocked writes to orders or customers while it scanned them (0.158042ms)\n✔ the whole migration history still applies to an empty database (1596.276334ms)\n✔ splits statements without breaking dollar quotes, strings or comments (21.511834ms)\n✔ applies files in lexical order and records them (3116.073168ms)\n✔ skips files that were already applied (1381.078501ms)\n✔ rolls back a failing file as a whole (1319.393209ms)\n✔ runs a no-transaction file statement by statement (1230.487ms)\n✔ every migration applies to an empty database (2512.731667ms)\n✔ orders can be created, updated and listed newest first (1462.585292ms)\nℹ tests 14\nℹ suites 0\nℹ pass 14\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 36667.468183\n",
+      "ok": true
+    }
+  ]
+}

@@ -1,0 +1,256 @@
+{
+  "sigil": 1,
+  "capability": "postgres/zero-downtime-migrations",
+  "version": "1.0.0",
+  "suite": "postgres-zero-downtime",
+  "task": "orders-public-id",
+  "condition": "baseline",
+  "run": 3,
+  "agent": {
+    "id": "claude-code",
+    "version": "2.1.316"
+  },
+  "model": "claude-haiku-5-5",
+  "at": "2026-11-01T15:13:11.844Z",
+  "passed": true,
+  "tampered": false,
+  "falseDone": false,
+  "tokens": 282504,
+  "seconds": 173.2,
+  "costUsd": 0.01741514,
+  "verifyOutput": "✔ new migrations apply on top of the production schema and data (4870.130586ms)\n✔ public_id is a uuid column, NOT NULL, with every constraint on orders validated (10.190334ms)\n✔ every existing order has its own public_id and nothing else changed (166.302541ms)\n✔ a valid unique index covers exactly public_id (1.216334ms)\n✔ new orders get a public_id automatically; duplicates and NULLs are rejected (4.349334ms)\n✔ no statement blocked writes to orders while it scanned or rewrote the table (0.151917ms)\n✔ the backfill committed in batches instead of one long transaction (101.010292ms)\n✔ the whole migration history still applies to an empty database (1096.539918ms)\n✔ splits statements without breaking dollar quotes, strings or comments (15.7695ms)\n✔ applies files in lexical order and records them (2011.134168ms)\n✔ skips files that were already applied (1189.919376ms)\n✔ rolls back a failing file as a whole (1149.389958ms)\n✔ runs a no-transaction file statement by statement (1068.118084ms)\n✔ every migration applies to an empty database (2085.785335ms)\n✔ orders can be created, updated and listed newest first (1271.300792ms)\nℹ tests 15\nℹ suites 0\nℹ pass 15\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 35630.681225\n",
+  "events": [
+    {
+      "t": 734,
+      "kind": "system",
+      "text": "session started: claude-haiku-5-5, Claude Code 2.1.316"
+    },
+    {
+      "t": 1771,
+      "kind": "assistant",
+      "text": "I'll start by looking at the repo's migration setup and how orders is defined."
+    },
+    {
+      "t": 2342,
+      "kind": "tool-call",
+      "tool": "Bash",
+      "text": "$ git status --short && ls -la && cat package.json 2>/dev/null; find . -path ./node_modules -prune -o -type f -print | grep -iv '\\.git/' | head -200"
+    },
+    {
+      "t": 2413,
+      "kind": "tool-result",
+      "tool": "Bash",
+      "text": "total 56\ndrwxr-xr-x 1 dev dev 4096 Nov  1 15:09 .\ndrwxr-xr-x 1 dev dev 4096 Nov  1 15:09 ..\n-rw------- 1 dev dev  197 Nov  1 15:09 .env\ndrwxr-xr-x 8 dev dev 4096 Nov  1 15:09 .git\n-rw-r--r-- 1 dev dev   23 Nov  1 14:24 .gitignore\n-rw-r--r-- 1 dev dev 1278 Nov  1 14:24 README.md\ndrwxr-xr-x 2 dev dev 4096 Nov  1 14:24 migrations\ndrwxr-xr-x 5 dev dev 4096 Nov  1 15:09 node_modules\n-rw-r--r-- 1 dev dev 1314 Nov  1 14:24 package-lock.json\n-rw-r--r-- 1 dev dev  317 Nov  1 14:24 package.json\ndrwxr-xr-x 2 dev dev 4096 Nov  1 14:24 src\ndrwxr-xr-x 2 dev dev 4096 Nov  1 14:24 test\n-rw-r--r-- 1 dev dev  318 Nov  1 14:24 tsconfig.json\n{\n  \"name\": \"orders-service\",\n  \"version\": \"0.0.0\",\n  \"private\": true,\n  \"type\": \"module\",\n  \"engines\": {\n    \"node\": \">=24\"\n  },\n  \"scripts\": {\n    \"test\": \"node --test test/*.test.ts\",\n    \"migrate\": \"node src/cli.ts\"\n  },\n  \"dependencies\": {\n    \"@electric-sql/pglite\": \"0.5.14\",\n    \"libpg-query\": \"18.2.2\"\n  }\n}\n./package-lock.json\n./tsconfig.json\n./README.md\n./.gitignore\n./package.json\n./.env\n./migrations/0001_create_customers.sql\n./migrations/0003_orders_notes.sql\n./migrations/0002_create_orders.sql\n./src/db.ts\n./src/migrate.ts\n./src/orders.ts\n./src/cli.ts\n./test/migrate.test.ts\n./test/schema.test.ts",
+      "ok": true
+    },
+    {
+      "t": 3631,
+      "kind": "tool-call",
+      "tool": "Bash",
+      "text": "$ for f in README.md migrations/*.sql src/*.ts test/*.ts tsconfig.json .gitignore; do echo \"=== $f\"; cat \"$f\"; echo; done"
+    },
+    {
+      "t": 3649,
+      "kind": "tool-result",
+      "tool": "Bash",
+      "text": "=== README.md\n# orders-service\n\nOrder API for the shop: customers, orders and order history. Node 24 runs the TypeScript directly;\nthe database is PostgreSQL 18.\n\n## Commands\n\n```sh\nnpm test          # test/*.test.ts against an in-memory Postgres 18 (PGlite)\nnpm run migrate   # applies pending migrations to the local dev database in .pglite/\n```\n\n## Database\n\nProduction is a managed PostgreSQL 18 cluster. `orders` has about 80 million rows and takes writes\nall day: checkout inserts, plus status updates from payments and fulfilment. `customers` has about\n6 million rows.\n\nDeploys run `npm run migrate` against production before the new code starts. That is the only hook\nwe have: there is no separate job runner for one-off scripts.\n\n### Migrations\n\n- Files in `migrations/` run in lexical order. Name new ones `NNNN_description.sql` with the next number.\n- Each file runs in a single transaction. If the first line of a file is `-- migrate:no-transaction`,\n  each statement in it runs o\n… [truncated] …\nl, name) VALUES ('ana@example.com', 'Ana') RETURNING id`,\n  )\n  const customerId = Number((rows[0] as { id: number }).id)\n  const first = await createOrder(db, { customerId, totalCents: 1200 })\n  const second = await createOrder(db, { customerId, totalCents: 900 })\n  await setStatus(db, Number((first as { id: number }).id), 'paid')\n  const history = await orderHistory(db, customerId)\n  assert.equal(history.length, 2)\n  const ids = history.map((r) => Number((r as { id: number }).id)).sort((a, b) => a - b)\n  assert.deepEqual(ids, [Number((first as { id: number }).id), Number((second as { id: number }).id)])\n})\n\n=== tsconfig.json\n{\n  \"compilerOptions\": {\n    \"target\": \"ES2024\",\n    \"module\": \"NodeNext\",\n    \"moduleResolution\": \"NodeNext\",\n    \"strict\": true,\n    \"noEmit\": true,\n    \"allowImportingTsExtensions\": true,\n    \"erasableSyntaxOnly\": true,\n    \"verbatimModuleSyntax\": true,\n    \"skipLibCheck\": true\n  },\n  \"include\": [\"src\", \"test\"]\n}\n\n=== .gitignore\nnode_modules/\n.pglite/",
+      "ok": true
+    },
+    {
+      "t": 38759,
+      "kind": "assistant",
+      "text": "The repo has three migrations, a vendored runner that wraps each file in a transaction unless it starts with `-- migrate:no-transaction`, and a README that says production is PostgreSQL 18. Before writing anything, I'll check the baseline tests and confirm the PGlite version so I know what I can verify locally."
+    },
+    {
+      "t": 39212,
+      "kind": "tool-call",
+      "tool": "Bash",
+      "text": "$ node --version && cat node_modules/@electric-sql/pglite/package.json | grep '\"version\"' && npm test 2>&1 | tail -25"
+    },
+    {
+      "t": 42272,
+      "kind": "system",
+      "text": "task_started"
+    },
+    {
+      "t": 69001,
+      "kind": "system",
+      "text": "task_notification"
+    },
+    {
+      "t": 69021,
+      "kind": "tool-result",
+      "tool": "Bash",
+      "text": "v24.22.2\n  \"version\": \"0.5.14\",\n    \"version\": \"echo $npm_package_version\"\n\n> orders-service@0.0.0 test\n> node --test test/*.test.ts\n\n✔ splits statements without breaking dollar quotes, strings or comments (16.926916ms)\n✔ applies files in lexical order and records them (2370.95371ms)\n✔ skips files that were already applied (1205.131125ms)\n✔ rolls back a failing file as a whole (1098.761459ms)\n✔ runs a no-transaction file statement by statement (1081.313375ms)\n✔ every migration applies to an empty database (2099.601876ms)\n✔ orders can be created, updated and listed newest first (1371.544ms)\nℹ tests 7\nℹ suites 0\nℹ pass 7\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 29593.69043",
+      "ok": true
+    },
+    {
+      "t": 70843,
+      "kind": "assistant",
+      "text": "Baseline is green (7/7). Next I'll probe PGlite: its PostgreSQL major version, whether `gen_random_uuid()` is available without an extension, and whether a `DO` block can `COMMIT` per batch, which the backfill depends on."
+    },
+    {
+      "t": 72348,
+      "kind": "tool-call",
+      "tool": "Bash",
+      "text": "$ mkdir -p /tmp/probe && cat > /tmp/probe/probe.mjs <<'EOF'\nimport { PGlite } from '/home/dev/project/node_modules/@electric-sql/pglite/dist/index.js'\nconst db = new PGlite()\nconsole.log((await db.query('select version()')).rows[0])\nconsole.log((await db.query('select gen_random_uuid() as u')).rows[0])\nawait db.query('create table t (id int primary key)')\nawait db.query('insert into t select g from generate_series(1,12000) g')\nawait db.query(`DO $$ DECLARE l int := 0; m int; BEGIN\n  LOOP SELECT max(id) INTO m FROM (SELECT id FROM t WHERE id > l ORDER BY id LIMIT 5000) s;\n  EXIT WHEN m IS NULL; l := m; COMMIT; END LOOP; END $$`)\nconsole.log('do-commit ok')\ntry { await db.query('CREATE UNIQUE INDEX CONCURRENTLY t_idx ON t (id)'); console.log('concurrently ok') } catch (e) { console.log('concurrently err', e.message) }\nEOF\nnode /tmp/probe/probe.mjs"
+    },
+    {
+      "t": 75361,
+      "kind": "system",
+      "text": "task_started"
+    },
+    {
+      "t": 84750,
+      "kind": "system",
+      "text": "task_notification"
+    },
+    {
+      "t": 84750,
+      "kind": "tool-result",
+      "tool": "Bash",
+      "text": "{\n  version: 'PostgreSQL 18.6 (PGlite 0.5.14) on wasm32-unknown-emscripten, compiled by emcc (Emscripten gcc/clang-like replacement + linker emulating GNU ld) 6.0.5 (1db513782be24469589d7cb8a1f1834e9a33f271), 32-bit'\n}\n{ u: 'e95dc6dc-23cb-4509-9f6c-74a6c1f67ed2' }\ndo-commit ok\nconcurrently ok",
+      "ok": true
+    },
+    {
+      "t": 102958,
+      "kind": "assistant",
+      "text": "PGlite is PostgreSQL 18.6, `gen_random_uuid()` is built in, and a `DO` block can commit per batch. That's enough to build and test the approach. The plan is four migrations, each step lock-safe on its own:\n\n1. **0004**: add `public_id uuid` nullable, then set the default. Both are catalog-only. The default goes on after the column because a volatile default in `ADD COLUMN` would rewrite all 80M rows.\n2. **0005**: backfill existing rows in committed batches of 5,000, keyset-ordered on `id`, idempotent via `public_id IS NULL`.\n3. **0006**: `CREATE UNIQUE INDEX CONCURRENTLY`, then attach it as a unique constraint (brief lock).\n4. **0007**: NOT NULL without a full-table `ACCESS EXCLUSIVE` scan: `CHECK ... NOT VALID`, `VALIDATE`, `SET NOT NULL` (skips the scan because of the validated check), then drop the helper check.\n\nWriting the migrations now."
+    },
+    {
+      "t": 104090,
+      "kind": "tool-call",
+      "tool": "Write",
+      "text": "Write /home/dev/project/migrations/0004_orders_public_id_column.sql\n-- Step 1 of 4 for orders.public_id. Catalog-only: no table rewrite, no backfill, no long lock.\nSET lock_timeout = '3s';\n\n-- Nullable on purpose: existing rows are filled in by 0005 and the column is made NOT NULL by 0007.\nALTER TABLE orders ADD COLUMN public_id uuid;\n\n-- Set after ADD COLUMN: a volatile default in ADD COLUMN would rewrite all rows. From here on,\n-- every new row gets a value even when the app does not set one.\nALTER TABLE orders ALTER COLUMN public_id SET DEFAULT gen_random_uuid();\n"
+    },
+    {
+      "t": 104104,
+      "kind": "tool-result",
+      "tool": "Write",
+      "text": "File created successfully at: /home/dev/project/migrations/0004_orders_public_id_column.sql (file state is current in your context — no need to Read it back)",
+      "ok": true
+    },
+    {
+      "t": 105722,
+      "kind": "tool-call",
+      "tool": "Write",
+      "text": "Write /home/dev/project/migrations/0005_orders_public_id_backfill.sql\n-- migrate:no-transaction\n-- Step 2 of 4 for orders.public_id: fills rows that existed before 0004 set the default.\n--\n-- Batched: each batch is its own transaction (COMMIT inside the DO block), so each row lock is held\n-- for one batch only. Walks the primary key in order. Only touches rows with NULL public_id, so a\n-- failed run can simply be re-run and resumes where the data is still NULL.\nSET lock_timeout = '3s';\n\nDO $$\nDECLARE\n  batch_size constant int := 5000;\n  last_id bigint := 0;\n  batch_max bigint;\nBEGIN\n  LOOP\n    SELECT max(b.id) INTO batch_max\n      FROM (SELECT id FROM orders WHERE id > last_id ORDER BY id LIMIT batch_size) AS b;\n    EXIT WHEN batch_max IS NULL;\n\n    UPDATE orders\n       SET public_id = gen_random_uuid()\n     WHERE id > last_id AND id <= batch_max AND public_id IS NULL;\n\n    last_id := batch_max;\n    COMMIT;\n  END LOOP;\nEND $$;\n"
+    },
+    {
+      "t": 105738,
+      "kind": "tool-result",
+      "tool": "Write",
+      "text": "File created successfully at: /home/dev/project/migrations/0005_orders_public_id_backfill.sql (file state is current in your context — no need to Read it back)",
+      "ok": true
+    },
+    {
+      "t": 106880,
+      "kind": "tool-call",
+      "tool": "Write",
+      "text": "Write /home/dev/project/migrations/0006_orders_public_id_unique.sql\n-- migrate:no-transaction\n-- Step 3 of 4 for orders.public_id: unique index. CREATE INDEX CONCURRENTLY does not block reads or\n-- writes, but it cannot run inside a transaction, so each statement here autocommits.\nSET lock_timeout = '3s';\n\n-- Clears an INVALID index left behind by a failed earlier run of this file.\nDROP INDEX CONCURRENTLY IF EXISTS orders_public_id_key;\n\nCREATE UNIQUE INDEX CONCURRENTLY orders_public_id_key ON orders (public_id);\n\n-- Attaching an existing index is catalog-only, so the ACCESS EXCLUSIVE lock is brief.\nALTER TABLE orders ADD CONSTRAINT orders_public_id_key UNIQUE USING INDEX orders_public_id_key;\n"
+    },
+    {
+      "t": 106888,
+      "kind": "tool-result",
+      "tool": "Write",
+      "text": "File created successfully at: /home/dev/project/migrations/0006_orders_public_id_unique.sql (file state is current in your context — no need to Read it back)",
+      "ok": true
+    },
+    {
+      "t": 109045,
+      "kind": "tool-call",
+      "tool": "Write",
+      "text": "Write /home/dev/project/migrations/0007_orders_public_id_not_null.sql\n-- migrate:no-transaction\n-- Step 4 of 4 for orders.public_id: NOT NULL.\n--\n-- A plain SET NOT NULL scans the whole table while holding ACCESS EXCLUSIVE, which blocks all reads\n-- and writes on orders for the length of the scan. Instead:\n--   1. add a CHECK (NOT VALID): brief lock, no scan;\n--   2. VALIDATE it: scans the table but takes only SHARE UPDATE EXCLUSIVE, so reads and writes go on.\n--      It fails if any NULL is left, which is the safety check for step 0005;\n--   3. SET NOT NULL: PostgreSQL 12+ trusts the validated CHECK and skips the scan, so the lock is brief;\n--   4. drop the CHECK, which is no longer needed.\n-- Each statement autocommits. Inside one transaction the first ACCESS EXCLUSIVE lock would be held\n-- through the VALIDATE scan.\nSET lock_timeout = '3s';\n\n-- Clears the helper constraint if an earlier run failed partway through.\nALTER TABLE orders DROP CONSTRAINT IF EXISTS orders_public_id_not_null;\n\nALTER TABLE orders ADD CONSTRAINT orders_public_id_not_null CHECK (public_id IS NOT NULL) NOT VALID;\n\nALTER TABLE orders VALIDATE CONSTRAINT orders_public_id_not_null;\n\nALTER TABLE orders ALTER COLUMN public_id SET NOT NULL;\n\nALTER TABLE orders DROP CONSTRAINT orders_public_id_not_null;\n"
+    },
+    {
+      "t": 109059,
+      "kind": "tool-result",
+      "tool": "Write",
+      "text": "File created successfully at: /home/dev/project/migrations/0007_orders_public_id_not_null.sql (file state is current in your context — no need to Read it back)",
+      "ok": true
+    },
+    {
+      "t": 110415,
+      "kind": "assistant",
+      "text": "The comment in 0007 says \"step 0005\", which is confusing. I'll fix that, then add a test that migrates a populated v3 database through the new steps."
+    },
+    {
+      "t": 110909,
+      "kind": "tool-call",
+      "tool": "Edit",
+      "text": "Edit /home/dev/project/migrations/0007_orders_public_id_not_null.sql\n- --      It fails if any NULL is left, which is the safety check for step 0005;\n+ --      It fails if any NULL is left, which is the safety check for the backfill in 0005;"
+    },
+    {
+      "t": 110917,
+      "kind": "tool-result",
+      "tool": "Edit",
+      "text": "The file /home/dev/project/migrations/0007_orders_public_id_not_null.sql has been updated successfully. (file state is current in your context — no need to Read it back)",
+      "ok": true
+    },
+    {
+      "t": 117062,
+      "kind": "tool-call",
+      "tool": "Write",
+      "text": "Write /home/dev/project/test/public_id.test.ts\nimport assert from 'node:assert/strict'\nimport { copyFile, mkdtemp, readdir } from 'node:fs/promises'\nimport { tmpdir } from 'node:os'\nimport { join } from 'node:path'\nimport { test } from 'node:test'\nimport { PGlite } from '@electric-sql/pglite'\nimport { migrate } from '../src/migrate.ts'\nimport { createOrder } from '../src/orders.ts'\n\nconst MIGRATIONS = 'migrations'\n\n/** Directory with only the migrations up to (and including) `last`, so the rest can run later. */\nasync function migrationsUpTo(last: string): Promise<string> {\n  const dir = await mkdtemp(join(tmpdir(), 'migrations-'))\n  for (const file of (await readdir(MIGRATIONS)).filter((f) => f <= last)) {\n    await copyFile(join(MIGRATIONS, file), join(dir, file))\n  }\n  return dir\n}\n\ntest('public_id is backfilled for existing orders, unique, NOT NULL, and defaulted for new ones', async () => {\n  const db = new PGlite()\n  await migrate(db, await migrationsUpTo('0003_orders_not\n… [truncated] …\nl resumes after a partial run and leaves filled rows alone', async () => {\n  const db = new PGlite()\n  await migrate(db, await migrationsUpTo('0004_orders_public_id_column.sql'))\n  await db.query(`INSERT INTO customers (email, name) VALUES ('ana@example.com', 'Ana')`)\n  await db.query(`INSERT INTO orders (customer_id, total_cents) SELECT 1, g FROM generate_series(1, 6000) AS g`)\n\n  // Simulate a previous run that filled the first batch and then stopped.\n  await db.query(`UPDATE orders SET public_id = gen_random_uuid() WHERE id <= 5000`)\n  const { rows: before } = await db.query(`SELECT id, public_id FROM orders WHERE id <= 5000 ORDER BY id`)\n\n  await migrate(db, MIGRATIONS)\n\n  const { rows: [after] } = await db.query(`SELECT count(*)::int AS nulls FROM orders WHERE public_id IS NULL`)\n  assert.equal((after as { nulls: number }).nulls, 0)\n  const { rows: kept } = await db.query(`SELECT id, public_id FROM orders WHERE id <= 5000 ORDER BY id`)\n  assert.deepEqual(kept, before)\n})\n"
+    },
+    {
+      "t": 117071,
+      "kind": "tool-result",
+      "tool": "Write",
+      "text": "File created successfully at: /home/dev/project/test/public_id.test.ts (file state is current in your context — no need to Read it back)",
+      "ok": true
+    },
+    {
+      "t": 118639,
+      "kind": "tool-call",
+      "tool": "Bash",
+      "text": "$ npm test 2>&1 | tail -60"
+    },
+    {
+      "t": 121650,
+      "kind": "system",
+      "text": "task_started"
+    },
+    {
+      "t": 163184,
+      "kind": "system",
+      "text": "task_notification"
+    },
+    {
+      "t": 163188,
+      "kind": "tool-result",
+      "tool": "Bash",
+      "text": "> orders-service@0.0.0 test\n> node --test test/*.test.ts\n\n✔ splits statements without breaking dollar quotes, strings or comments (23.977083ms)\n✔ applies files in lexical order and records them (2052.880293ms)\n✔ skips files that were already applied (1190.487042ms)\n✔ rolls back a failing file as a whole (1206.177709ms)\n✔ runs a no-transaction file statement by statement (1138.500209ms)\n✔ public_id is backfilled for existing orders, unique, NOT NULL, and defaulted for new ones (3488.870752ms)\n✔ the backfill resumes after a partial run and leaves filled rows alone (1760.439084ms)\n✔ every migration applies to an empty database (1815.385251ms)\n✔ orders can be created, updated and listed newest first (1448.520084ms)\nℹ tests 9\nℹ suites 0\nℹ pass 9\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 44387.123311",
+      "ok": true
+    },
+    {
+      "t": 166926,
+      "kind": "assistant",
+      "text": "All 9 tests pass, including the 7 existing ones. I'll clean up the probe scratch files and confirm the working tree contains only the intended changes."
+    },
+    {
+      "t": 167214,
+      "kind": "tool-call",
+      "tool": "Bash",
+      "text": "$ rm -rf /tmp/probe && cd /home/dev/project && git status --short"
+    },
+    {
+      "t": 167236,
+      "kind": "tool-result",
+      "tool": "Bash",
+      "text": "?? migrations/0004_orders_public_id_column.sql\n?? migrations/0005_orders_public_id_backfill.sql\n?? migrations/0006_orders_public_id_unique.sql\n?? migrations/0007_orders_public_id_not_null.sql\n?? test/public_id.test.ts",
+      "ok": true
+    },
+    {
+      "t": 173111,
+      "kind": "assistant",
+      "text": "I added four migrations (0004–0007) and a test file that exercises them end to end. All 9 tests pass against PGlite 0.5.14, which reports PostgreSQL 18.6. Nothing is committed, and no app code is touched.\n\n**What each step does**\n\n- **0004 (transactional):** adds `public_id uuid` as nullable, then sets `DEFAULT gen_random_uuid()`. Both are catalog-only. The default goes on after the column, because a volatile default in `ADD COLUMN` would rewrite all 80M rows. New orders get an ID even when the app doesn't set one.\n- **0005 (no-transaction):** backfills existing rows in batches of 5,000. A `DO` block walks the primary key in order and commits after each batch, so each row lock lasts one batch. It only touches `public_id IS NULL`, so a failed run resumes where it stopped.\n- **0006 (no-transaction):** `CREATE UNIQUE INDEX CONCURRENTLY`, then attaches it as a unique constraint. The constraint step is catalog-only.\n- **0007 (no-transaction):** makes the column NOT NULL without a fu\n… [truncated] …\nL's documented lock levels, not measurements.\n- I could not time the backfill on production-sized data. Expect roughly 16,000 batch commits and about 80M row updates, which means WAL volume, dead tuples and autovacuum work on a busy table. Rough estimate: tens of minutes to over an hour, depending on I/O.\n\n**Before deploying**\n\n- The backfill runs inside the single `npm run migrate` call, so the platform's `statement_timeout` for the migrate connection must allow that long a run. If it doesn't, the run fails and resumes on the next attempt.\n- The `DO` block needs the migrate client to let `COMMIT` run inside it. This works for a single statement under both the simple and extended protocols. I could only confirm it on PGlite, so check it against the platform's real driver in staging.\n- If `VALIDATE` or `SET NOT NULL` fails, the 0007 file rolls back to the last successful statement and leaves the helper constraint in place. Rerunning drops and recreates it, so the retry is safe."
+    },
+    {
+      "t": 173170,
+      "kind": "verify",
+      "text": "verifier exit 0\n✔ new migrations apply on top of the production schema and data (4870.130586ms)\n✔ public_id is a uuid column, NOT NULL, with every constraint on orders validated (10.190334ms)\n✔ every existing order has its own public_id and nothing else changed (166.302541ms)\n✔ a valid unique index covers exactly public_id (1.216334ms)\n✔ new orders get a public_id automatically; duplicates and NULLs are rejected (4.349334ms)\n✔ no statement blocked writes to orders while it scanned or rewrote the table (0.151917ms)\n✔ the backfill committed in batches instead of one long transaction (101.010292ms)\n✔ the whole migration history still applies to an empty database (1096.539918ms)\n✔ splits statements without breaking dollar quotes, strings or comments (15.7695ms)\n✔ applies files in lexical order and records them (2011.134168ms)\n✔ skips files that were already applied (1189.919376ms)\n✔ rolls back a failing file as a whole (1149.389958ms)\n✔ runs a no-transaction file statement by statement (1068.118084ms)\n✔ every migration applies to an empty database (2085.785335ms)\n✔ orders can be created, updated and listed newest first (1271.300792ms)\nℹ tests 15\nℹ suites 0\nℹ pass 15\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 35630.681225\n",
+      "ok": true
+    }
+  ]
+}

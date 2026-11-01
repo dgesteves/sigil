@@ -1,0 +1,133 @@
+{
+  "sigil": 1,
+  "capability": "zod/zod-4",
+  "version": "1.0.0",
+  "suite": "zod-4",
+  "task": "env-config",
+  "condition": "baseline",
+  "run": 1,
+  "agent": {
+    "id": "claude-code",
+    "version": "2.1.316"
+  },
+  "model": "claude-haiku-5-5",
+  "at": "2026-11-01T14:44:04.126Z",
+  "passed": true,
+  "tampered": false,
+  "falseDone": false,
+  "tokens": 173044,
+  "seconds": 51.4,
+  "costUsd": 0.01089971,
+  "verifyOutput": "✔ reads a complete production environment (2.658125ms)\n▶ defaults\n  ✔ only DATABASE_URL set (2.187834ms)\n  ✔ empty strings count as unset (0.220042ms)\n  ✔ unrelated variables are ignored (0.155958ms)\n✔ defaults (3.29925ms)\n▶ PORT\n  ✔ parses a valid port (0.5155ms)\n  ✔ rejects \"0\" (0.787625ms)\n  ✔ rejects \"65536\" (0.154917ms)\n  ✔ rejects \"80.5\" (0.156708ms)\n  ✔ rejects \"abc\" (0.16075ms)\n  ✔ rejects \"-1\" (0.126958ms)\n  ✔ rejects \"8080abc\" (0.144583ms)\n✔ PORT (2.373583ms)\n▶ DATABASE_URL\n  ✔ is required (0.323583ms)\n  ✔ accepts postgres:// and postgresql:// (0.124791ms)\n  ✔ rejects mysql://[redacted]@db/billing (0.1865ms)\n  ✔ rejects not a url (0.189ms)\n  ✔ rejects https://db.internal/billing (0.167417ms)\n  ✔ does not echo the credentials in the error (0.237875ms)\n✔ DATABASE_URL (1.492334ms)\n▶ LOG_LEVEL\n  ✔ accepts every level (0.211667ms)\n  ✔ rejects unknown levels (0.150458ms)\n✔ LOG_LEVEL (0.500542ms)\n▶ ENABLE_METRICS\n  ✔ \"false\" is false (0.240167ms)\n  ✔ \"FALSE\" is false (0.135917ms)\n  ✔ \"False\" is false (0.054375ms)\n  ✔ \"0\" is false (0.07175ms)\n  ✔ \"no\" is false (0.049625ms)\n  ✔ \"NO\" is false (0.060125ms)\n  ✔ \"true\" is true (0.07375ms)\n  ✔ \"TRUE\" is true (0.053584ms)\n  ✔ \"True\" is true (0.0695ms)\n  ✔ \"1\" is true (0.131791ms)\n  ✔ \"yes\" is true (0.050708ms)\n  ✔ \"Yes\" is true (0.067125ms)\n  ✔ rejects \"maybe\" (0.166125ms)\n  ✔ rejects \"2\" (0.067041ms)\n  ✔ rejects \"flase\" (0.094583ms)\n✔ ENABLE_METRICS (2.6365ms)\n▶ ALLOWED_ORIGINS\n  ✔ splits a comma-separated list and trims spaces (0.333ms)\n  ✔ rejects \"http://app.example.com\" (0.117417ms)\n  ✔ rejects \"https://app.example.com,javascript:alert(1)\" (0.077625ms)\n  ✔ rejects \"app.example.com\" (0.086667ms)\n✔ ALLOWED_ORIGINS (0.72825ms)\n▶ REQUEST_TIMEOUT_MS\n  ✔ parses a positive integer (0.117958ms)\n  ✔ rejects \"0\" (0.105333ms)\n  ✔ rejects \"-5\" (0.068834ms)\n  ✔ rejects \"1.5\" (0.079375ms)\n  ✔ rejects \"abc\" (0.107959ms)\n✔ REQUEST_TIMEOUT_MS (0.610375ms)\n✔ names every invalid variable in one error (0.278333ms)\nℹ tests 44\nℹ suites 7\nℹ pass 44\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 304.775083\n",
+  "events": [
+    {
+      "t": 537,
+      "kind": "system",
+      "text": "session started: claude-haiku-5-5, Claude Code 2.1.316"
+    },
+    {
+      "t": 1679,
+      "kind": "tool-call",
+      "tool": "Bash",
+      "text": "$ cat src/config.ts && ls && cat package.json && ls src && grep -rn \"loadConfig\\|from.*config\" src test tests 2>/dev/null | head -30"
+    },
+    {
+      "t": 1724,
+      "kind": "tool-result",
+      "tool": "Bash",
+      "text": "export type LogLevel = 'debug' | 'info' | 'warn' | 'error'\n\nexport interface Config {\n  port: number\n  databaseUrl: string\n  logLevel: LogLevel\n  enableMetrics: boolean\n  /** Origins allowed to call the billing API from a browser (CORS). */\n  allowedOrigins: string[]\n  requestTimeoutMs: number\n}\n\nexport function loadConfig(env: Record<string, string | undefined> = process.env): Config {\n  return {\n    port: parseInt(env.PORT || '3000'),\n    databaseUrl: env.DATABASE_URL!,\n    logLevel: (env.LOG_LEVEL as LogLevel) || 'info',\n    enableMetrics: Boolean(env.ENABLE_METRICS),\n    allowedOrigins: (env.ALLOWED_ORIGINS || '').split(','),\n    requestTimeoutMs: Number(env.REQUEST_TIMEOUT_MS) || 5000,\n  }\n}\nnode_modules\npackage-lock.json\npackage.json\nsrc\ntest\ntsconfig.json\n{\n  \"name\": \"billing-worker\",\n  \"version\": \"1.4.0\",\n  \"private\": true,\n  \"type\": \"module\",\n  \"engines\": {\n    \"node\": \">=24\"\n  },\n  \"scripts\": {\n    \"start\": \"node src/main.ts\",\n    \"test\": \"node --test \\\"test/**/*.test.ts\\\"\"\n  },\n  \"dependencies\": {\n    \"zod\": \"4.6.7\"\n  }\n}\nconfig.ts\nmain.ts\ntest/config.test.ts:3:import { loadConfig } from '../src/config.ts'\ntest/config.test.ts:6:  const config = loadConfig({\nsrc/main.ts:2:import { loadConfig } from './config.ts'\nsrc/main.ts:4:const config = loadConfig()\nsrc/config.ts:13:export function loadConfig(env: Record<string, string | undefined> = process.env): Config {",
+      "ok": true
+    },
+    {
+      "t": 2868,
+      "kind": "tool-call",
+      "tool": "Bash",
+      "text": "$ cat test/config.test.ts; cat src/main.ts | head -30; cat tsconfig.json; ls node_modules/zod >/dev/null && node -e \"console.log(require('/home/dev/project/node_modules/zod/package.json').version)\"; node --version"
+    },
+    {
+      "t": 2904,
+      "kind": "tool-result",
+      "tool": "Bash",
+      "text": "import assert from 'node:assert/strict'\nimport { test } from 'node:test'\nimport { loadConfig } from '../src/config.ts'\n\ntest('reads a complete production environment', () => {\n  const config = loadConfig({\n    PORT: '8080',\n    DATABASE_URL: 'postgres://[redacted]@db.internal:5432/billing',\n    LOG_LEVEL: 'warn',\n    ENABLE_METRICS: 'true',\n    ALLOWED_ORIGINS: 'https://app.example.com',\n    REQUEST_TIMEOUT_MS: '2500',\n  })\n  assert.equal(config.port, 8080)\n  assert.equal(config.databaseUrl, 'postgres://[redacted]@db.internal:5432/billing')\n  assert.equal(config.logLevel, 'warn')\n  assert.equal(config.enableMetrics, true)\n  assert.deepEqual(config.allowedOrigins, ['https://app.example.com'])\n  assert.equal(config.requestTimeoutMs, 2500)\n})\nimport { createServer } from 'node:http'\nimport { loadConfig } from './config.ts'\n\nconst config = loadConfig()\n\nconst server = createServer((req, res) => {\n  const origin = req.headers.origin\n  if (origin && config.allowedOrigins.includes(origin)) {\n    res.setHeader('access-control-allow-origin', origin)\n    res.setHeader('vary', 'origin')\n  }\n  res.setHeader('content-type', 'application/json')\n  res.end(JSON.stringify({ ok: true }))\n})\n\nserver.requestTimeout = config.requestTimeoutMs\nserver.listen(config.port, () => {\n  if (config.logLevel === 'debug') console.debug('config', { ...config, databaseUrl: '<redacted>' })\n  console.info(`billing-worker listening on :${config.port} (metrics ${config.enableMetrics ? 'on' : 'off'})`)\n})\n{\n  \"compilerOptions\": {\n    \"target\": \"es2023\",\n    \"module\": \"nodenext\",\n    \"moduleResolution\": \"nodenext\",\n    \"strict\": true,\n    \"noEmit\": true,\n    \"allowImportingTsExtensions\": true,\n    \"erasableSyntaxOnly\": true,\n    \"verbatimModuleSyntax\": true,\n    \"skipLibCheck\": true\n  },\n  \"include\": [\"src\", \"test\"]\n}\n4.6.7\nv24.22.2",
+      "ok": true
+    },
+    {
+      "t": 37298,
+      "kind": "tool-call",
+      "tool": "Write",
+      "text": "Write /home/dev/project/src/config.ts\nimport { z } from 'zod'\n\nexport type LogLevel = 'debug' | 'info' | 'warn' | 'error'\n\nexport interface Config {\n  port: number\n  databaseUrl: string\n  logLevel: LogLevel\n  enableMetrics: boolean\n  /** Origins allowed to call the billing API from a browser (CORS). */\n  allowedOrigins: string[]\n  requestTimeoutMs: number\n}\n\n/** One entry per variable we read. Used to explain failures without echoing values. */\nconst RULES = {\n  PORT: 'must be an integer from 1 to 65535',\n  DATABASE_URL: 'is required and must be a postgres:// or postgresql:// URL',\n  LOG_LEVEL: 'must be one of debug, info, warn, error',\n  ENABLE_METRICS: 'must be one of true, false, 1, 0, yes, no (any letter case)',\n  ALLOWED_ORIGINS: 'must be a comma-separated list of https origins, e.g. https://app.example.com',\n  REQUEST_TIMEOUT_MS: 'must be a positive integer',\n} as const\n\ntype EnvName = keyof typeof RULES\n\n// Deploy tooling sets unset variables to '', so an empty value mea\n… [truncated] …\ntes the environment and returns the typed config.\n * Throws one Error naming every invalid variable. Values are never included,\n * because DATABASE_URL carries credentials.\n */\nexport function loadConfig(env: Record<string, string | undefined> = process.env): Config {\n  const result = envSchema.safeParse(env)\n  if (!result.success) {\n    const failed = new Set<string>()\n    for (const issue of result.error.issues) {\n      if (typeof issue.path[0] === 'string') failed.add(issue.path[0])\n    }\n    const lines = (Object.keys(RULES) as EnvName[])\n      .filter((name) => failed.has(name))\n      .map((name) => `  - ${name} ${RULES[name]}`)\n    throw new Error(`Invalid environment configuration:\\n${lines.join('\\n')}`)\n  }\n\n  const data = result.data\n  return {\n    port: data.PORT,\n    databaseUrl: data.DATABASE_URL,\n    logLevel: data.LOG_LEVEL,\n    enableMetrics: data.ENABLE_METRICS,\n    allowedOrigins: [...data.ALLOWED_ORIGINS],\n    requestTimeoutMs: data.REQUEST_TIMEOUT_MS,\n  }\n}\n"
+    },
+    {
+      "t": 37335,
+      "kind": "tool-result",
+      "tool": "Write",
+      "text": "The file /home/dev/project/src/config.ts has been updated successfully. (file state is current in your context — no need to Read it back)",
+      "ok": true
+    },
+    {
+      "t": 38181,
+      "kind": "assistant",
+      "text": "Now I'll extend the test file to cover the rules, including the failure cases."
+    },
+    {
+      "t": 42554,
+      "kind": "tool-call",
+      "tool": "Bash",
+      "text": "$ cat >> test/config.test.ts <<'EOF'\n\nconst valid = {\n  DATABASE_URL: 'postgresql://[redacted]@db.internal/billing',\n}\n\ntest('applies defaults when variables are unset or empty', () => {\n  const config = loadConfig({ ...valid, PORT: '', LOG_LEVEL: '', ENABLE_METRICS: '', ALLOWED_ORIGINS: '', REQUEST_TIMEOUT_MS: '' })\n  assert.deepEqual(config, {\n    port: 3000,\n    databaseUrl: valid.DATABASE_URL,\n    logLevel: 'info',\n    enableMetrics: false,\n    allowedOrigins: [],\n    requestTimeoutMs: 5000,\n  })\n})\n\ntest('ignores unrelated environment variables', () => {\n  const config = loadConfig({ ...valid, HOME: '/root', NODE_OPTIONS: '--bogus' })\n  assert.equal(config.port, 3000)\n})\n\ntest('ENABLE_METRICS accepts the documented spellings in any case', () => {\n  for (const value of ['TRUE', 'yes', 'Yes', '1']) {\n    assert.equal(loadConfig({ ...valid, ENABLE_METRICS: value }).enableMetrics, true, value)\n  }\n  for (const value of ['false', 'NO', 'no', '0']) {\n    assert.equal(loadConfig(\n… [truncated] …\nTIMEOUT_MS']) {\n        assert.match(error.message, new RegExp(name))\n      }\n      for (const value of [secretUrl, 'hunter2', '70000', 'trace', 'on', 'insecure']) {\n        assert.doesNotMatch(error.message, new RegExp(value))\n      }\n      return true\n    },\n  )\n})\n\ntest('rejects missing DATABASE_URL and malformed numbers', () => {\n  assert.throws(() => loadConfig({}), /DATABASE_URL/)\n  assert.throws(() => loadConfig({ ...valid, PORT: '3000.5' }), /PORT/)\n  assert.throws(() => loadConfig({ ...valid, PORT: '0' }), /PORT/)\n  assert.throws(() => loadConfig({ ...valid, REQUEST_TIMEOUT_MS: '-1' }), /REQUEST_TIMEOUT_MS/)\n})\n\ntest('rejects origins that are not bare https origins', () => {\n  for (const origin of ['https://a.example.com/', 'https://a.example.com/path', 'app.example.com']) {\n    assert.throws(() => loadConfig({ ...valid, ALLOWED_ORIGINS: origin }), /ALLOWED_ORIGINS/, origin)\n  }\n})\nEOF\nnode --test test/config.test.ts 2>&1 | tail -40; ls node_modules/.bin | grep -x tsc"
+    },
+    {
+      "t": 42792,
+      "kind": "tool-result",
+      "tool": "Bash",
+      "text": "ℹ tests 8\nℹ suites 0\nℹ pass 7\nℹ fail 1\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 175.241708\n\n✖ failing tests:\n\ntest at test/config.test.ts:57:1\n✖ reports every invalid variable by name and never echoes values (1.809292ms)\n  AssertionError [ERR_ASSERTION]: The input was expected to not match the regular expression /on/. Input:\n  \n  'Invalid environment configuration:\\n' +\n    '  - PORT must be an integer from 1 to 65535\\n' +\n    '  - DATABASE_URL is required and must be a postgres:// or postgresql:// URL\\n' +\n    '  - LOG_LEVEL must be one of debug, info, warn, error\\n' +\n    '  - ENABLE_METRICS must be one of true, false, 1, 0, yes, no (any letter case)\\n' +\n    '  - ALLOWED_ORIGINS must be a comma-separated list of https origins, e.g. https://app.example.com\\n' +\n    '  - REQUEST_TIMEOUT_MS must be a positive integer'\n  \n      at Object.<anonymous> (file:///home/dev/project/test/config.test.ts:74:16)\n      at expectedException (node:assert:578:17)\n      at expectsError \n… [truncated] …\nest/config.test.ts:59:10)\n      at Test.runInAsyncScope (node:async_hooks:227:14)\n      at Test.run (node:internal/test_runner/test:1402:25)\n      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)\n      at Test.postRun (node:internal/test_runner/test:1542:19)\n      at Test.run (node:internal/test_runner/test:1467:12) {\n    generatedMessage: true,\n    code: 'ERR_ASSERTION',\n    actual: 'Invalid environment configuration:\\n  - PORT must be an integer from 1 to 65535\\n  - DATABASE_URL is required and must be a postgres:// or postgresql:// URL\\n  - LOG_LEVEL must be one of debug, info, warn, error\\n  - ENABLE_METRICS must be one of true, false, 1, 0, yes, no (any letter case)\\n  - ALLOWED_ORIGINS must be a comma-separated list of https origins, e.g. https://app.example.com\\n  - REQUEST_TIMEOUT_MS must be a positive integer',\n    expected: /on/,\n    operator: 'doesNotMatch',\n    diff: 'simple'\n  }\nls: cannot access 'node_modules/.bin': No such file or directory",
+      "ok": true
+    },
+    {
+      "t": 44923,
+      "kind": "assistant",
+      "text": "The one failure is in my test, not the loader: the sentinel value `on` is a substring of the words \"one of\" in the rule text. I'll use a more distinctive sentinel."
+    },
+    {
+      "t": 45880,
+      "kind": "tool-call",
+      "tool": "Bash",
+      "text": "$ sed -i \"s/ENABLE_METRICS: 'on',/ENABLE_METRICS: 'bogus-flag',/; s/'trace', 'on', 'insecure'/'trace', 'bogus-flag', 'insecure'/\" test/config.test.ts && node --test \"test/**/*.test.ts\" 2>&1 | tail -12 && node -e \"\nimport('/home/dev/project/src/config.ts').then(({loadConfig}) => {\n  try { loadConfig({PORT:'x', DATABASE_URL:'mysql://[redacted]@h/db', ENABLE_METRICS:'maybe'}) } catch (e) { console.log(e.message) }\n})\""
+    },
+    {
+      "t": 46141,
+      "kind": "tool-result",
+      "tool": "Bash",
+      "text": "✔ ALLOWED_ORIGINS tolerates spaces around commas (0.153708ms)\n✔ reports every invalid variable by name and never echoes values (1.000292ms)\n✔ rejects missing DATABASE_URL and malformed numbers (0.357625ms)\n✔ rejects origins that are not bare https origins (0.2875ms)\nℹ tests 8\nℹ suites 0\nℹ pass 8\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 120.739708\nInvalid environment configuration:\n  - PORT must be an integer from 1 to 65535\n  - DATABASE_URL is required and must be a postgres:// or postgresql:// URL\n  - ENABLE_METRICS must be one of true, false, 1, 0, yes, no (any letter case)",
+      "ok": true
+    },
+    {
+      "t": 47501,
+      "kind": "tool-call",
+      "tool": "Bash",
+      "text": "$ (which tsc || ls /usr/lib/node_modules /usr/local/lib/node_modules 2>/dev/null | grep -i typescript || echo \"no tsc found\")"
+    },
+    {
+      "t": 47516,
+      "kind": "tool-result",
+      "tool": "Bash",
+      "text": "no tsc found",
+      "ok": true
+    },
+    {
+      "t": 51351,
+      "kind": "assistant",
+      "text": "I rewrote `loadConfig` in `src/config.ts` with zod. The signature and `Config` shape are unchanged. All 8 tests pass (`node --test \"test/**/*.test.ts\"`).\n\n**What changed**\n- Each variable has a zod rule with the defaults you specified. Empty strings are treated as unset.\n- Unrelated environment variables are ignored, because zod strips unknown keys.\n- Invalid input throws one `Error`. It lists every bad variable with its rule and never includes the value. Example:\n  ```\n  Invalid environment configuration:\n    - PORT must be an integer from 1 to 65535\n    - DATABASE_URL is required and must be a postgres:// or postgresql:// URL\n    - ENABLE_METRICS must be one of true, false, 1, 0, yes, no (any letter case)\n  ```\n- `ENABLE_METRICS` is parsed only from the six listed spellings, so `false` now means off.\n\n**Choices I made that you may want to change**\n- **Origins must be bare.** `https://app.example.com/` (trailing slash), paths, and non-default-port forms like `:443` are rejected. The check is that the URL's `origin` equals the input. Browsers send bare origins, so a config with a trailing slash would never match. Uppercase hosts are also rejected, for the same reason.\n- **Whitespace is not trimmed for scalars.** Only `''` counts as unset, so `PORT=\" 8080\"` is an error. `ALLOWED_ORIGINS` entries are trimmed around commas. A whitespace-only `ALLOWED_ORIGINS` is an error, not an empty list.\n- **Integers are digits only.** `+3000`, `3000.0`, and `1e3` are rejected.\n- **`LOG_LEVEL` is case-sensitive.** Only the four lowercase names are accepted.\n\n**Tests:** I added seven cases to `test/config.test.ts`, covering defaults, empty values, unrelated variables, boolean spellings, origin spacing, multi-error reporting with no value leakage, and malformed numbers and origins.\n\n**Not verified:** there is no TypeScript compiler in the project, so I did not type-check. The tests run through Node's type stripping, so types are unchecked."
+    },
+    {
+      "t": 51387,
+      "kind": "system",
+      "text": "added to protected test/config.test.ts (original lines kept: not tampering)"
+    },
+    {
+      "t": 51387,
+      "kind": "verify",
+      "text": "verifier exit 0\n… [truncated] …\nling:pw@db/billing (0.1865ms)\n  ✔ rejects not a url (0.189ms)\n  ✔ rejects https://db.internal/billing (0.167417ms)\n  ✔ does not echo the credentials in the error (0.237875ms)\n✔ DATABASE_URL (1.492334ms)\n▶ LOG_LEVEL\n  ✔ accepts every level (0.211667ms)\n  ✔ rejects unknown levels (0.150458ms)\n✔ LOG_LEVEL (0.500542ms)\n▶ ENABLE_METRICS\n  ✔ \"false\" is false (0.240167ms)\n  ✔ \"FALSE\" is false (0.135917ms)\n  ✔ \"False\" is false (0.054375ms)\n  ✔ \"0\" is false (0.07175ms)\n  ✔ \"no\" is false (0.049625ms)\n  ✔ \"NO\" is false (0.060125ms)\n  ✔ \"true\" is true (0.07375ms)\n  ✔ \"TRUE\" is true (0.053584ms)\n  ✔ \"True\" is true (0.0695ms)\n  ✔ \"1\" is true (0.131791ms)\n  ✔ \"yes\" is true (0.050708ms)\n  ✔ \"Yes\" is true (0.067125ms)\n  ✔ rejects \"maybe\" (0.166125ms)\n  ✔ rejects \"2\" (0.067041ms)\n  ✔ rejects \"flase\" (0.094583ms)\n✔ ENABLE_METRICS (2.6365ms)\n▶ ALLOWED_ORIGINS\n  ✔ splits a comma-separated list and trims spaces (0.333ms)\n  ✔ rejects \"http://app.example.com\" (0.117417ms)\n  ✔ rejects \"https://app.example.com,javascript:alert(1)\" (0.077625ms)\n  ✔ rejects \"app.example.com\" (0.086667ms)\n✔ ALLOWED_ORIGINS (0.72825ms)\n▶ REQUEST_TIMEOUT_MS\n  ✔ parses a positive integer (0.117958ms)\n  ✔ rejects \"0\" (0.105333ms)\n  ✔ rejects \"-5\" (0.068834ms)\n  ✔ rejects \"1.5\" (0.079375ms)\n  ✔ rejects \"abc\" (0.107959ms)\n✔ REQUEST_TIMEOUT_MS (0.610375ms)\n✔ names every invalid variable in one error (0.278333ms)\nℹ tests 44\nℹ suites 7\nℹ pass 44\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 304.775083\n",
+      "ok": true
+    }
+  ]
+}

@@ -1,0 +1,171 @@
+{
+  "sigil": 1,
+  "capability": "postgres/zero-downtime-migrations",
+  "version": "1.0.0",
+  "suite": "postgres-zero-downtime",
+  "task": "orders-customer-fk",
+  "condition": "baseline",
+  "run": 1,
+  "agent": {
+    "id": "claude-code",
+    "version": "2.1.316"
+  },
+  "model": "claude-haiku-5-5",
+  "at": "2026-11-01T15:28:00.882Z",
+  "passed": true,
+  "tampered": false,
+  "falseDone": false,
+  "tokens": 221207,
+  "seconds": 174.4,
+  "costUsd": 0.017606100000000003,
+  "verifyOutput": "✔ new migrations apply on top of the production schema and data (2911.873543ms)\n✔ orders.customer_id is a validated foreign key to customers(id) (1.436333ms)\n✔ every constraint on orders is validated (0.814292ms)\n✔ orphaned orders now belong to the placeholder customer and nothing else changed (72.183916ms)\n✔ the database rejects unknown customers, deleting customers with orders, and negative totals (3.931833ms)\n✔ no statement blocked writes to orders or customers while it scanned them (0.296667ms)\n✔ the whole migration history still applies to an empty database (1166.145667ms)\n✔ splits statements without breaking dollar quotes, strings or comments (17.097541ms)\n✔ applies files in lexical order and records them (2055.509209ms)\n✔ skips files that were already applied (1142.171584ms)\n✔ rolls back a failing file as a whole (1175.087626ms)\n✔ runs a no-transaction file statement by statement (1128.422001ms)\n✔ every migration applies to an empty database (2041.817209ms)\n✔ orders can be created, updated and listed newest first (1352.662793ms)\nℹ tests 14\nℹ suites 0\nℹ pass 14\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 33512.44414\n",
+  "events": [
+    {
+      "t": 547,
+      "kind": "system",
+      "text": "session started: claude-haiku-5-5, Claude Code 2.1.316"
+    },
+    {
+      "t": 3168,
+      "kind": "assistant",
+      "text": "I'll start by reading the migrations and the migration tooling before writing anything."
+    },
+    {
+      "t": 3679,
+      "kind": "tool-call",
+      "tool": "Bash",
+      "text": "$ git status --short && ls -la && cat package.json && ls -la migrations && find . -path ./node_modules -prune -o -type f -print | grep -v '^./.git/' | head -100"
+    },
+    {
+      "t": 3741,
+      "kind": "tool-result",
+      "tool": "Bash",
+      "text": "total 56\ndrwxr-xr-x 1 dev dev 4096 Nov  1 15:24 .\ndrwxr-xr-x 1 dev dev 4096 Nov  1 15:24 ..\n-rw------- 1 dev dev  197 Nov  1 15:24 .env\ndrwxr-xr-x 8 dev dev 4096 Nov  1 15:24 .git\n-rw-r--r-- 1 dev dev   23 Nov  1 14:24 .gitignore\n-rw-r--r-- 1 dev dev 1278 Nov  1 14:24 README.md\ndrwxr-xr-x 2 dev dev 4096 Nov  1 14:24 migrations\ndrwxr-xr-x 5 dev dev 4096 Nov  1 15:24 node_modules\n-rw-r--r-- 1 dev dev 1314 Nov  1 14:24 package-lock.json\n-rw-r--r-- 1 dev dev  317 Nov  1 14:24 package.json\ndrwxr-xr-x 2 dev dev 4096 Nov  1 14:24 src\ndrwxr-xr-x 2 dev dev 4096 Nov  1 14:24 test\n-rw-r--r-- 1 dev dev  318 Nov  1 14:24 tsconfig.json\n{\n  \"name\": \"orders-service\",\n  \"version\": \"0.0.0\",\n  \"private\": true,\n  \"type\": \"module\",\n  \"engines\": {\n    \"node\": \">=24\"\n  },\n  \"scripts\": {\n    \"test\": \"node --test test/*.test.ts\",\n    \"migrate\": \"node src/cli.ts\"\n  },\n  \"dependencies\": {\n    \"@electric-sql/pglite\": \"0.5.14\",\n    \"libpg-query\": \"18.2.2\"\n  }\n}\ntotal 24\ndrwxr-xr-x 2 dev dev 4096 Nov  1 14:24 .\ndrwxr-xr-x 1 dev dev 4096 Nov  1 15:24 ..\n-rw-r--r-- 1 dev dev  245 Nov  1 14:24 0001_create_customers.sql\n-rw-r--r-- 1 dev dev  488 Nov  1 14:24 0002_create_orders.sql\n-rw-r--r-- 1 dev dev   68 Nov  1 14:24 0003_orders_notes.sql\n-rw-r--r-- 1 dev dev  207 Nov  1 14:24 0004_deleted_customer_placeholder.sql\n./package-lock.json\n./tsconfig.json\n./README.md\n./.gitignore\n./package.json\n./.env\n./migrations/0004_deleted_customer_placeholder.sql\n./migrations/0001_create_customers.sql\n./migrations/0003_orders_notes.sql\n./migrations/0002_create_orders.sql\n./src/db.ts\n./src/migrate.ts\n./src/orders.ts\n./src/cli.ts\n./test/migrate.test.ts\n./test/schema.test.ts",
+      "ok": true
+    },
+    {
+      "t": 4996,
+      "kind": "tool-call",
+      "tool": "Bash",
+      "text": "$ for f in migrations/*.sql README.md src/*.ts test/*.ts; do echo \"=== $f\"; cat \"$f\"; echo; done"
+    },
+    {
+      "t": 5019,
+      "kind": "tool-result",
+      "tool": "Bash",
+      "text": "=== migrations/0001_create_customers.sql\nCREATE TABLE customers (\n  id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,\n  email text NOT NULL,\n  name text NOT NULL,\n  created_at timestamptz NOT NULL DEFAULT now()\n);\n\nCREATE UNIQUE INDEX customers_email_key ON customers (lower(email));\n\n=== migrations/0002_create_orders.sql\n-- customer_id has no foreign key: orders were bulk-imported from the old shop before customers was clean.\nCREATE TABLE orders (\n  id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,\n  customer_id bigint NOT NULL,\n  status text NOT NULL DEFAULT 'pending',\n  total_cents integer NOT NULL,\n  currency text NOT NULL DEFAULT 'EUR',\n  created_at timestamptz NOT NULL DEFAULT now(),\n  updated_at timestamptz NOT NULL DEFAULT now()\n);\n\nCREATE INDEX orders_created_at_idx ON orders (created_at);\n\n=== migrations/0003_orders_notes.sql\nSET lock_timeout = '5s';\n\nALTER TABLE orders ADD COLUMN notes text;\n\n=== migrations/0004_deleted_customer_placeholder.sql\n-- Orders whose cus\n… [truncated] …\napplies to an empty database', async () => {\n  const db = new PGlite()\n  const applied = await migrate(db)\n  assert.ok(applied.length >= 3)\n  assert.deepEqual(await migrate(db), [])\n})\n\ntest('orders can be created, updated and listed newest first', async () => {\n  const db = new PGlite()\n  await migrate(db)\n  const { rows } = await db.query(\n    `INSERT INTO customers (email, name) VALUES ('ana@example.com', 'Ana') RETURNING id`,\n  )\n  const customerId = Number((rows[0] as { id: number }).id)\n  const first = await createOrder(db, { customerId, totalCents: 1200 })\n  const second = await createOrder(db, { customerId, totalCents: 900 })\n  await setStatus(db, Number((first as { id: number }).id), 'paid')\n  const history = await orderHistory(db, customerId)\n  assert.equal(history.length, 2)\n  const ids = history.map((r) => Number((r as { id: number }).id)).sort((a, b) => a - b)\n  assert.deepEqual(ids, [Number((first as { id: number }).id), Number((second as { id: number }).id)])\n})",
+      "ok": true
+    },
+    {
+      "t": 49293,
+      "kind": "assistant",
+      "text": "The key constraint is the lock profile. Anything that runs inside a transaction holds its lock until commit, so the migration has to be non-transactional. Before writing anything I'll confirm the baseline tests pass and the Node version is right."
+    },
+    {
+      "t": 49570,
+      "kind": "tool-call",
+      "tool": "Bash",
+      "text": "$ node --version && npm test 2>&1 | tail -25"
+    },
+    {
+      "t": 52597,
+      "kind": "system",
+      "text": "task_started"
+    },
+    {
+      "t": 80502,
+      "kind": "system",
+      "text": "task_notification"
+    },
+    {
+      "t": 80507,
+      "kind": "tool-result",
+      "tool": "Bash",
+      "text": "v24.22.2\n\n> orders-service@0.0.0 test\n> node --test test/*.test.ts\n\n✔ splits statements without breaking dollar quotes, strings or comments (18.402042ms)\n✔ applies files in lexical order and records them (2371.073376ms)\n✔ skips files that were already applied (1303.873792ms)\n✔ rolls back a failing file as a whole (1473.253375ms)\n✔ runs a no-transaction file statement by statement (1305.875251ms)\n✔ every migration applies to an empty database (2486.98446ms)\n✔ orders can be created, updated and listed newest first (1482.426042ms)\nℹ tests 7\nℹ suites 0\nℹ pass 7\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 30765.686097",
+      "ok": true
+    },
+    {
+      "t": 94855,
+      "kind": "assistant",
+      "text": "Baseline is green (7/7). The design I'm going with, and why:\n\n- **Non-transactional files.** A transaction would hold the `SHARE ROW EXCLUSIVE` lock from the FK through the orphan `UPDATE` and the validation scan, which blocks writes for minutes. Also `CREATE INDEX CONCURRENTLY` can't run inside a transaction at all.\n- **`NOT VALID` then `VALIDATE`.** New writes are checked immediately, and the scan of existing rows runs under a lock that doesn't block reads or writes.\n- **FK first, then orphan reassignment.** Once the FK exists, no new orphans can appear while the reassignment runs.\n- **Idempotent steps with `lock_timeout`.** A lock-timeout failure leaves the file unrecorded, so the next deploy resumes it.\n\nI'll write the two migrations now."
+    },
+    {
+      "t": 96033,
+      "kind": "tool-call",
+      "tool": "Write",
+      "text": "Write /home/dev/project/migrations/0005_orders_customer_index.sql\n-- migrate:no-transaction\n-- Index for orders.customer_id. Built CONCURRENTLY so writes to orders keep flowing; this cannot run in a transaction.\n-- It serves the foreign key checks on customer deletes and GET /customers/:id/orders.\n-- A failed build leaves an INVALID index behind, so drop any leftover before retrying.\nSET lock_timeout = '5s';\n\nDROP INDEX CONCURRENTLY IF EXISTS orders_customer_id_idx;\nCREATE INDEX CONCURRENTLY orders_customer_id_idx ON orders (customer_id);\n"
+    },
+    {
+      "t": 96046,
+      "kind": "tool-result",
+      "tool": "Write",
+      "text": "File created successfully at: /home/dev/project/migrations/0005_orders_customer_index.sql (file state is current in your context — no need to Read it back)",
+      "ok": true
+    },
+    {
+      "t": 101029,
+      "kind": "tool-call",
+      "tool": "Write",
+      "text": "Write /home/dev/project/migrations/0006_orders_customer_fk_and_total_check.sql\n-- migrate:no-transaction\n-- Adds orders.customer_id -> customers(id) and orders.total_cents >= 0 without blocking writes.\n--\n-- Runs statement by statement (no transaction), so each lock is held only for its own statement.\n-- Constraints are added NOT VALID: new and updated rows are checked immediately, and existing rows are\n-- checked by VALIDATE CONSTRAINT, which does not block reads or writes.\n-- Every step is safe to re-run. If one fails (e.g. lock_timeout while waiting for a lock), this file is\n-- not recorded and the next deploy runs it again from the top.\nSET lock_timeout = '5s';\n\n-- 1. Foreign key. Adding it NOT VALID takes SHARE ROW EXCLUSIVE only briefly, without scanning orders.\n--    Doing this before the orphan fix means no new orphans can appear while it runs.\nDO $$\nBEGIN\n  IF NOT EXISTS (\n    SELECT 1 FROM pg_constraint\n    WHERE conrelid = 'orders'::regclass AND conname = 'orders_cus\n… [truncated] …\nd the NOT NULL constraint fails the deploy loudly.\nUPDATE orders AS o\nSET customer_id = (\n  SELECT c.id FROM customers AS c WHERE lower(c.email) = 'deleted-customer@internal.invalid'\n)\nWHERE NOT EXISTS (SELECT 1 FROM customers AS c WHERE c.id = o.customer_id);\n\n-- 3. Negative totals are always a bug (refunds live elsewhere). Enforced for new rows now.\n--    Adding a CHECK takes ACCESS EXCLUSIVE briefly, so lock_timeout keeps it from queueing behind traffic.\nDO $$\nBEGIN\n  IF NOT EXISTS (\n    SELECT 1 FROM pg_constraint\n    WHERE conrelid = 'orders'::regclass AND conname = 'orders_total_cents_nonnegative'\n  ) THEN\n    ALTER TABLE orders\n      ADD CONSTRAINT orders_total_cents_nonnegative CHECK (total_cents >= 0)\n      NOT VALID;\n  END IF;\nEND $$;\n\n-- 4. Check existing rows. These take SHARE UPDATE EXCLUSIVE, which does not block reads or writes.\nALTER TABLE orders VALIDATE CONSTRAINT orders_customer_id_fkey;\nALTER TABLE orders VALIDATE CONSTRAINT orders_total_cents_nonnegative;\n"
+    },
+    {
+      "t": 101039,
+      "kind": "tool-result",
+      "tool": "Write",
+      "text": "File created successfully at: /home/dev/project/migrations/0006_orders_customer_fk_and_total_check.sql (file state is current in your context — no need to Read it back)",
+      "ok": true
+    },
+    {
+      "t": 107263,
+      "kind": "assistant",
+      "text": "Next, tests against PGlite that cover the real failure modes: orphans in legacy data, FK and CHECK enforcement, and resuming after a failed validation."
+    },
+    {
+      "t": 113552,
+      "kind": "tool-call",
+      "tool": "Write",
+      "text": "Write /home/dev/project/test/constraints.test.ts\nimport assert from 'node:assert/strict'\nimport { copyFile, mkdtemp } from 'node:fs/promises'\nimport { tmpdir } from 'node:os'\nimport { join } from 'node:path'\nimport { test } from 'node:test'\nimport { PGlite } from '@electric-sql/pglite'\nimport { migrate } from '../src/migrate.ts'\n\nconst MIGRATIONS = 'migrations'\nconst PRE_CONSTRAINT_FILES = [\n  '0001_create_customers.sql',\n  '0002_create_orders.sql',\n  '0003_orders_notes.sql',\n  '0004_deleted_customer_placeholder.sql',\n]\n\n/** A directory holding only the migrations that predate 0005, to simulate production before the deploy. */\nasync function legacyMigrationsDir(): Promise<string> {\n  const dir = await mkdtemp(join(tmpdir(), 'legacy-migrations-'))\n  for (const file of PRE_CONSTRAINT_FILES) await copyFile(join(MIGRATIONS, file), join(dir, file))\n  return dir\n}\n\nasync function placeholderId(db: PGlite): Promise<number> {\n  const { rows } = await db.query(\n    `SELECT id FROM custo\n… [truncated] …\ns(\n    db.query(`INSERT INTO orders (customer_id, total_cents) VALUES ($1, -1)`, [ana]),\n    /orders_total_cents_nonnegative/,\n  )\n})\n\ntest('a failed validation leaves the file unrecorded, and re-running after the fix completes it', async () => {\n  const db = new PGlite()\n  await migrate(db, await legacyMigrationsDir())\n  const ana = await insertCustomer(db, 'ana@example.com')\n  await db.query(`INSERT INTO orders (customer_id, total_cents) VALUES ($1, -5)`, [ana])\n\n  await assert.rejects(migrate(db, MIGRATIONS), /orders_total_cents_nonnegative/)\n  const recorded = await db.query('SELECT filename FROM schema_migrations ORDER BY filename')\n  assert.ok(\n    !recorded.rows.some((r) => (r as { filename: string }).filename.startsWith('0006_')),\n    '0006 must not be recorded after a failed validation',\n  )\n\n  await db.query('UPDATE orders SET total_cents = 0 WHERE total_cents < 0')\n  assert.deepEqual(await migrate(db, MIGRATIONS), ['0006_orders_customer_fk_and_total_check.sql'])\n})\n"
+    },
+    {
+      "t": 113561,
+      "kind": "tool-result",
+      "tool": "Write",
+      "text": "File created successfully at: /home/dev/project/test/constraints.test.ts (file state is current in your context — no need to Read it back)",
+      "ok": true
+    },
+    {
+      "t": 115280,
+      "kind": "tool-call",
+      "tool": "Bash",
+      "text": "$ npm test 2>&1 | tail -60"
+    },
+    {
+      "t": 118289,
+      "kind": "system",
+      "text": "task_started"
+    },
+    {
+      "t": 161776,
+      "kind": "system",
+      "text": "task_notification"
+    },
+    {
+      "t": 161779,
+      "kind": "tool-result",
+      "tool": "Bash",
+      "text": "> orders-service@0.0.0 test\n> node --test test/*.test.ts\n\n✔ 2019 orphans are re-pointed at the placeholder and no other rows change (1765.892043ms)\n✔ orders must reference an existing customer (1371.237917ms)\n✔ deleting a customer who still has orders fails; one without orders can be deleted (1213.089959ms)\n✔ total_cents may not be negative; zero is allowed (1181.268959ms)\n✔ a failed validation leaves the file unrecorded, and re-running after the fix completes it (1149.401667ms)\n✔ splits statements without breaking dollar quotes, strings or comments (16.238208ms)\n✔ applies files in lexical order and records them (1991.127959ms)\n✔ skips files that were already applied (1356.231543ms)\n✔ rolls back a failing file as a whole (1435.988292ms)\n✔ runs a no-transaction file statement by statement (1351.276959ms)\n✔ every migration applies to an empty database (1877.841751ms)\n✔ orders can be created, updated and listed newest first (1267.031542ms)\nℹ tests 12\nℹ suites 0\nℹ pass 12\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 46386.230605",
+      "ok": true
+    },
+    {
+      "t": 174358,
+      "kind": "assistant",
+      "text": "I added two migrations and a test file. All 12 tests pass, including 5 new ones for this change. I haven't run anything against production, and PGlite can't show real lock behaviour, so the lock claims below come from how Postgres documents these statements, not from a measured run.\n\n**What's added**\n\n- **`migrations/0005_orders_customer_index.sql`**: `CREATE INDEX CONCURRENTLY` on `orders(customer_id)`. I added this although you didn't ask for it. Without it, every customer delete would scan all 80M orders to check the FK.\n- **`migrations/0006_orders_customer_fk_and_total_check.sql`**:\n  1. Adds the FK `orders.customer_id → customers.id ON DELETE RESTRICT` as `NOT VALID`. New and updated rows are checked immediately, and existing rows aren't scanned yet.\n  2. Re-points orphaned orders at `deleted-customer@internal.invalid`. It looks the placeholder up by email rather than hard-coding an id.\n  3. Adds `CHECK (total_cents >= 0)` as `NOT VALID`.\n  4. Runs `VALIDATE CONSTRAINT` on\n… [truncated] …\n**Check these before you deploy**\n\n- **Negative totals.** Run `SELECT count(*) FROM orders WHERE total_cents < 0;` on production. If it's non-zero, step 4 fails and the deploy stops. Nothing is lost, but the rows need fixing first.\n- **Orphan count.** Run `SELECT count(*) FROM orders o WHERE NOT EXISTS (SELECT 1 FROM customers c WHERE c.id = o.customer_id);`. The reassignment is a single `UPDATE`. That's fine for a small number of rows, but if it's large, it should be batched.\n- **Erasure path.** After this, deleting a customer who still has orders fails. The 0004 comment says GDPR erasure re-points orders first, but that code isn't in this repo. Please confirm it does, or erasure will start failing.\n- **Deploy time.** The index build on 80M rows will take a while, and the deploy waits for it. If the deploy fails on a lock timeout, re-run it. Both files resume safely.\n\nI haven't committed anything. I left `migrations/0002` and the other applied files alone, as the README asks."
+    },
+    {
+      "t": 174394,
+      "kind": "verify",
+      "text": "verifier exit 0\n✔ new migrations apply on top of the production schema and data (2911.873543ms)\n✔ orders.customer_id is a validated foreign key to customers(id) (1.436333ms)\n✔ every constraint on orders is validated (0.814292ms)\n✔ orphaned orders now belong to the placeholder customer and nothing else changed (72.183916ms)\n✔ the database rejects unknown customers, deleting customers with orders, and negative totals (3.931833ms)\n✔ no statement blocked writes to orders or customers while it scanned them (0.296667ms)\n✔ the whole migration history still applies to an empty database (1166.145667ms)\n✔ splits statements without breaking dollar quotes, strings or comments (17.097541ms)\n✔ applies files in lexical order and records them (2055.509209ms)\n✔ skips files that were already applied (1142.171584ms)\n✔ rolls back a failing file as a whole (1175.087626ms)\n✔ runs a no-transaction file statement by statement (1128.422001ms)\n✔ every migration applies to an empty database (2041.817209ms)\n✔ orders can be created, updated and listed newest first (1352.662793ms)\nℹ tests 14\nℹ suites 0\nℹ pass 14\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 33512.44414\n",
+      "ok": true
+    }
+  ]
+}

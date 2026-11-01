@@ -1,0 +1,105 @@
+{
+  "sigil": 1,
+  "method": "1.0",
+  "runId": "20261101-145037-express-5-64ef",
+  "producedBy": "local",
+  "label": "docker/local",
+  "sigilVersion": "0.0.0",
+  "node": "v24.18.0",
+  "platform": "darwin-arm64",
+  "command": "sigil prove catalog/skills/express/express-5 --runs 4 --concurrency 3 --model haiku --seed 20261101",
+  "createdAt": "2026-11-01T14:50:37.646Z",
+  "capability": {
+    "id": "express/express-5",
+    "version": "1.0.0",
+    "digest": "sha256:91ae74e545bb8ced5c0176e651577596d46ccab2b1b04bf3e1824b37d12c6b5d",
+    "path": "catalog/skills/express/express-5"
+  },
+  "agent": {
+    "id": "claude-code",
+    "version": "2.1.316"
+  },
+  "model": {
+    "requested": "haiku",
+    "reported": [
+      "claude-haiku-5-5"
+    ]
+  },
+  "runner": "docker",
+  "auth": "token",
+  "images": [
+    {
+      "ref": "sigil-lab:44b0ab80c8ce4fcc",
+      "base": "node:24-bookworm",
+      "id": "sha256:651983dc3c2a97ffda0bd16a378b2301d541fc3b5555d9d3ead9d7bc8757d058",
+      "baseDigest": "node:24-bookworm@sha256:e7add2a490bb17d97b485b8641bd88455fff7839ade0f5eba493c3508124d413"
+    }
+  ],
+  "suites": [
+    {
+      "suite": "express-5",
+      "digest": "sha256:17e6d88699044f2f1ab7ebe141135176653f41e6ae053075a311a25b7f62f4ca",
+      "tasks": [
+        "json-error-handling",
+        "nested-routes",
+        "upgrade-from-express-4"
+      ]
+    }
+  ],
+  "conditions": [
+    "baseline",
+    "treatment"
+  ],
+  "runs": 4,
+  "concurrency": 3,
+  "seed": 20261101,
+  "egress": {
+    "setup": [
+      "registry.npmjs.org",
+      "registry.yarnpkg.com",
+      "pypi.org",
+      "files.pythonhosted.org",
+      "crates.io",
+      "index.crates.io",
+      "static.crates.io",
+      "proxy.golang.org",
+      "sum.golang.org",
+      "rubygems.org",
+      "repo.maven.apache.org",
+      "repo1.maven.org"
+    ],
+    "agent": [
+      "api.anthropic.com"
+    ],
+    "harnessDenied": [
+      "mcp-proxy.anthropic.com"
+    ]
+  },
+  "plan": [
+    "express-5/json-error-handling/baseline-3",
+    "express-5/json-error-handling/baseline-2",
+    "express-5/nested-routes/treatment-4",
+    "express-5/upgrade-from-express-4/baseline-2",
+    "express-5/upgrade-from-express-4/treatment-3",
+    "express-5/nested-routes/baseline-3",
+    "express-5/upgrade-from-express-4/baseline-3",
+    "express-5/json-error-handling/treatment-3",
+    "express-5/nested-routes/treatment-3",
+    "express-5/json-error-handling/treatment-1",
+    "express-5/json-error-handling/baseline-1",
+    "express-5/json-error-handling/treatment-4",
+    "express-5/nested-routes/baseline-4",
+    "express-5/nested-routes/treatment-1",
+    "express-5/upgrade-from-express-4/baseline-4",
+    "express-5/json-error-handling/treatment-2",
+    "express-5/upgrade-from-express-4/treatment-2",
+    "express-5/nested-routes/treatment-2",
+    "express-5/json-error-handling/baseline-4",
+    "express-5/nested-routes/baseline-2",
+    "express-5/nested-routes/baseline-1",
+    "express-5/upgrade-from-express-4/treatment-4",
+    "express-5/upgrade-from-express-4/treatment-1",
+    "express-5/upgrade-from-express-4/baseline-1"
+  ],
+  "finishedAt": "2026-11-01T15:04:01.816Z"
+}

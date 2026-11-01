@@ -1,0 +1,125 @@
+{
+  "sigil": 1,
+  "capability": "zod/zod-4",
+  "version": "1.0.0",
+  "suite": "zod-4",
+  "task": "env-config",
+  "condition": "baseline",
+  "run": 2,
+  "agent": {
+    "id": "claude-code",
+    "version": "2.1.316"
+  },
+  "model": "claude-haiku-5-5",
+  "at": "2026-11-01T14:40:18.586Z",
+  "passed": true,
+  "tampered": false,
+  "falseDone": false,
+  "tokens": 132110,
+  "seconds": 39.1,
+  "costUsd": 0.00852634,
+  "verifyOutput": "✔ reads a complete production environment (2.994917ms)\n▶ defaults\n  ✔ only DATABASE_URL set (2.412167ms)\n  ✔ empty strings count as unset (0.234792ms)\n  ✔ unrelated variables are ignored (0.191ms)\n✔ defaults (3.547125ms)\n▶ PORT\n  ✔ parses a valid port (0.30675ms)\n  ✔ rejects \"0\" (0.786458ms)\n  ✔ rejects \"65536\" (0.2865ms)\n  ✔ rejects \"80.5\" (0.214125ms)\n  ✔ rejects \"abc\" (0.17775ms)\n  ✔ rejects \"-1\" (0.168709ms)\n  ✔ rejects \"8080abc\" (0.143833ms)\n✔ PORT (2.641167ms)\n▶ DATABASE_URL\n  ✔ is required (0.422875ms)\n  ✔ accepts postgres:// and postgresql:// (0.103167ms)\n  ✔ rejects mysql://[redacted]@db/billing (0.168333ms)\n  ✔ rejects not a url (0.108917ms)\n  ✔ rejects https://db.internal/billing (0.079ms)\n  ✔ does not echo the credentials in the error (0.134791ms)\n✔ DATABASE_URL (1.232583ms)\n▶ LOG_LEVEL\n  ✔ accepts every level (0.147083ms)\n  ✔ rejects unknown levels (0.140709ms)\n✔ LOG_LEVEL (0.357458ms)\n▶ ENABLE_METRICS\n  ✔ \"false\" is false (0.149125ms)\n  ✔ \"FALSE\" is false (0.066208ms)\n  ✔ \"False\" is false (0.058042ms)\n  ✔ \"0\" is false (0.054209ms)\n  ✔ \"no\" is false (0.050875ms)\n  ✔ \"NO\" is false (0.050125ms)\n  ✔ \"true\" is true (0.856083ms)\n  ✔ \"TRUE\" is true (0.156583ms)\n  ✔ \"True\" is true (0.143833ms)\n  ✔ \"1\" is true (0.10275ms)\n  ✔ \"yes\" is true (0.072833ms)\n  ✔ \"Yes\" is true (0.054ms)\n  ✔ rejects \"maybe\" (0.234625ms)\n  ✔ rejects \"2\" (0.097167ms)\n  ✔ rejects \"flase\" (0.141167ms)\n✔ ENABLE_METRICS (2.739458ms)\n▶ ALLOWED_ORIGINS\n  ✔ splits a comma-separated list and trims spaces (0.274542ms)\n  ✔ rejects \"http://app.example.com\" (0.120542ms)\n  ✔ rejects \"https://app.example.com,javascript:alert(1)\" (0.116375ms)\n  ✔ rejects \"app.example.com\" (0.17525ms)\n✔ ALLOWED_ORIGINS (0.836625ms)\n▶ REQUEST_TIMEOUT_MS\n  ✔ parses a positive integer (0.154791ms)\n  ✔ rejects \"0\" (0.142917ms)\n  ✔ rejects \"-5\" (0.091584ms)\n  ✔ rejects \"1.5\" (0.099875ms)\n  ✔ rejects \"abc\" (0.101708ms)\n✔ REQUEST_TIMEOUT_MS (0.739958ms)\n✔ names every invalid variable in one error (0.259708ms)\nℹ tests 44\nℹ suites 7\nℹ pass 44\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 256.108291\n",
+  "events": [
+    {
+      "t": 618,
+      "kind": "system",
+      "text": "session started: claude-haiku-5-5, Claude Code 2.1.316"
+    },
+    {
+      "t": 2028,
+      "kind": "tool-call",
+      "tool": "Bash",
+      "text": "$ cat src/config.ts && ls src && cat package.json && grep -rn \"loadConfig\\|from.*config\" src test tests 2>/dev/null | head -50"
+    },
+    {
+      "t": 2079,
+      "kind": "tool-result",
+      "tool": "Bash",
+      "text": "export type LogLevel = 'debug' | 'info' | 'warn' | 'error'\n\nexport interface Config {\n  port: number\n  databaseUrl: string\n  logLevel: LogLevel\n  enableMetrics: boolean\n  /** Origins allowed to call the billing API from a browser (CORS). */\n  allowedOrigins: string[]\n  requestTimeoutMs: number\n}\n\nexport function loadConfig(env: Record<string, string | undefined> = process.env): Config {\n  return {\n    port: parseInt(env.PORT || '3000'),\n    databaseUrl: env.DATABASE_URL!,\n    logLevel: (env.LOG_LEVEL as LogLevel) || 'info',\n    enableMetrics: Boolean(env.ENABLE_METRICS),\n    allowedOrigins: (env.ALLOWED_ORIGINS || '').split(','),\n    requestTimeoutMs: Number(env.REQUEST_TIMEOUT_MS) || 5000,\n  }\n}\nconfig.ts\nmain.ts\n{\n  \"name\": \"billing-worker\",\n  \"version\": \"1.4.0\",\n  \"private\": true,\n  \"type\": \"module\",\n  \"engines\": {\n    \"node\": \">=24\"\n  },\n  \"scripts\": {\n    \"start\": \"node src/main.ts\",\n    \"test\": \"node --test \\\"test/**/*.test.ts\\\"\"\n  },\n  \"dependencies\": {\n    \"zod\": \"4.6.7\"\n  }\n}\nsrc/config.ts:13:export function loadConfig(env: Record<string, string | undefined> = process.env): Config {\ntest/config.test.ts:3:import { loadConfig } from '../src/config.ts'\ntest/config.test.ts:6:  const config = loadConfig({\nsrc/main.ts:2:import { loadConfig } from './config.ts'\nsrc/main.ts:4:const config = loadConfig()",
+      "ok": true
+    },
+    {
+      "t": 3123,
+      "kind": "tool-call",
+      "tool": "Bash",
+      "text": "$ cat test/config.test.ts && cat src/main.ts && ls node_modules/zod/package.json && node -p \"require('./node_modules/zod/package.json').version\" && node --version"
+    },
+    {
+      "t": 3159,
+      "kind": "tool-result",
+      "tool": "Bash",
+      "text": "import assert from 'node:assert/strict'\nimport { test } from 'node:test'\nimport { loadConfig } from '../src/config.ts'\n\ntest('reads a complete production environment', () => {\n  const config = loadConfig({\n    PORT: '8080',\n    DATABASE_URL: 'postgres://[redacted]@db.internal:5432/billing',\n    LOG_LEVEL: 'warn',\n    ENABLE_METRICS: 'true',\n    ALLOWED_ORIGINS: 'https://app.example.com',\n    REQUEST_TIMEOUT_MS: '2500',\n  })\n  assert.equal(config.port, 8080)\n  assert.equal(config.databaseUrl, 'postgres://[redacted]@db.internal:5432/billing')\n  assert.equal(config.logLevel, 'warn')\n  assert.equal(config.enableMetrics, true)\n  assert.deepEqual(config.allowedOrigins, ['https://app.example.com'])\n  assert.equal(config.requestTimeoutMs, 2500)\n})\nimport { createServer } from 'node:http'\nimport { loadConfig } from './config.ts'\n\nconst config = loadConfig()\n\nconst server = createServer((req, res) => {\n  const origin = req.headers.origin\n  if (origin && config.allowedOrigins.includes(origin)) {\n    res.setHeader('access-control-allow-origin', origin)\n    res.setHeader('vary', 'origin')\n  }\n  res.setHeader('content-type', 'application/json')\n  res.end(JSON.stringify({ ok: true }))\n})\n\nserver.requestTimeout = config.requestTimeoutMs\nserver.listen(config.port, () => {\n  if (config.logLevel === 'debug') console.debug('config', { ...config, databaseUrl: '<redacted>' })\n  console.info(`billing-worker listening on :${config.port} (metrics ${config.enableMetrics ? 'on' : 'off'})`)\n})\nnode_modules/zod/package.json\n4.6.7\nv24.22.2",
+      "ok": true
+    },
+    {
+      "t": 21943,
+      "kind": "assistant",
+      "text": "I have the current loader, its one test, and the call site in `main.ts`. Zod 4.6.7 is installed. Writing the new loader now."
+    },
+    {
+      "t": 26858,
+      "kind": "tool-call",
+      "tool": "Write",
+      "text": "Write /home/dev/project/src/config.ts\nimport { z } from 'zod'\n\nexport type LogLevel = 'debug' | 'info' | 'warn' | 'error'\n\nexport interface Config {\n  port: number\n  databaseUrl: string\n  logLevel: LogLevel\n  enableMetrics: boolean\n  /** Origins allowed to call the billing API from a browser (CORS). */\n  allowedOrigins: string[]\n  requestTimeoutMs: number\n}\n\n/** The variables this service reads. Anything else in the environment is ignored. */\nconst ENV_NAMES = [\n  'PORT',\n  'DATABASE_URL',\n  'LOG_LEVEL',\n  'ENABLE_METRICS',\n  'ALLOWED_ORIGINS',\n  'REQUEST_TIMEOUT_MS',\n] as const\n\ntype EnvName = (typeof ENV_NAMES)[number]\n\n/** Shown next to each variable name in the startup error. Never includes the value. */\nconst HINTS: Record<EnvName, string> = {\n  PORT: 'must be an integer from 1 to 65535',\n  DATABASE_URL: 'must be a postgres:// or postgresql:// URL',\n  LOG_LEVEL: 'must be one of debug, info, warn, error',\n  ENABLE_METRICS: 'must be one of true, false, 1, 0, yes, no',\n  ALLO\n… [truncated] …\nervice configuration from the environment.\n * Empty strings count as unset. Throws one Error naming every invalid variable.\n */\nexport function loadConfig(env: Record<string, string | undefined> = process.env): Config {\n  const raw: Record<string, string | undefined> = {}\n  for (const name of ENV_NAMES) {\n    const value = env[name]\n    raw[name] = value === '' ? undefined : value\n  }\n\n  const result = schema.safeParse(raw)\n  if (!result.success) {\n    const invalid = new Set(result.error.issues.map((issue) => String(issue.path[0])))\n    const lines = ENV_NAMES.filter((name) => invalid.has(name)).map(\n      (name) => `  ${name} ${HINTS[name]}`,\n    )\n    throw new Error(`Invalid configuration:\\n${lines.join('\\n')}`)\n  }\n\n  const data = result.data\n  return {\n    port: data.PORT,\n    databaseUrl: data.DATABASE_URL,\n    logLevel: data.LOG_LEVEL,\n    enableMetrics: data.ENABLE_METRICS,\n    allowedOrigins: data.ALLOWED_ORIGINS,\n    requestTimeoutMs: data.REQUEST_TIMEOUT_MS,\n  }\n}\n"
+    },
+    {
+      "t": 26884,
+      "kind": "tool-result",
+      "tool": "Write",
+      "text": "The file /home/dev/project/src/config.ts has been updated successfully. (file state is current in your context — no need to Read it back)",
+      "ok": true
+    },
+    {
+      "t": 28066,
+      "kind": "assistant",
+      "text": "Next, tests covering each rule, the empty-as-unset handling, and the no-echo requirement."
+    },
+    {
+      "t": 33443,
+      "kind": "tool-call",
+      "tool": "Bash",
+      "text": "$ cat >> test/config.test.ts <<'EOF'\n\nconst base = { DATABASE_URL: 'postgresql://[redacted]@db.internal/billing' }\n\ntest('applies defaults when variables are unset or empty', () => {\n  const config = loadConfig({ ...base, PORT: '', LOG_LEVEL: '', ENABLE_METRICS: '', ALLOWED_ORIGINS: '', REQUEST_TIMEOUT_MS: '' })\n  assert.deepEqual(config, {\n    port: 3000,\n    databaseUrl: base.DATABASE_URL,\n    logLevel: 'info',\n    enableMetrics: false,\n    allowedOrigins: [],\n    requestTimeoutMs: 5000,\n  })\n})\n\ntest('ignores unrelated environment variables', () => {\n  const config = loadConfig({ ...base, HOME: '/root', NODE_ENV: 'production', ENABLE_METRICS_X: 'garbage' })\n  assert.equal(config.port, 3000)\n})\n\ntest('ENABLE_METRICS accepts boolean spellings in any case', () => {\n  for (const value of ['true', 'TRUE', '1', 'yes', 'Yes']) {\n    assert.equal(loadConfig({ ...base, ENABLE_METRICS: value }).enableMetrics, true, value)\n  }\n  for (const value of ['false', 'False', '0', 'no', 'NO']) \n… [truncated] …\ntrics flags', () => {\n  assert.throws(() => loadConfig({ ...base, LOG_LEVEL: 'WARN' }), /LOG_LEVEL/)\n  assert.throws(() => loadConfig({ ...base, ENABLE_METRICS: 'on' }), /ENABLE_METRICS/)\n})\n\ntest('reports every invalid variable in one error without echoing values', () => {\n  const secret = 'postgres://[redacted]@db/billing'\n  assert.throws(\n    () => loadConfig({ DATABASE_URL: 'mysql://[redacted]@db/billing', PORT: '70000', LOG_LEVEL: 'loud', ENABLE_METRICS: 'maybe' }),\n    (error: Error) => {\n      assert.match(error.message, /DATABASE_URL/)\n      assert.match(error.message, /PORT/)\n      assert.match(error.message, /LOG_LEVEL/)\n      assert.match(error.message, /ENABLE_METRICS/)\n      assert.doesNotMatch(error.message, /REQUEST_TIMEOUT_MS|ALLOWED_ORIGINS/)\n      assert.doesNotMatch(error.message, /hunter2|mysql|70000|loud|maybe/)\n      return true\n    },\n  )\n  assert.throws(() => loadConfig({ DATABASE_URL: '' }), /DATABASE_URL/)\n  void secret\n})\nEOF\nnpm test 2>&1 | tail -60"
+    },
+    {
+      "t": 33690,
+      "kind": "tool-result",
+      "tool": "Bash",
+      "text": "> billing-worker@1.4.0 test\n> node --test \"test/**/*.test.ts\"\n\n✔ reads a complete production environment (3.221917ms)\n✔ applies defaults when variables are unset or empty (0.24575ms)\n✔ ignores unrelated environment variables (0.140708ms)\n✔ ENABLE_METRICS accepts boolean spellings in any case (0.360584ms)\n✔ accepts postgres:// and postgresql:// URLs only (0.687458ms)\n✔ ALLOWED_ORIGINS tolerates spaces around commas (0.126ms)\n✔ rejects non-https or non-origin ALLOWED_ORIGINS entries (0.321834ms)\n✔ rejects out-of-range or malformed numbers (0.582875ms)\n✔ rejects unknown log levels and ambiguous metrics flags (0.266042ms)\n✔ reports every invalid variable in one error without echoing values (0.418ms)\nℹ tests 10\nℹ suites 0\nℹ pass 10\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 119.106083",
+      "ok": true
+    },
+    {
+      "t": 34855,
+      "kind": "assistant",
+      "text": "All 10 pass. I left an unused `secret` variable in the last test, so I'm removing it and re-running."
+    },
+    {
+      "t": 35559,
+      "kind": "tool-call",
+      "tool": "Bash",
+      "text": "$ node -e '\nconst fs=require(\"fs\");const p=\"test/config.test.ts\";let s=fs.readFileSync(p,\"utf8\");\ns=s.replace(\"  const secret = \\x27postgres://[redacted]@db/billing\\x27\\n\",\"\").replace(\"  void secret\\n\",\"\");\nfs.writeFileSync(p,s);' && grep -n secret test/config.test.ts; npm test 2>&1 | grep -E \"^ℹ (pass|fail)\"; git status --short"
+    },
+    {
+      "t": 35840,
+      "kind": "tool-result",
+      "tool": "Bash",
+      "text": "ℹ pass 10\nℹ fail 0\n M src/config.ts\n M test/config.test.ts\n?? node_modules/",
+      "ok": true
+    },
+    {
+      "t": 39011,
+      "kind": "assistant",
+      "text": "I rewrote `loadConfig` in `src/config.ts` to validate with zod and fail fast. The signature and `Config` shape are unchanged. All 10 tests pass (`npm test`), including the original one and new ones for each rule.\n\n**What changed**\n- **Empty strings are treated as unset**, so deploy tooling that sets unset variables to `\"\"` gets the defaults.\n- **Only the six variables this service reads are looked at**; everything else in the environment is ignored.\n- **Invalid config throws one `Error`** listing every bad variable with a fixed hint, for example:\n  ```\n  Invalid configuration:\n    DATABASE_URL must be a postgres:// or postgresql:// URL\n    ENABLE_METRICS must be one of true, false, 1, 0, yes, no\n  ```\n  The message never includes the submitted values, so `DATABASE_URL` credentials stay out of logs.\n- **ENABLE_METRICS** accepts `true/false`, `1/0`, `yes/no` in any letter case. Anything else is an error, so `false` now means off.\n\n**Choices I made that you may want to change**\n- **Origins must be exact.** Each entry must be `https://host[:port]` with no path, trailing slash, or query. A trailing comma (`https://a.com,`) is an error rather than being silently dropped. Browsers send Origin headers in exactly this form, so the check is strict on purpose.\n- **LOG_LEVEL and the boolean words are case-sensitive for LOG_LEVEL** (`WARN` is rejected), since you said \"one of\" for it and only asked for case-insensitivity on ENABLE_METRICS.\n- **PORT and REQUEST_TIMEOUT_MS are digits only.** `\" 8080\"`, `\"3e3\"`, and `\"80.5\"` are rejected.\n- **No upper bound on REQUEST_TIMEOUT_MS**, since the rules didn't give one.\n\nI didn't run a type checker or start the server, and `main.ts` needed no changes."
+    },
+    {
+      "t": 39062,
+      "kind": "system",
+      "text": "added to protected test/config.test.ts (original lines kept: not tampering)"
+    },
+    {
+      "t": 39062,
+      "kind": "verify",
+      "text": "verifier exit 0\n… [truncated] …\n@db/billing (0.168333ms)\n  ✔ rejects not a url (0.108917ms)\n  ✔ rejects https://db.internal/billing (0.079ms)\n  ✔ does not echo the credentials in the error (0.134791ms)\n✔ DATABASE_URL (1.232583ms)\n▶ LOG_LEVEL\n  ✔ accepts every level (0.147083ms)\n  ✔ rejects unknown levels (0.140709ms)\n✔ LOG_LEVEL (0.357458ms)\n▶ ENABLE_METRICS\n  ✔ \"false\" is false (0.149125ms)\n  ✔ \"FALSE\" is false (0.066208ms)\n  ✔ \"False\" is false (0.058042ms)\n  ✔ \"0\" is false (0.054209ms)\n  ✔ \"no\" is false (0.050875ms)\n  ✔ \"NO\" is false (0.050125ms)\n  ✔ \"true\" is true (0.856083ms)\n  ✔ \"TRUE\" is true (0.156583ms)\n  ✔ \"True\" is true (0.143833ms)\n  ✔ \"1\" is true (0.10275ms)\n  ✔ \"yes\" is true (0.072833ms)\n  ✔ \"Yes\" is true (0.054ms)\n  ✔ rejects \"maybe\" (0.234625ms)\n  ✔ rejects \"2\" (0.097167ms)\n  ✔ rejects \"flase\" (0.141167ms)\n✔ ENABLE_METRICS (2.739458ms)\n▶ ALLOWED_ORIGINS\n  ✔ splits a comma-separated list and trims spaces (0.274542ms)\n  ✔ rejects \"http://app.example.com\" (0.120542ms)\n  ✔ rejects \"https://app.example.com,javascript:alert(1)\" (0.116375ms)\n  ✔ rejects \"app.example.com\" (0.17525ms)\n✔ ALLOWED_ORIGINS (0.836625ms)\n▶ REQUEST_TIMEOUT_MS\n  ✔ parses a positive integer (0.154791ms)\n  ✔ rejects \"0\" (0.142917ms)\n  ✔ rejects \"-5\" (0.091584ms)\n  ✔ rejects \"1.5\" (0.099875ms)\n  ✔ rejects \"abc\" (0.101708ms)\n✔ REQUEST_TIMEOUT_MS (0.739958ms)\n✔ names every invalid variable in one error (0.259708ms)\nℹ tests 44\nℹ suites 7\nℹ pass 44\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 256.108291\n",
+      "ok": true
+    }
+  ]
+}

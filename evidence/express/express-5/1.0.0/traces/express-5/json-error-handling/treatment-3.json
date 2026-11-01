@@ -1,0 +1,164 @@
+{
+  "sigil": 1,
+  "capability": "express/express-5",
+  "version": "1.0.0",
+  "suite": "express-5",
+  "task": "json-error-handling",
+  "condition": "treatment",
+  "run": 3,
+  "agent": {
+    "id": "claude-code",
+    "version": "2.1.316"
+  },
+  "model": "claude-haiku-5-5",
+  "at": "2026-11-01T14:54:39.814Z",
+  "passed": true,
+  "tampered": false,
+  "falseDone": false,
+  "tokens": 200963,
+  "seconds": 39.4,
+  "costUsd": 0.01078807,
+  "verifyOutput": "… [truncated] …\nules/router/lib/layer.js:152:17)\n    at /home/dev/project/node_modules/router/index.js:295:15\n    at processParams (/home/dev/project/node_modules/router/index.js:582:12)\n    at next (/home/dev/project/node_modules/router/index.js:291:5)\n✔ unexpected failures are a generic 500 with no internal details (10.462709ms)\n✔ the server keeps serving after errors (9.844667ms)\n▶ with the in-memory repository\n  ✔ unknown routes return a JSON 404 (37.335458ms)\n  ✔ unknown order ids return a JSON 404 (7.576917ms)\n  ✔ invalid order bodies are rejected with 400 validation_failed (66.020459ms)\n  ✔ valid orders at the quantity bounds are still created (4.132417ms)\n  ✔ a request without a JSON body is a client error, not a crash (4.486958ms)\n  ✔ malformed JSON returns a JSON 400 (3.037792ms)\n  ✔ a body over the 10kb limit returns a JSON 413 (2.405292ms)\n  ✔ cancelling a shipped order returns 409 conflict (1.565ms)\n  ✔ cancelling an unknown order returns 404 and the server keeps serving (2.677208ms)\n  ✔ happy paths still work after errors (2.899167ms)\n✔ with the in-memory repository (138.33025ms)\nError: connect ECONNREFUSED 10.0.3.7:5432 (db-primary.internal)\n    at Object.get (file:///home/dev/project/test/hidden/errors.test.mjs:147:15)\n    at file:///home/dev/project/src/app.mjs:37:30\n    at Layer.handleRequest (/home/dev/project/node_modules/router/lib/layer.js:152:17)\n    at next (/home/dev/project/node_modules/router/lib/route.js:157:13)\n    at Route.dispatch (/home/dev/project/node_modules/router/lib/route.js:117:3)\n    at handle (/home/dev/project/node_modules/router/index.js:435:11)\n    at Layer.handleRequest (/home/dev/project/node_modules/router/lib/layer.js:152:17)\n    at /home/dev/project/node_modules/router/index.js:295:15\n    at param (/home/dev/project/node_modules/router/index.js:600:14)\n    at param (/home/dev/project/node_modules/router/index.js:610:14)\nError: connect ECONNREFUSED 10.0.3.7:5432 (db-primary.internal)\n    at Object.cancel (file:///home/dev/project/test/hidden/errors.test.mjs:150:15)\n    at file:///home/dev/project/src/app.mjs:50:27\n    at Layer.handleRequest (/home/dev/project/node_modules/router/lib/layer.js:152:17)\n    at next (/home/dev/project/node_modules/router/lib/route.js:157:13)\n    at Route.dispatch (/home/dev/project/node_modules/router/lib/route.js:117:3)\n    at handle (/home/dev/project/node_modules/router/index.js:435:11)\n    at Layer.handleRequest (/home/dev/project/node_modules/router/lib/layer.js:152:17)\n    at /home/dev/project/node_modules/router/index.js:295:15\n    at param (/home/dev/project/node_modules/router/index.js:600:14)\n    at param (/home/dev/project/node_modules/router/index.js:610:14)\n▶ when the repository fails unexpectedly\n  ✔ a rejected repository call returns a generic 500 (9.392209ms)\n  ✔ a synchronous throw returns a generic 500 (1.064ms)\nTypeError: Cannot read properties of undefined (reading 'rows')\n    at Object.list (file:///home/dev/project/test/hidden/errors.test.mjs:144:15)\n    at file:///home/dev/project/src/app.mjs:33:35\n    at Layer.handleRequest (/home/dev/project/node_modules/router/lib/layer.js:152:17)\n    at next (/home/dev/project/node_modules/router/lib/route.js:157:13)\n    at Route.dispatch (/home/dev/project/node_modules/router/lib/route.js:117:3)\n    at handle (/home/dev/project/node_modules/router/index.js:435:11)\n    at Layer.handleRequest (/home/dev/project/node_modules/router/lib/layer.js:152:17)\n    at /home/dev/project/node_modules/router/index.js:295:15\n    at processParams (/home/dev/project/node_modules/router/index.js:582:12)\n    at next (/home/dev/project/node_modules/router/index.js:291:5)\n  ✔ the server keeps serving after unexpected errors (1.897375ms)\n✔ when the repository fails unexpectedly (13.51ms)\n✔ lists orders (30.872875ms)\n✔ gets one order (4.847125ms)\n✔ creates an order (14.056041ms)\n✔ cancels a pending order (3.253ms)\nℹ tests 26\nℹ suites 2\nℹ pass 26\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 655.203667\n",
+  "events": [
+    {
+      "t": 710,
+      "kind": "system",
+      "text": "session started: claude-haiku-5-5, Claude Code 2.1.316"
+    },
+    {
+      "t": 1625,
+      "kind": "assistant",
+      "text": "I'll start by looking at the project layout and the current app setup."
+    },
+    {
+      "t": 2018,
+      "kind": "tool-call",
+      "tool": "Bash",
+      "text": "$ git status --short && ls -la && cat package.json 2>/dev/null && find . -path ./node_modules -prune -o -type f -print | grep -v '^./.git/' | head -100"
+    },
+    {
+      "t": 2118,
+      "kind": "tool-result",
+      "tool": "Bash",
+      "text": "?? node_modules/\ntotal 76\ndrwxr-xr-x  1 dev dev  4096 Nov  1 14:53 .\ndrwxr-xr-x  1 dev dev  4096 Nov  1 14:54 ..\ndrwxr-xr-x  3 dev dev  4096 Nov  1 14:53 .claude\n-rw-------  1 dev dev   197 Nov  1 14:53 .env\ndrwxr-xr-x  8 dev dev  4096 Nov  1 14:54 .git\n-rw-r--r--  1 dev dev   216 Nov  1 14:24 README.md\ndrwxr-xr-x 67 dev dev  4096 Nov  1 14:53 node_modules\n-rw-r--r--  1 dev dev 29970 Nov  1 14:24 package-lock.json\n-rw-r--r--  1 dev dev   257 Nov  1 14:24 package.json\ndrwxr-xr-x  2 dev dev  4096 Nov  1 14:24 src\ndrwxr-xr-x  2 dev dev  4096 Nov  1 14:24 test\n{\n  \"name\": \"orders-api\",\n  \"version\": \"2.3.1\",\n  \"private\": true,\n  \"type\": \"module\",\n  \"engines\": {\n    \"node\": \">=22\"\n  },\n  \"scripts\": {\n    \"start\": \"node src/server.mjs\",\n    \"test\": \"node --test\"\n  },\n  \"dependencies\": {\n    \"express\": \"5.3.0\"\n  }\n}\n./package-lock.json\n./README.md\n./package.json\n./.env\n./src/app.mjs\n./src/server.mjs\n./src/orders-repo.mjs\n./test/orders.test.mjs\n./.claude/skills/express-5/SKILL.md\n./.claude/skills/express-5/references/errors-and-hardening.md\n./.claude/skills/express-5/references/routing.md\n./.claude/skills/express-5/references/migration-checklist.md\n./.claude/skills/express-5/references/sources.md",
+      "ok": true
+    },
+    {
+      "t": 3204,
+      "kind": "tool-call",
+      "tool": "Bash",
+      "text": "$ cat src/app.mjs && echo ---- && cat src/server.mjs && echo ---- && cat src/orders-repo.mjs && echo ---- && cat test/orders.test.mjs && echo ---- && cat README.md"
+    },
+    {
+      "t": 3224,
+      "kind": "tool-result",
+      "tool": "Bash",
+      "text": "import express from 'express'\nimport { createOrdersRepo } from './orders-repo.mjs'\n\nexport function createApp({ repo = createOrdersRepo() } = {}) {\n  const app = express()\n  app.disable('x-powered-by')\n  app.use(express.json({ limit: '10kb' }))\n\n  app.get('/api/health', (req, res) => {\n    res.json({ ok: true })\n  })\n\n  app.get('/api/orders', async (req, res) => {\n    res.json({ orders: await repo.list() })\n  })\n\n  app.get('/api/orders/:id', async (req, res) => {\n    const order = await repo.get(req.params.id)\n    if (!order) {\n      return res.status(404).json({ error: { code: 'not_found', message: 'Order not found' } })\n    }\n    res.json(order)\n  })\n\n  app.post('/api/orders', async (req, res) => {\n    const { sku, quantity } = req.body\n    const order = await repo.create({ sku, quantity })\n    res.status(201).json(order)\n  })\n\n  app.post('/api/orders/:id/cancel', (req, res) => {\n    repo.cancel(req.params.id).then((order) => {\n      res.json(order)\n    })\n  })\n\n  return app\n\n… [truncated] …\n`${base}/api/orders`)\n  assert.equal(res.status, 200)\n  assert.equal((await res.json()).orders.length >= 3, true)\n})\n\ntest('gets one order', async () => {\n  const res = await fetch(`${base}/api/orders/1001`)\n  assert.equal(res.status, 200)\n  assert.equal((await res.json()).sku, 'HP-200')\n})\n\ntest('creates an order', async () => {\n  const res = await post('/api/orders', { sku: 'SPK-10', quantity: 2 })\n  assert.equal(res.status, 201)\n  const order = await res.json()\n  assert.equal(order.sku, 'SPK-10')\n  assert.equal(order.quantity, 2)\n  assert.equal(order.status, 'pending')\n})\n\ntest('cancels a pending order', async () => {\n  const res = await post('/api/orders/1002/cancel')\n  assert.equal(res.status, 200)\n  assert.equal((await res.json()).status, 'cancelled')\n})\n----\n# orders-api\n\nOrder intake service. `src/orders-repo.mjs` is the in-memory repository used in development and tests;\nproduction swaps in the Postgres repository with the same interface.\n\n```sh\nnpm start\nnpm test\n```",
+      "ok": true
+    },
+    {
+      "t": 3334,
+      "kind": "tool-call",
+      "tool": "Read",
+      "text": "Read /home/dev/project/.claude/skills/express-5/SKILL.md"
+    },
+    {
+      "t": 3351,
+      "kind": "tool-result",
+      "tool": "Read",
+      "text": "1\t---\n2\tname: express-5\n3\tdescription: >-\n4\t  Writes, upgrades and hardens Express 5 (express@5.x, current 5.3) HTTP APIs in Node.js. Covers the\n5\t  path-to-regexp v8 route syntax (named wildcards like /*splat, {/:optional} groups, no ? + ( ) in\n6\t  paths), the silent behaviour changes that break apps without an error (res.send(404) and\n7\t  res.json(obj, 201) now reply 200, res.redirect('back'), req.query getter and \"simple\" parser,\n8\t  urlencoded extended=false, req.body undefined), async error forwarding, safe JSON error handlers\n9\t  that never leak stack traces, and production defaults (body limits, trust proxy, x-powered-by).\n10\t  Use when adding routes or middleware to an Express app, migrating or bumping express from 4 to 5,\n11\t  fixing \"Missing parameter name\", \"Unexpected ?\" or \"TypeError: ... is not a function\" after an\n12\t  upgrade, writing an Express error handler or 404 handler, or reviewing an Express API for\n13\t  security.\n14\tlicense: MIT\n15\t---\n16\t\n17\t# Express 5\n… [truncated] …\n `res.status(err.status).json(...)` | validate the status, default 500 |\n272\t| Sending `err.message` or `err.stack` for 5xx | generic message to the client, `console.error(err)` (or the app logger) server-side |\n273\t| Checking `process.env.NODE_ENV === 'production'` to hide stacks | a custom error handler that never sends them |\n274\t| `req.query.perPage = Number(req.query.perPage) \\|\\| 25` | `const perPage = Number(req.query.perPage) \\|\\| 25` |\n275\t| `const { handle } = req.body` | `const { handle } = req.body ?? {}`, then validate |\n276\t| `res.sendFile(path.join(ASSETS_ROOT, req.params.assetPath.join('/')))` | `res.sendFile(req.params.assetPath.join('/'), { root: ASSETS_ROOT })` |\n277\t| Downgrading to Express 4 to make an upgrade pass | finish the migration; a downgrade undoes the work that was asked for |\n278\t| An error handler with three parameters `(err, req, res)` | four parameters: with three, Express runs it as ordinary middleware on every request that reaches it |\n279\t",
+      "ok": true
+    },
+    {
+      "t": 19312,
+      "kind": "assistant",
+      "text": "The current code has three problems. `POST /api/orders` reads `req.body` without a default, so a missing body throws. The cancel route has no `.catch`, so a rejected promise is unhandled and can take down the process. There is also no 404 or error handler, which is why Express's HTML page leaks. I'll add a small error module and wire it into the app."
+    },
+    {
+      "t": 21347,
+      "kind": "tool-call",
+      "tool": "Write",
+      "text": "Write /home/dev/project/src/errors.mjs\n// Every error response has the shape { error: { code, message } }. Messages sent to clients are\n// written here on purpose; anything else is logged server-side and replaced with a generic message.\n\nexport class ApiError extends Error {\n  constructor(status, code, message) {\n    super(message)\n    this.name = 'ApiError'\n    this.status = status\n    this.code = code\n  }\n}\n\nexport function sendError(res, status, code, message) {\n  res.status(status).json({ error: { code, message } })\n}\n\n// Returns the ApiError to send for a known client-side failure, or null for anything unexpected.\nfunction toClientError(err) {\n  if (err instanceof ApiError) return err\n  // body-parser errors (express.json) carry a `type` we can map precisely.\n  if (err?.type === 'entity.parse.failed') {\n    return new ApiError(400, 'invalid_json', 'Request body is not valid JSON')\n  }\n  if (err?.type === 'entity.too.large') {\n    return new ApiError(413, 'payload_too_large', 'Request body is too large')\n  }\n  return null\n}\n\nexport function notFoundHandler(req, res) {\n  sendError(res, 404, 'not_found', 'Route not found')\n}\n\n// Must be registered last and keep all four parameters, or Express will not treat it as an error handler.\nexport function errorHandler(err, req, res, next) {\n  if (res.headersSent) return next(err)\n\n  const clientError = toClientError(err)\n  if (clientError) {\n    return sendError(res, clientError.status, clientError.code, clientError.message)\n  }\n\n  console.error(err)\n  sendError(res, 500, 'internal_error', 'An unexpected error occurred')\n}\n"
+    },
+    {
+      "t": 21383,
+      "kind": "tool-result",
+      "tool": "Write",
+      "text": "File created successfully at: /home/dev/project/src/errors.mjs (file state is current in your context — no need to Read it back)",
+      "ok": true
+    },
+    {
+      "t": 23511,
+      "kind": "tool-call",
+      "tool": "Write",
+      "text": "Write /home/dev/project/src/app.mjs\nimport express from 'express'\nimport { createOrdersRepo, OrderNotFoundError, OrderStateError } from './orders-repo.mjs'\nimport { ApiError, errorHandler, notFoundHandler } from './errors.mjs'\n\nfunction validateOrderInput(body) {\n  const { sku, quantity } = body ?? {}\n  if (\n    typeof sku !== 'string' ||\n    sku.trim() === '' ||\n    !Number.isInteger(quantity) ||\n    quantity < 1 ||\n    quantity > 100\n  ) {\n    throw new ApiError(\n      400,\n      'validation_failed',\n      'sku must be a non-empty string and quantity an integer from 1 to 100',\n    )\n  }\n  return { sku, quantity }\n}\n\nexport function createApp({ repo = createOrdersRepo() } = {}) {\n  const app = express()\n  app.disable('x-powered-by')\n  app.use(express.json({ limit: '10kb' }))\n\n  app.get('/api/health', (req, res) => {\n    res.json({ ok: true })\n  })\n\n  app.get('/api/orders', async (req, res) => {\n    res.json({ orders: await repo.list() })\n  })\n\n  app.get('/api/orders/:id', async (req, res) => {\n    const order = await repo.get(req.params.id)\n    if (!order) throw new ApiError(404, 'not_found', 'Order not found')\n    res.json(order)\n  })\n\n  app.post('/api/orders', async (req, res) => {\n    const input = validateOrderInput(req.body)\n    const order = await repo.create(input)\n    res.status(201).json(order)\n  })\n\n  app.post('/api/orders/:id/cancel', async (req, res) => {\n    try {\n      res.json(await repo.cancel(req.params.id))\n    } catch (err) {\n      if (err instanceof OrderNotFoundError) {\n        throw new ApiError(404, 'not_found', 'Order not found')\n      }\n      if (err instanceof OrderStateError) {\n        throw new ApiError(409, 'conflict', `Order is ${err.orderStatus} and can no longer be cancelled`)\n      }\n      throw err\n    }\n  })\n\n  app.use(notFoundHandler)\n  app.use(errorHandler)\n\n  return app\n}\n"
+    },
+    {
+      "t": 23537,
+      "kind": "tool-result",
+      "tool": "Write",
+      "text": "The file /home/dev/project/src/app.mjs has been updated successfully. (file state is current in your context — no need to Read it back)",
+      "ok": true
+    },
+    {
+      "t": 25019,
+      "kind": "assistant",
+      "text": "Next, tests covering each error case. I'll inject a failing repo to exercise the 500 path, and check that the server still answers afterwards."
+    },
+    {
+      "t": 30416,
+      "kind": "tool-call",
+      "tool": "Write",
+      "text": "Write /home/dev/project/test/errors.test.mjs\nimport assert from 'node:assert/strict'\nimport { after, before, test } from 'node:test'\nimport { createApp } from '../src/app.mjs'\nimport { createOrdersRepo } from '../src/orders-repo.mjs'\n\nlet server\nlet base\nlet failingRepo\n\nbefore(async () => {\n  // A repo whose lookups blow up, to exercise the unexpected-error path.\n  const real = createOrdersRepo()\n  failingRepo = { ...real, async list() { throw new Error('connect ECONNREFUSED 10.0.0.5:5432') } }\n  server = createApp({ repo: real }).listen(0)\n  await new Promise((resolve) => server.once('listening', resolve))\n  base = `http://127.0.0.1:${server.address().port}`\n})\n\nafter(() => new Promise((resolve) => server.close(resolve)))\n\nconst post = (path, body, headers = { 'content-type': 'application/json' }) =>\n  fetch(base + path, { method: 'POST', headers, body })\n\nconst assertErrorShape = (json, code) => {\n  assert.deepEqual(Object.keys(json), ['error'])\n  assert.deepEqual(Object.key\n… [truncated] …\nu: 'A'.repeat(11 * 1024), quantity: 1 }))\n  assert.equal(res.status, 413)\n  assertErrorShape(await res.json(), 'payload_too_large')\n})\n\ntest('unexpected failures are a generic 500 with no internal details', async () => {\n  const app = createApp({ repo: failingRepo })\n  const srv = app.listen(0)\n  await new Promise((resolve) => srv.once('listening', resolve))\n  try {\n    const res = await fetch(`http://127.0.0.1:${srv.address().port}/api/orders`)\n    assert.equal(res.status, 500)\n    const json = await res.json()\n    assertErrorShape(json, 'internal_error')\n    assert.doesNotMatch(JSON.stringify(json), /ECONNREFUSED|10\\.0\\.0\\.5|at /)\n  } finally {\n    await new Promise((resolve) => srv.close(resolve))\n  }\n})\n\ntest('the server keeps serving after errors', async () => {\n  await post('/api/orders/9999/cancel')\n  await post('/api/orders', '{bad')\n  const res = await fetch(`${base}/api/orders/1001`)\n  assert.equal(res.status, 200)\n  assert.equal((await res.json()).sku, 'HP-200')\n})\n"
+    },
+    {
+      "t": 30432,
+      "kind": "tool-result",
+      "tool": "Write",
+      "text": "File created successfully at: /home/dev/project/test/errors.test.mjs (file state is current in your context — no need to Read it back)",
+      "ok": true
+    },
+    {
+      "t": 31327,
+      "kind": "tool-call",
+      "tool": "Bash",
+      "text": "$ npm test 2>&1 | tail -60"
+    },
+    {
+      "t": 32208,
+      "kind": "tool-result",
+      "tool": "Bash",
+      "text": "> orders-api@2.3.1 test\n> node --test\n\n✔ unknown route is a JSON 404 (36.292542ms)\n✔ unknown order id is a JSON 404 for get and cancel (61.203791ms)\n✔ cancelling a shipped order is a 409 conflict (2.939708ms)\n✔ invalid order bodies are 400 validation_failed (22.690584ms)\n✔ a POST with no body is a 400 validation_failed, not a 500 (1.272541ms)\n✔ malformed JSON is a 400 invalid_json (1.934375ms)\n✔ a body over 10kb is a 413 payload_too_large (1.826792ms)\nError: connect ECONNREFUSED 10.0.0.5:5432\n    at Object.list (file:///home/dev/project/test/errors.test.mjs:13:49)\n    at file:///home/dev/project/src/app.mjs:33:35\n    at Layer.handleRequest (/home/dev/project/node_modules/router/lib/layer.js:152:17)\n    at next (/home/dev/project/node_modules/router/lib/route.js:157:13)\n    at Route.dispatch (/home/dev/project/node_modules/router/lib/route.js:117:3)\n    at handle (/home/dev/project/node_modules/router/index.js:435:11)\n    at Layer.handleRequest (/home/dev/project/node_modules/router/lib/layer.js:152:17)\n    at /home/dev/project/node_modules/router/index.js:295:15\n    at processParams (/home/dev/project/node_modules/router/index.js:582:12)\n    at next (/home/dev/project/node_modules/router/index.js:291:5)\n✔ unexpected failures are a generic 500 with no internal details (3.856208ms)\n✔ the server keeps serving after errors (6.355875ms)\n✔ lists orders (61.826208ms)\n✔ gets one order (3.491667ms)\n✔ creates an order (10.834959ms)\n✔ cancels a pending order (2.824625ms)\nℹ tests 13\nℹ suites 0\nℹ pass 13\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 664.250251",
+      "ok": true
+    },
+    {
+      "t": 33392,
+      "kind": "assistant",
+      "text": "All 13 tests pass. The stack trace in the output is the server-side log from the injected 500 case, which is expected. As a final check, I'll run the real server and send the requests from the report."
+    },
+    {
+      "t": 34531,
+      "kind": "tool-call",
+      "tool": "Bash",
+      "text": "$ (PORT=3917 node src/server.mjs & echo $! > /tmp/srv.pid) && sleep 1 && B=http://127.0.0.1:3917 && curl -s -i -X POST $B/api/orders/9999/cancel | sed -n '1p;$p' && echo && curl -s -X POST -H 'content-type: application/json' -d '{bad' $B/api/orders && echo && curl -s $B/nope && echo && curl -s -X POST -H 'content-type: application/json' -d '{}' $B/api/orders && echo && curl -s -X POST $B/api/orders/1003/cancel && echo && curl -s $B/api/health && echo; kill $(cat /tmp/srv.pid)"
+    },
+    {
+      "t": 35621,
+      "kind": "tool-result",
+      "tool": "Bash",
+      "text": "orders-api listening on {\"address\":\"::\",\"family\":\"IPv6\",\"port\":3917}\nHTTP/1.1 404 Not Found\r\n{\"error\":{\"code\":\"not_found\",\"message\":\"Order not found\"}}\n{\"error\":{\"code\":\"invalid_json\",\"message\":\"Request body is not valid JSON\"}}\n{\"error\":{\"code\":\"not_found\",\"message\":\"Route not found\"}}\n{\"error\":{\"code\":\"validation_failed\",\"message\":\"sku must be a non-empty string and quantity an integer from 1 to 100\"}}\n{\"error\":{\"code\":\"conflict\",\"message\":\"Order is shipped and can no longer be cancelled\"}}\n{\"ok\":true}",
+      "ok": true
+    },
+    {
+      "t": 39374,
+      "kind": "assistant",
+      "text": "Every error response is now JSON in the `{ \"error\": { \"code\", \"message\" } }` shape, and the server stays up after each of these cases. The full suite passes (13 tests, 7 of them new), and I checked the same cases against the real server with curl.\n\n**What changed**\n\n- **`src/errors.mjs`** (new): an `ApiError` class, a `sendError` helper, a 404 handler for unknown routes, and a final error handler. The error handler maps body-parser failures to specific codes, sends only client-safe messages, and logs anything unexpected with `console.error` before returning a generic 500.\n- **`src/app.mjs`**:\n  - `POST /api/orders` validates the body first. A missing body is treated as `{}`, so it gets a 400 instead of a crash.\n  - The cancel route is now `async` with a try/catch. Unknown ids return 404 `not_found`, and shipped orders return 409 `conflict`. This also fixes the unhandled promise rejection that could take the process down.\n  - Both handlers and the 404 path now go through the new\n… [truncated] …\nvalid order body | 400 | `validation_failed` |\n| Malformed JSON | 400 | `invalid_json` |\n| Body over 10kb | 413 | `payload_too_large` |\n| Cancel a shipped order | 409 | `conflict` |\n| Anything unexpected | 500 | `internal_error` |\n\n**Choices you may want to change**\n\n- `sku` counts as empty if it is whitespace only. The spec said \"non-empty string\", and I read that as rejecting blank strings too.\n- The 409 message includes the order's status (for example \"Order is shipped and can no longer be cancelled\"). The status is a plain state name, not internal detail.\n- An unknown HTTP method on a known path (for example `DELETE /api/orders`) returns the 404 `not_found` response, not a 405. Your spec asked for 404 on unknown routes, so I didn't add a 405.\n\n**Tests:** `test/errors.test.mjs` covers each row of the table, the no-body case, a repo that fails unexpectedly (checking that no connection details reach the client), and a follow-up request after errors. I did not commit anything."
+    },
+    {
+      "t": 39419,
+      "kind": "verify",
+      "text": "verifier exit 0\n… [truncated] …\nect/node_modules/router/index.js:295:15\n    at param (/home/dev/project/node_modules/router/index.js:600:14)\n    at param (/home/dev/project/node_modules/router/index.js:610:14)\n▶ when the repository fails unexpectedly\n  ✔ a rejected repository call returns a generic 500 (9.392209ms)\n  ✔ a synchronous throw returns a generic 500 (1.064ms)\nTypeError: Cannot read properties of undefined (reading 'rows')\n    at Object.list (file:///home/dev/project/test/hidden/errors.test.mjs:144:15)\n    at file:///home/dev/project/src/app.mjs:33:35\n    at Layer.handleRequest (/home/dev/project/node_modules/router/lib/layer.js:152:17)\n    at next (/home/dev/project/node_modules/router/lib/route.js:157:13)\n    at Route.dispatch (/home/dev/project/node_modules/router/lib/route.js:117:3)\n    at handle (/home/dev/project/node_modules/router/index.js:435:11)\n    at Layer.handleRequest (/home/dev/project/node_modules/router/lib/layer.js:152:17)\n    at /home/dev/project/node_modules/router/index.js:295:15\n    at processParams (/home/dev/project/node_modules/router/index.js:582:12)\n    at next (/home/dev/project/node_modules/router/index.js:291:5)\n  ✔ the server keeps serving after unexpected errors (1.897375ms)\n✔ when the repository fails unexpectedly (13.51ms)\n✔ lists orders (30.872875ms)\n✔ gets one order (4.847125ms)\n✔ creates an order (14.056041ms)\n✔ cancels a pending order (3.253ms)\nℹ tests 26\nℹ suites 2\nℹ pass 26\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 655.203667\n",
+      "ok": true
+    }
+  ]
+}

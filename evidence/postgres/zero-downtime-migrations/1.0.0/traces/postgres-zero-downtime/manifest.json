@@ -1,0 +1,105 @@
+{
+  "sigil": 1,
+  "method": "1.0",
+  "runId": "20261101-150404-zero-downtime-migrations-8991",
+  "producedBy": "local",
+  "label": "docker/local",
+  "sigilVersion": "0.0.0",
+  "node": "v24.18.0",
+  "platform": "darwin-arm64",
+  "command": "sigil prove catalog/skills/postgres/zero-downtime-migrations --runs 4 --concurrency 3 --model haiku --seed 20261101",
+  "createdAt": "2026-11-01T15:04:04.419Z",
+  "capability": {
+    "id": "postgres/zero-downtime-migrations",
+    "version": "1.0.0",
+    "digest": "sha256:291e6ec3f80da4966a97ed91e83297f9c503fd6aae3cbd183f0a27967b9655a8",
+    "path": "catalog/skills/postgres/zero-downtime-migrations"
+  },
+  "agent": {
+    "id": "claude-code",
+    "version": "2.1.316"
+  },
+  "model": {
+    "requested": "haiku",
+    "reported": [
+      "claude-haiku-5-5"
+    ]
+  },
+  "runner": "docker",
+  "auth": "token",
+  "images": [
+    {
+      "ref": "sigil-lab:44b0ab80c8ce4fcc",
+      "base": "node:24-bookworm",
+      "id": "sha256:651983dc3c2a97ffda0bd16a378b2301d541fc3b5555d9d3ead9d7bc8757d058",
+      "baseDigest": "node:24-bookworm@sha256:e7add2a490bb17d97b485b8641bd88455fff7839ade0f5eba493c3508124d413"
+    }
+  ],
+  "suites": [
+    {
+      "suite": "postgres-zero-downtime",
+      "digest": "sha256:9d04c44f8058acdbdfd8525ecbe09d38963adec6c623d09245f2146a1af03a96",
+      "tasks": [
+        "order-history-index",
+        "orders-customer-fk",
+        "orders-public-id"
+      ]
+    }
+  ],
+  "conditions": [
+    "baseline",
+    "treatment"
+  ],
+  "runs": 4,
+  "concurrency": 3,
+  "seed": 20261101,
+  "egress": {
+    "setup": [
+      "registry.npmjs.org",
+      "registry.yarnpkg.com",
+      "pypi.org",
+      "files.pythonhosted.org",
+      "crates.io",
+      "index.crates.io",
+      "static.crates.io",
+      "proxy.golang.org",
+      "sum.golang.org",
+      "rubygems.org",
+      "repo.maven.apache.org",
+      "repo1.maven.org"
+    ],
+    "agent": [
+      "api.anthropic.com"
+    ],
+    "harnessDenied": [
+      "mcp-proxy.anthropic.com"
+    ]
+  },
+  "plan": [
+    "postgres-zero-downtime/order-history-index/baseline-3",
+    "postgres-zero-downtime/order-history-index/baseline-2",
+    "postgres-zero-downtime/orders-customer-fk/treatment-4",
+    "postgres-zero-downtime/orders-public-id/baseline-2",
+    "postgres-zero-downtime/orders-public-id/treatment-3",
+    "postgres-zero-downtime/orders-customer-fk/baseline-3",
+    "postgres-zero-downtime/orders-public-id/baseline-3",
+    "postgres-zero-downtime/order-history-index/treatment-3",
+    "postgres-zero-downtime/orders-customer-fk/treatment-3",
+    "postgres-zero-downtime/order-history-index/treatment-1",
+    "postgres-zero-downtime/order-history-index/baseline-1",
+    "postgres-zero-downtime/order-history-index/treatment-4",
+    "postgres-zero-downtime/orders-customer-fk/baseline-4",
+    "postgres-zero-downtime/orders-customer-fk/treatment-1",
+    "postgres-zero-downtime/orders-public-id/baseline-4",
+    "postgres-zero-downtime/order-history-index/treatment-2",
+    "postgres-zero-downtime/orders-public-id/treatment-2",
+    "postgres-zero-downtime/orders-customer-fk/treatment-2",
+    "postgres-zero-downtime/order-history-index/baseline-4",
+    "postgres-zero-downtime/orders-customer-fk/baseline-2",
+    "postgres-zero-downtime/orders-customer-fk/baseline-1",
+    "postgres-zero-downtime/orders-public-id/treatment-4",
+    "postgres-zero-downtime/orders-public-id/treatment-1",
+    "postgres-zero-downtime/orders-public-id/baseline-1"
+  ],
+  "finishedAt": "2026-11-01T15:31:17.825Z"
+}

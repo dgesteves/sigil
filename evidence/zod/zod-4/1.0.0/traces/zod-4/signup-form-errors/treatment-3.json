@@ -1,0 +1,197 @@
+{
+  "sigil": 1,
+  "capability": "zod/zod-4",
+  "version": "1.0.0",
+  "suite": "zod-4",
+  "task": "signup-form-errors",
+  "condition": "treatment",
+  "run": 3,
+  "agent": {
+    "id": "claude-code",
+    "version": "2.1.316"
+  },
+  "model": "claude-haiku-5-5",
+  "at": "2026-11-01T14:43:07.625Z",
+  "passed": true,
+  "tampered": false,
+  "falseDone": false,
+  "tokens": 289693,
+  "seconds": 68.5,
+  "costUsd": 0.013381569999999997,
+  "verifyOutput": "▶ valid forms\n  ✔ returns the user without confirmPassword or unknown fields (2.736292ms)\n  ✔ trims and lowercases the email (0.273208ms)\n  ✔ optional fields may be blank or absent; interests default to [] (0.147042ms)\n✔ valid forms (3.834583ms)\n▶ one message per problem\n  ✔ missing or blank email (0.77025ms)\n  ✔ invalid email not-an-email (0.223208ms)\n  ✔ invalid email ada@ (0.147167ms)\n  ✔ invalid email ada@example (0.146875ms)\n  ✔ invalid email ada@@example.com (0.186166ms)\n  ✔ missing or blank password (0.227958ms)\n  ✔ short password (0.222208ms)\n  ✔ password mismatch (0.207625ms)\n  ✔ display name of length 1 (0.139708ms)\n  ✔ display name of length 31 (0.121125ms)\n  ✔ blank address fields use nested paths (0.127625ms)\n  ✔ unknown interests are reported by index (0.1855ms)\n✔ one message per problem (3.134041ms)\n✔ reports every problem at once, including the password mismatch (0.1495ms)\n▶ hostile bodies are rejected without throwing\n  ✔ null (0.152209ms)\n  ✔ undefined (0.065209ms)\n  ✔ \"email=ada@example.com\" (0.171041ms)\n  ✔ 42 (0.054666ms)\n  ✔ [] (0.062ms)\n  ✔ {\"email\":42,\"password\":[\"x\"]} (0.087666ms)\n  ✔ a non-string email is reported on the email field (0.097ms)\n✔ hostile bodies are rejected without throwing (0.881792ms)\n✔ creates the user for a valid form (3.092041ms)\n✔ rejects a form without an email (0.505667ms)\n✔ returns the user without confirmPassword or unknown fields (2.829375ms)\n✔ trims and lowercases the email before checking and storing it (0.272792ms)\n✔ blank email is reported as missing only (0.396875ms)\n✔ malformed email is reported as invalid (0.207167ms)\n✔ password must be at least 12 characters (0.191083ms)\n✔ reports the password mismatch alongside other errors (0.196041ms)\n✔ blank password is reported as missing, not as a mismatch (0.279166ms)\n✔ display name is optional but must be 2 to 30 characters when given (0.330083ms)\n✔ address line 1 and postcode are required; line 2 is optional (0.324917ms)\n✔ interests default to an empty array (0.173041ms)\n✔ unknown interests are reported at their index (0.189458ms)\n✔ reports every problem in one response (0.225041ms)\nℹ tests 37\nℹ suites 3\nℹ pass 37\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 392.72825\n",
+  "events": [
+    {
+      "t": 575,
+      "kind": "system",
+      "text": "session started: claude-haiku-5-5, Claude Code 2.1.316"
+    },
+    {
+      "t": 2444,
+      "kind": "tool-call",
+      "tool": "Bash",
+      "text": "$ cat src/signup.ts && ls src && cat package.json && git status --short | head && grep -rn \"validateSignup\" --include=*.ts --include=*.tsx . | grep -v node_modules"
+    },
+    {
+      "t": 2494,
+      "kind": "tool-result",
+      "tool": "Bash",
+      "text": "export type Interest = 'news' | 'events' | 'offers'\n\nexport interface NewUser {\n  email: string\n  password: string\n  displayName?: string\n  address: {\n    line1: string\n    line2?: string\n    postcode: string\n  }\n  interests: Interest[]\n}\n\n/** Field path (\"email\", \"address.postcode\", \"interests.1\") -> messages shown under that field. */\nexport type FieldErrors = Record<string, string[]>\n\nexport type SignupResult = { ok: true; user: NewUser } | { ok: false; errors: FieldErrors }\n\n// TODO: only covers the first two fields; the rest of the form is not validated server-side yet.\nexport function validateSignup(body: unknown): SignupResult {\n  const input = body as Record<string, any>\n  const errors: FieldErrors = {}\n  if (!input.email) errors.email = ['Email is required']\n  if (!input.password) errors.password = ['Password is required']\n  if (Object.keys(errors).length > 0) return { ok: false, errors }\n  return { ok: true, user: input as NewUser }\n}\nroutes.ts\nsignup.ts\n{\n  \"name\": \"accounts-service\",\n  \"version\": \"0.9.2\",\n  \"private\": true,\n  \"type\": \"module\",\n  \"engines\": {\n    \"node\": \">=24\"\n  },\n  \"scripts\": {\n    \"test\": \"node --test \\\"test/**/*.test.ts\\\"\"\n  },\n  \"dependencies\": {\n    \"zod\": \"4.6.7\"\n  }\n}\n?? node_modules/\nsrc/routes.ts:1:import { type NewUser, validateSignup } from './signup.ts'\nsrc/routes.ts:14:  const result = validateSignup(form)\nsrc/signup.ts:21:export function validateSignup(body: unknown): SignupResult {",
+      "ok": true
+    },
+    {
+      "t": 5096,
+      "kind": "tool-call",
+      "tool": "Bash",
+      "text": "$ cat src/routes.ts; ls test 2>/dev/null; cat node_modules/zod/package.json | grep '\"version\"'; ls ~/.claude/skills 2>/dev/null"
+    },
+    {
+      "t": 5121,
+      "kind": "tool-result",
+      "tool": "Bash",
+      "text": "Exit code 2\nimport { type NewUser, validateSignup } from './signup.ts'\n\nexport interface HttpResponse {\n  status: number\n  body: unknown\n}\n\nexport interface UserStore {\n  create(user: NewUser): Promise<{ id: string }>\n}\n\n/** POST /signup. `form` is the body after our qs-style form parser. */\nexport async function handleSignup(form: unknown, users: UserStore): Promise<HttpResponse> {\n  const result = validateSignup(form)\n  if (!result.ok) return { status: 422, body: { errors: result.errors } }\n  const { id } = await users.create(result.user)\n  return { status: 201, body: { id } }\n}\nroutes.test.ts\n  \"version\": \"4.6.7\",",
+      "ok": false
+    },
+    {
+      "t": 6609,
+      "kind": "tool-call",
+      "tool": "Bash",
+      "text": "$ cat test/routes.test.ts; node --version"
+    },
+    {
+      "t": 6623,
+      "kind": "tool-result",
+      "tool": "Bash",
+      "text": "import assert from 'node:assert/strict'\nimport { test } from 'node:test'\nimport { handleSignup, type UserStore } from '../src/routes.ts'\nimport type { NewUser } from '../src/signup.ts'\n\nfunction memoryStore() {\n  const created: NewUser[] = []\n  const store: UserStore = {\n    async create(user) {\n      created.push(user)\n      return { id: `user_${created.length}` }\n    },\n  }\n  return { store, created }\n}\n\nconst validForm = {\n  email: 'ada@example.com',\n  password: 'correct horse battery',\n  confirmPassword: 'correct horse battery',\n  displayName: 'Ada',\n  address: { line1: '12 Analytical Row', line2: '', postcode: 'EC1A 1BB' },\n  interests: ['news'],\n}\n\ntest('creates the user for a valid form', async () => {\n  const { store, created } = memoryStore()\n  const res = await handleSignup(validForm, store)\n  assert.equal(res.status, 201)\n  assert.deepEqual(res.body, { id: 'user_1' })\n  assert.equal(created.length, 1)\n  assert.equal(created[0]?.email, 'ada@example.com')\n})\n\ntest('rejects a form without an email', async () => {\n  const { store, created } = memoryStore()\n  const res = await handleSignup({ ...validForm, email: undefined }, store)\n  assert.equal(res.status, 422)\n  assert.deepEqual((res.body as { errors: Record<string, string[]> }).errors.email, ['Email is required'])\n  assert.equal(created.length, 0)\n})\nv24.22.2",
+      "ok": true
+    },
+    {
+      "t": 41962,
+      "kind": "tool-call",
+      "tool": "Write",
+      "text": "Write /home/dev/project/src/signup.ts\nimport { z } from 'zod'\n\nexport type Interest = 'news' | 'events' | 'offers'\n\nexport interface NewUser {\n  email: string\n  password: string\n  displayName?: string\n  address: {\n    line1: string\n    line2?: string\n    postcode: string\n  }\n  interests: Interest[]\n}\n\n/** Field path (\"email\", \"address.postcode\", \"interests.1\") -> messages shown under that field. */\nexport type FieldErrors = Record<string, string[]>\n\nexport type SignupResult = { ok: true; user: NewUser } | { ok: false; errors: FieldErrors }\n\n/** Form inputs arrive as strings; an empty or whitespace-only value counts as missing. */\nconst blankToUndefined = (value: unknown) =>\n  typeof value === 'string' && value.trim() === '' ? undefined : value\n\nconst requiredText = (message: string) =>\n  z.preprocess(blankToUndefined, z.string({ error: message }))\n\nconst optionalText = z.preprocess(blankToUndefined, z.string().optional())\n\nconst email = z.preprocess(\n  blankToUndefined,\n  z\n   \n… [truncated] …\nired\" already covers it.\n    if (data.password !== undefined && data.password !== data.confirmPassword) {\n      ctx.addIssue({\n        code: 'custom',\n        message: 'Passwords do not match',\n        path: ['confirmPassword'],\n      })\n    }\n  })\n  .transform(({ confirmPassword: _confirmPassword, displayName, address, ...rest }) => ({\n    ...rest,\n    ...(displayName === undefined ? {} : { displayName }),\n    address: {\n      line1: address.line1,\n      postcode: address.postcode,\n      ...(address.line2 === undefined ? {} : { line2: address.line2 }),\n    },\n  }))\n\nexport function validateSignup(body: unknown): SignupResult {\n  const result = signupSchema.safeParse(body ?? {})\n  if (!result.success) {\n    const errors: FieldErrors = {}\n    for (const issue of result.error.issues) {\n      const key = issue.path.map(String).join('.')\n      ;(errors[key] ??= []).push(issue.message)\n    }\n    return { ok: false, errors }\n  }\n  return { ok: true, user: result.data as NewUser }\n}\n"
+    },
+    {
+      "t": 41989,
+      "kind": "tool-result",
+      "tool": "Write",
+      "text": "The file /home/dev/project/src/signup.ts has been updated successfully. (file state is current in your context — no need to Read it back)",
+      "ok": true
+    },
+    {
+      "t": 43605,
+      "kind": "assistant",
+      "text": "Now I'll add tests covering each rule and run the suite."
+    },
+    {
+      "t": 49110,
+      "kind": "tool-call",
+      "tool": "Write",
+      "text": "Write /home/dev/project/test/signup.test.ts\nimport assert from 'node:assert/strict'\nimport { test } from 'node:test'\nimport { validateSignup } from '../src/signup.ts'\n\nconst validForm = {\n  email: 'ada@example.com',\n  password: 'correct horse battery',\n  confirmPassword: 'correct horse battery',\n  displayName: 'Ada',\n  address: { line1: '12 Analytical Row', line2: '', postcode: 'EC1A 1BB' },\n  interests: ['news'],\n}\n\nfunction errorsFor(form: unknown) {\n  const result = validateSignup(form)\n  assert.equal(result.ok, false)\n  return result.ok ? {} : result.errors\n}\n\ntest('returns the user without confirmPassword or unknown fields', () => {\n  const result = validateSignup({ ...validForm, extra: 'nope' })\n  assert.equal(result.ok, true)\n  if (!result.ok) return\n  assert.deepEqual(result.user, {\n    email: 'ada@example.com',\n    password: 'correct horse battery',\n    displayName: 'Ada',\n    address: { line1: '12 Analytical Row', postcode: 'EC1A 1BB' },\n    interests: ['news'],\n  })\n\n… [truncated] …\ndateSignup({ ...validForm, interests: undefined })\n  assert.equal(result.ok, true)\n  if (result.ok) assert.deepEqual(result.user.interests, [])\n})\n\ntest('unknown interests are reported at their index', () => {\n  assert.deepEqual(errorsFor({ ...validForm, interests: ['news', 'sports'] }), {\n    'interests.1': ['Unknown interest'],\n  })\n})\n\ntest('reports every problem in one response', () => {\n  assert.deepEqual(\n    errorsFor({\n      email: '',\n      password: 'short',\n      confirmPassword: 'other',\n      displayName: 'x',\n      address: { line1: '', postcode: '' },\n      interests: ['bogus'],\n    }),\n    {\n      email: ['Email is required'],\n      password: ['Password must be at least 12 characters'],\n      confirmPassword: ['Passwords do not match'],\n      displayName: ['Display name must be 2 to 30 characters'],\n      'address.line1': ['Address line 1 is required'],\n      'address.postcode': ['Postcode is required'],\n      'interests.0': ['Unknown interest'],\n    },\n  )\n})\n"
+    },
+    {
+      "t": 49125,
+      "kind": "tool-result",
+      "tool": "Write",
+      "text": "File created successfully at: /home/dev/project/test/signup.test.ts (file state is current in your context — no need to Read it back)",
+      "ok": true
+    },
+    {
+      "t": 50739,
+      "kind": "tool-call",
+      "tool": "Bash",
+      "text": "$ npm test 2>&1 | tail -80; npx tsc --noEmit --strict --module nodenext --moduleResolution nodenext --allowImportingTsExtensions --target es2022 src/*.ts test/*.ts 2>&1 | head -20"
+    },
+    {
+      "t": 51437,
+      "kind": "canary",
+      "text": "egress: blocked CONNECT registry.npmjs.org:443 during the agent phase",
+      "ok": false
+    },
+    {
+      "t": 51460,
+      "kind": "tool-result",
+      "tool": "Bash",
+      "text": "✔ address line 1 and postcode are required; line 2 is optional (0.317375ms)\n✔ interests default to an empty array (0.202292ms)\n✔ unknown interests are reported at their index (0.191833ms)\n✖ reports every problem in one response (0.40925ms)\nℹ tests 14\nℹ suites 0\nℹ pass 12\nℹ fail 2\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 312.337416\n\n✖ failing tests:\n\ntest at test/signup.test.ts:55:1\n✖ reports the password mismatch alongside other errors (0.955167ms)\n  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:\n  + actual - expected\n  \n    {\n  -   confirmPassword: [\n  -     'Passwords do not match'\n  -   ],\n      email: [\n        'Email is required'\n      ]\n    }\n  \n      at TestContext.<anonymous> (file:///home/dev/project/test/signup.test.ts:56:10)\n      at Test.runInAsyncScope (node:async_hooks:227:14)\n      at Test.run (node:internal/test_runner/test:1402:25)\n      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)\n      at Test.post\n… [truncated] …\ners' ], displayName: [ 'Display name must be 2 to 30 characters' ], 'address.line1': [ 'Address line 1 is required' ], 'address.postcode': [ 'Postcode is required' ], 'interests.0': [ 'Unknown interest' ] },\n    expected: { email: [ 'Email is required' ], password: [ 'Password must be at least 12 characters' ], confirmPassword: [ 'Passwords do not match' ], displayName: [ 'Display name must be 2 to 30 characters' ], 'address.line1': [ 'Address line 1 is required' ], 'address.postcode': [ 'Postcode is required' ], 'interests.0': [ 'Unknown interest' ] },\n    operator: 'deepStrictEqual',\n    diff: 'simple'\n  }\nnpm error code E403\nnpm error 403 403 Forbidden - GET https://registry.npmjs.org/tsc\nnpm error 403 In most cases, you or one of your dependencies are requesting a package version that is forbidden by your security policy, or on a server you do not have access to.\nnpm error A complete log of this run can be found in: /home/dev/.npm/_logs/2026-11-01T14_42_48_775Z-debug-0.log",
+      "ok": true
+    },
+    {
+      "t": 54808,
+      "kind": "assistant",
+      "text": "Zod 4 skips object-level refinements when a field has already failed, so the mismatch check gets dropped. I'll check whether a `when` option makes it run anyway."
+    },
+    {
+      "t": 56476,
+      "kind": "tool-call",
+      "tool": "Bash",
+      "text": "$ cat > /tmp/probe.mjs <<'EOF'\nimport { z } from 'zod'\nconst s = z.object({ email: z.string().min(1, {error:'req'}), password: z.string().optional(), confirm: z.string().optional() })\n  .check((ctx) => {\n    if (ctx.value.password !== undefined && ctx.value.password !== ctx.value.confirm)\n      ctx.issues.push({ code: 'custom', message: 'mismatch', path: ['confirm'], input: ctx.value, continue: true })\n  })\nconsole.log(JSON.stringify(s.safeParse({ password: 'abc', confirm: 'x' }).error.issues))\nconst r = z.object({ email: z.string().min(1, {error:'req'}), password: z.string().optional(), confirm: z.string().optional() })\n  .superRefine((d, ctx) => { if (d.password !== undefined && d.password !== d.confirm) ctx.addIssue({ code:'custom', message:'mismatch', path:['confirm'] }) })\nconsole.log(JSON.stringify(r.safeParse({ password: 'abc', confirm: 'x' }).error.issues))\nEOF\ncp /tmp/probe.mjs ./probe.tmp.mjs && node ./probe.tmp.mjs; rm -f ./probe.tmp.mjs"
+    },
+    {
+      "t": 56557,
+      "kind": "tool-result",
+      "tool": "Bash",
+      "text": "[{\"expected\":\"string\",\"code\":\"invalid_type\",\"path\":[\"email\"],\"message\":\"Invalid input: expected string, received undefined\"}]\n[{\"expected\":\"string\",\"code\":\"invalid_type\",\"path\":[\"email\"],\"message\":\"Invalid input: expected string, received undefined\"}]",
+      "ok": true
+    },
+    {
+      "t": 59026,
+      "kind": "tool-call",
+      "tool": "Bash",
+      "text": "$ cat > ./probe.tmp.mjs <<'EOF'\nimport { z } from 'zod'\nconst shape = { email: z.string().min(1, {error:'req'}), password: z.string().optional(), confirm: z.string().optional() }\nconst s = z.object(shape).refine((d) => d.password === undefined || d.password === d.confirm, {\n  message: 'mismatch', path: ['confirm'], when: () => true })\nconsole.log(JSON.stringify(s.safeParse({ password: 'abc', confirm: 'x' }).error.issues))\nconsole.log(JSON.stringify(s.safeParse({ email: 'a', password: 'abc', confirm: 'abc' }).success))\nEOF\nnode ./probe.tmp.mjs; rm -f ./probe.tmp.mjs"
+    },
+    {
+      "t": 59100,
+      "kind": "tool-result",
+      "tool": "Bash",
+      "text": "[{\"expected\":\"string\",\"code\":\"invalid_type\",\"path\":[\"email\"],\"message\":\"Invalid input: expected string, received undefined\"},{\"code\":\"custom\",\"path\":[\"confirm\"],\"message\":\"mismatch\"}]\ntrue",
+      "ok": true
+    },
+    {
+      "t": 60683,
+      "kind": "assistant",
+      "text": "`refine` with `when: () => true` runs alongside the field errors. I'll switch to that."
+    },
+    {
+      "t": 61635,
+      "kind": "tool-call",
+      "tool": "Edit",
+      "text": "Edit /home/dev/project/src/signup.ts\n-   .superRefine((data, ctx) => {\n    // Skip when the password is missing; \"Password is required\" already covers it.\n    if (data.password !== undefined && data.password !== data.confirmPassword) {\n      ctx.addIssue({\n        code: 'custom',\n        message: 'Passwords do not match',\n        path: ['confirmPassword'],\n      })\n    }\n  })\n+   // `when: () => true` makes this run even when fields already failed, so the\n  // mismatch is reported with the other errors. A missing password is skipped\n  // because \"Password is required\" already covers it.\n  .refine((data) => data.password === undefined || data.password === data.confirmPassword, {\n    message: 'Passwords do not match',\n    path: ['confirmPassword'],\n    when: () => true,\n  })"
+    },
+    {
+      "t": 61647,
+      "kind": "tool-result",
+      "tool": "Edit",
+      "text": "The file /home/dev/project/src/signup.ts has been updated successfully. (file state is current in your context — no need to Read it back)",
+      "ok": true
+    },
+    {
+      "t": 63391,
+      "kind": "tool-call",
+      "tool": "Bash",
+      "text": "$ npm test 2>&1 | grep -E \"^ℹ|✖\" ; ls node_modules/.bin | grep -E \"^tsc$\" && node_modules/.bin/tsc --noEmit --strict --module nodenext --moduleResolution nodenext --allowImportingTsExtensions --target es2022 src/*.ts test/*.ts; echo tsc-exit=$?"
+    },
+    {
+      "t": 63984,
+      "kind": "tool-result",
+      "tool": "Bash",
+      "text": "ℹ tests 14\nℹ suites 0\nℹ pass 14\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 395.946542\nls: cannot access 'node_modules/.bin': No such file or directory\ntsc-exit=1",
+      "ok": true
+    },
+    {
+      "t": 68476,
+      "kind": "assistant",
+      "text": "`validateSignup` now uses a zod 4 schema covering the whole form. All 14 tests pass: the 2 existing routes tests plus 12 new signup tests I added in `test/signup.test.ts`.\n\nThe return shape is unchanged. Errors are keyed by dot path, and the returned user drops `confirmPassword` and unknown fields. The mismatch error is reported together with the other field errors.\n\nChoices I made where the spec was silent:\n- **Whitespace-only values** count as blank for email, address lines, postcode and display name, so they get the \"required\" message. Password is not trimmed, and only an empty string counts as missing.\n- **Stored values**: only email is trimmed and lowercased. Address line 1, postcode and display name are stored as entered.\n- **Blank optional values** are omitted from the user: a blank `line2` or `displayName` is not present in the result.\n- **Password mismatch** is skipped when the password itself is missing, so a blank password gets only \"Password is required\". A short password that differs from its confirmation gets both messages, since they are separate problems.\n- **Missing `address`** is treated as empty, so both address errors show up.\n\nNot verified: I could not run a typecheck. `tsc` is not installed locally and `npx` was refused with a 403, so the tests are the only check. The schema uses `result.data as NewUser` in one place, so a `tsc` run is worth doing.\n\nNothing is committed."
+    },
+    {
+      "t": 68513,
+      "kind": "canary",
+      "text": "undeclared-command: ran tsc, which permissions.shell does not declare: node_modules/.bin/tsc --noEmit --strict --module nodenext --moduleResolution nodenext --allowImportingTsExtensions --...",
+      "ok": false
+    },
+    {
+      "t": 68513,
+      "kind": "verify",
+      "text": "verifier exit 0\n… [truncated] …\nnknown interests are reported by index (0.1855ms)\n✔ one message per problem (3.134041ms)\n✔ reports every problem at once, including the password mismatch (0.1495ms)\n▶ hostile bodies are rejected without throwing\n  ✔ null (0.152209ms)\n  ✔ undefined (0.065209ms)\n  ✔ \"email=ada@example.com\" (0.171041ms)\n  ✔ 42 (0.054666ms)\n  ✔ [] (0.062ms)\n  ✔ {\"email\":42,\"password\":[\"x\"]} (0.087666ms)\n  ✔ a non-string email is reported on the email field (0.097ms)\n✔ hostile bodies are rejected without throwing (0.881792ms)\n✔ creates the user for a valid form (3.092041ms)\n✔ rejects a form without an email (0.505667ms)\n✔ returns the user without confirmPassword or unknown fields (2.829375ms)\n✔ trims and lowercases the email before checking and storing it (0.272792ms)\n✔ blank email is reported as missing only (0.396875ms)\n✔ malformed email is reported as invalid (0.207167ms)\n✔ password must be at least 12 characters (0.191083ms)\n✔ reports the password mismatch alongside other errors (0.196041ms)\n✔ blank password is reported as missing, not as a mismatch (0.279166ms)\n✔ display name is optional but must be 2 to 30 characters when given (0.330083ms)\n✔ address line 1 and postcode are required; line 2 is optional (0.324917ms)\n✔ interests default to an empty array (0.173041ms)\n✔ unknown interests are reported at their index (0.189458ms)\n✔ reports every problem in one response (0.225041ms)\nℹ tests 37\nℹ suites 3\nℹ pass 37\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 392.72825\n",
+      "ok": true
+    }
+  ]
+}

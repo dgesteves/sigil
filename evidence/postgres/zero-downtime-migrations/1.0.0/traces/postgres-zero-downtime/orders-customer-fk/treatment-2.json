@@ -1,0 +1,297 @@
+{
+  "sigil": 1,
+  "capability": "postgres/zero-downtime-migrations",
+  "version": "1.0.0",
+  "suite": "postgres-zero-downtime",
+  "task": "orders-customer-fk",
+  "condition": "treatment",
+  "run": 2,
+  "agent": {
+    "id": "claude-code",
+    "version": "2.1.316"
+  },
+  "model": "claude-haiku-5-5",
+  "at": "2026-11-01T15:24:28.216Z",
+  "passed": true,
+  "tampered": false,
+  "falseDone": false,
+  "tokens": 402701,
+  "seconds": 225.4,
+  "costUsd": 0.020408710000000004,
+  "verifyOutput": "✔ new migrations apply on top of the production schema and data (2917.356126ms)\n✔ orders.customer_id is a validated foreign key to customers(id) (2.007083ms)\n✔ every constraint on orders is validated (1.544ms)\n✔ orphaned orders now belong to the placeholder customer and nothing else changed (73.905958ms)\n✔ the database rejects unknown customers, deleting customers with orders, and negative totals (5.336666ms)\n✔ no statement blocked writes to orders or customers while it scanned them (0.156666ms)\n✔ the whole migration history still applies to an empty database (1166.347542ms)\n✔ splits statements without breaking dollar quotes, strings or comments (16.417875ms)\n✔ applies files in lexical order and records them (2466.112376ms)\n✔ skips files that were already applied (1332.80675ms)\n✔ rolls back a failing file as a whole (1320.304459ms)\n✔ runs a no-transaction file statement by statement (1208.812084ms)\n✔ every migration applies to an empty database (1928.643834ms)\n✔ orders can be created, updated and listed newest first (1436.290584ms)\nℹ tests 14\nℹ suites 0\nℹ pass 14\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 34302.226225\n",
+  "events": [
+    {
+      "t": 737,
+      "kind": "system",
+      "text": "session started: claude-haiku-5-5, Claude Code 2.1.316"
+    },
+    {
+      "t": 2626,
+      "kind": "assistant",
+      "text": "I'll start by reading the existing migrations and the migrate tooling, then load the zero-downtime skill for the production constraints."
+    },
+    {
+      "t": 3124,
+      "kind": "tool-call",
+      "tool": "Bash",
+      "text": "$ git status --short && ls -la && cat package.json && ls -la migrations && for f in migrations/*; do echo \"=== $f\"; cat \"$f\"; done"
+    },
+    {
+      "t": 3156,
+      "kind": "tool-call",
+      "tool": "Skill",
+      "text": "Skill zero-downtime-migrations"
+    },
+    {
+      "t": 3170,
+      "kind": "tool-result",
+      "tool": "Bash",
+      "text": "total 60\ndrwxr-xr-x 1 dev dev 4096 Nov  1 15:20 .\ndrwxr-xr-x 1 dev dev 4096 Nov  1 15:20 ..\ndrwxr-xr-x 3 dev dev 4096 Nov  1 15:20 .claude\n-rw------- 1 dev dev  197 Nov  1 15:20 .env\ndrwxr-xr-x 8 dev dev 4096 Nov  1 15:20 .git\n-rw-r--r-- 1 dev dev   23 Nov  1 14:24 .gitignore\n-rw-r--r-- 1 dev dev 1278 Nov  1 14:24 README.md\ndrwxr-xr-x 2 dev dev 4096 Nov  1 14:24 migrations\ndrwxr-xr-x 5 dev dev 4096 Nov  1 15:20 node_modules\n-rw-r--r-- 1 dev dev 1314 Nov  1 14:24 package-lock.json\n-rw-r--r-- 1 dev dev  317 Nov  1 14:24 package.json\ndrwxr-xr-x 2 dev dev 4096 Nov  1 14:24 src\ndrwxr-xr-x 2 dev dev 4096 Nov  1 14:24 test\n-rw-r--r-- 1 dev dev  318 Nov  1 14:24 tsconfig.json\n{\n  \"name\": \"orders-service\",\n  \"version\": \"0.0.0\",\n  \"private\": true,\n  \"type\": \"module\",\n  \"engines\": {\n    \"node\": \">=24\"\n  },\n  \"scripts\": {\n    \"test\": \"node --test test/*.test.ts\",\n    \"migrate\": \"node src/cli.ts\"\n  },\n  \"dependencies\": {\n    \"@electric-sql/pglite\": \"0.5.14\",\n    \"libpg-query\": \"18.2.2\"\n  }\n\n… [truncated] …\nmptz NOT NULL DEFAULT now()\n);\n\nCREATE UNIQUE INDEX customers_email_key ON customers (lower(email));\n=== migrations/0002_create_orders.sql\n-- customer_id has no foreign key: orders were bulk-imported from the old shop before customers was clean.\nCREATE TABLE orders (\n  id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,\n  customer_id bigint NOT NULL,\n  status text NOT NULL DEFAULT 'pending',\n  total_cents integer NOT NULL,\n  currency text NOT NULL DEFAULT 'EUR',\n  created_at timestamptz NOT NULL DEFAULT now(),\n  updated_at timestamptz NOT NULL DEFAULT now()\n);\n\nCREATE INDEX orders_created_at_idx ON orders (created_at);\n=== migrations/0003_orders_notes.sql\nSET lock_timeout = '5s';\n\nALTER TABLE orders ADD COLUMN notes text;\n=== migrations/0004_deleted_customer_placeholder.sql\n-- Orders whose customer was erased (GDPR requests) are re-pointed at this row instead of being deleted.\nINSERT INTO customers (email, name) VALUES ('deleted-customer@internal.invalid', 'Deleted customer');",
+      "ok": true
+    },
+    {
+      "t": 3180,
+      "kind": "tool-result",
+      "tool": "Skill",
+      "text": "Launching skill: zero-downtime-migrations",
+      "ok": true
+    },
+    {
+      "t": 5021,
+      "kind": "assistant",
+      "text": "The skill's guidance is loaded. Next I need the migration runner, since it decides whether files run in one transaction, plus the README and tests."
+    },
+    {
+      "t": 5428,
+      "kind": "tool-call",
+      "tool": "Bash",
+      "text": "$ ls -la src test && for f in src/* README.md .gitignore tsconfig.json; do echo \"=== $f\"; cat \"$f\"; done && ls test && for f in test/*; do echo \"=== $f\"; cat \"$f\"; done"
+    },
+    {
+      "t": 5447,
+      "kind": "tool-result",
+      "tool": "Bash",
+      "text": "src:\ntotal 24\ndrwxr-xr-x 2 dev dev 4096 Nov  1 14:24 .\ndrwxr-xr-x 1 dev dev 4096 Nov  1 15:20 ..\n-rw-r--r-- 1 dev dev  255 Nov  1 14:24 cli.ts\n-rw-r--r-- 1 dev dev  227 Nov  1 14:24 db.ts\n-rw-r--r-- 1 dev dev 2513 Nov  1 14:24 migrate.ts\n-rw-r--r-- 1 dev dev 1090 Nov  1 14:24 orders.ts\n\ntest:\ntotal 16\ndrwxr-xr-x 2 dev dev 4096 Nov  1 14:24 .\ndrwxr-xr-x 1 dev dev 4096 Nov  1 15:20 ..\n-rw-r--r-- 1 dev dev 2505 Nov  1 14:24 migrate.test.ts\n-rw-r--r-- 1 dev dev 1250 Nov  1 14:24 schema.test.ts\n=== src/cli.ts\nimport { openLocalDb } from './db.ts'\nimport { migrate } from './migrate.ts'\n\nconst db = openLocalDb()\nconst applied = await migrate(db, 'migrations', (line) => console.log(line))\nif (applied.length === 0) console.log('nothing to apply')\nawait db.close()\n=== src/db.ts\nimport { PGlite } from '@electric-sql/pglite'\n\n/** Local development database. Production connections are configured by the platform. */\nexport function openLocalDb(dataDir = '.pglite'): PGlite {\n  return new PGli\n… [truncated] …\napplies to an empty database', async () => {\n  const db = new PGlite()\n  const applied = await migrate(db)\n  assert.ok(applied.length >= 3)\n  assert.deepEqual(await migrate(db), [])\n})\n\ntest('orders can be created, updated and listed newest first', async () => {\n  const db = new PGlite()\n  await migrate(db)\n  const { rows } = await db.query(\n    `INSERT INTO customers (email, name) VALUES ('ana@example.com', 'Ana') RETURNING id`,\n  )\n  const customerId = Number((rows[0] as { id: number }).id)\n  const first = await createOrder(db, { customerId, totalCents: 1200 })\n  const second = await createOrder(db, { customerId, totalCents: 900 })\n  await setStatus(db, Number((first as { id: number }).id), 'paid')\n  const history = await orderHistory(db, customerId)\n  assert.equal(history.length, 2)\n  const ids = history.map((r) => Number((r as { id: number }).id)).sort((a, b) => a - b)\n  assert.deepEqual(ids, [Number((first as { id: number }).id), Number((second as { id: number }).id)])\n})",
+      "ok": true
+    },
+    {
+      "t": 50229,
+      "kind": "assistant",
+      "text": "The runner matters here: each file runs in its own transaction unless its first line is `-- migrate:no-transaction`, and it sets no `lock_timeout`. So the plan splits into four files. I'll write them, then test them locally against PGlite with orphan rows and negative totals."
+    },
+    {
+      "t": 51112,
+      "kind": "tool-call",
+      "tool": "Write",
+      "text": "Write /home/dev/project/migrations/0005_orders_customer_id_index.sql\n-- migrate:no-transaction\n-- Index for the customer_id foreign key (0006). Without it, deleting a customer scans all of orders\n-- to check for references. Built without blocking writes; a failed build leaves an INVALID index,\n-- so drop any leftover before building again.\nDROP INDEX CONCURRENTLY IF EXISTS orders_customer_id_idx;\nCREATE INDEX CONCURRENTLY orders_customer_id_idx ON orders (customer_id);\n"
+    },
+    {
+      "t": 51128,
+      "kind": "tool-result",
+      "tool": "Write",
+      "text": "File created successfully at: /home/dev/project/migrations/0005_orders_customer_id_index.sql (file state is current in your context — no need to Read it back)",
+      "ok": true
+    },
+    {
+      "t": 52332,
+      "kind": "tool-call",
+      "tool": "Write",
+      "text": "Write /home/dev/project/migrations/0006_orders_customer_fk_and_total_check.sql\n-- Enforced for new and updated rows right away. Existing rows are checked by 0008, after they are fixed up.\n-- Both constraints are added NOT VALID, so no table scan happens under the strong lock. The short\n-- lock_timeout keeps a long-running query from queueing writes behind this statement.\nSET LOCAL lock_timeout = '5s';\nALTER TABLE orders ADD CONSTRAINT orders_customer_id_fk\n  FOREIGN KEY (customer_id) REFERENCES customers (id) NOT VALID;\nALTER TABLE orders ADD CONSTRAINT orders_total_cents_nonnegative\n  CHECK (total_cents >= 0) NOT VALID;\n"
+    },
+    {
+      "t": 52346,
+      "kind": "tool-result",
+      "tool": "Write",
+      "text": "File created successfully at: /home/dev/project/migrations/0006_orders_customer_fk_and_total_check.sql (file state is current in your context — no need to Read it back)",
+      "ok": true
+    },
+    {
+      "t": 54463,
+      "kind": "tool-call",
+      "tool": "Write",
+      "text": "Write /home/dev/project/migrations/0007_reassign_orphaned_orders.sql\n-- migrate:no-transaction\n-- Re-points orders from the 2019 import whose customer no longer exists at the placeholder customer\n-- from 0004. Runs in batches by primary key; each batch commits on its own, so row locks are held\n-- only briefly and the job can be rerun safely (already-fixed rows no longer match).\nSET lock_timeout = '5s';\nDO $$\nDECLARE\n  placeholder_id bigint;\n  chunk constant bigint := 10000;\n  lower_key bigint := 0;\n  max_key bigint;\n  moved bigint;\n  total bigint := 0;\nBEGIN\n  SELECT id INTO placeholder_id FROM customers\n  WHERE lower(email) = 'deleted-customer@internal.invalid';\n  IF placeholder_id IS NULL THEN\n    RAISE EXCEPTION 'placeholder customer deleted-customer@internal.invalid is missing (see 0004)';\n  END IF;\n\n  SELECT coalesce(max(id), 0) INTO max_key FROM orders;\n  WHILE lower_key <= max_key LOOP\n    UPDATE orders o SET customer_id = placeholder_id\n    WHERE o.id >= lower_key AND o.id < lower_key + chunk\n      AND NOT EXISTS (SELECT 1 FROM customers c WHERE c.id = o.customer_id);\n    GET DIAGNOSTICS moved = ROW_COUNT;\n    total := total + moved;\n    lower_key := lower_key + chunk;\n    COMMIT;\n  END LOOP;\n  RAISE NOTICE 'reassigned % orphaned orders to the deleted-customer placeholder', total;\nEND\n$$;\nRESET lock_timeout;\n"
+    },
+    {
+      "t": 54473,
+      "kind": "tool-result",
+      "tool": "Write",
+      "text": "File created successfully at: /home/dev/project/migrations/0007_reassign_orphaned_orders.sql (file state is current in your context — no need to Read it back)",
+      "ok": true
+    },
+    {
+      "t": 55231,
+      "kind": "tool-call",
+      "tool": "Write",
+      "text": "Write /home/dev/project/migrations/0008_validate_orders_constraints.sql\n-- Checks the rows that existed before 0006. VALIDATE takes SHARE UPDATE EXCLUSIVE, which does not\n-- block reads or writes. If it fails, a row still violates the constraint; fix the data and rerun.\nALTER TABLE orders VALIDATE CONSTRAINT orders_customer_id_fk;\nALTER TABLE orders VALIDATE CONSTRAINT orders_total_cents_nonnegative;\n"
+    },
+    {
+      "t": 55242,
+      "kind": "tool-result",
+      "tool": "Write",
+      "text": "File created successfully at: /home/dev/project/migrations/0008_validate_orders_constraints.sql (file state is current in your context — no need to Read it back)",
+      "ok": true
+    },
+    {
+      "t": 57599,
+      "kind": "assistant",
+      "text": "Now a test that builds the pre-change schema, seeds the bad data, runs the real migrations, and checks the outcome."
+    },
+    {
+      "t": 61906,
+      "kind": "tool-call",
+      "tool": "Write",
+      "text": "Write /home/dev/project/test/orders_constraints.test.ts\nimport assert from 'node:assert/strict'\nimport { copyFile, mkdtemp } from 'node:fs/promises'\nimport { tmpdir } from 'node:os'\nimport { join } from 'node:path'\nimport { test } from 'node:test'\nimport { PGlite } from '@electric-sql/pglite'\nimport { migrate } from '../src/migrate.ts'\n\nconst MIGRATIONS = 'migrations'\nconst EXISTING = ['0001_create_customers.sql', '0002_create_orders.sql', '0003_orders_notes.sql', '0004_deleted_customer_placeholder.sql']\n\nasync function migrateUpTo(db: PGlite, files: string[]) {\n  const dir = await mkdtemp(join(tmpdir(), 'migrations-'))\n  for (const f of files) await copyFile(join(MIGRATIONS, f), join(dir, f))\n  await migrate(db, dir)\n}\n\nasync function scalar(db: PGlite, sql: string, params: unknown[] = []): Promise<unknown> {\n  const { rows } = await db.query(sql, params)\n  return Object.values(rows[0] as object)[0]\n}\n\ntest('orphaned orders are re-pointed at the placeholder, then the constrain\n… [truncated] …\ners o WHERE NOT EXISTS (SELECT 1 FROM customers c WHERE c.id = o.customer_id)`,\n  )\n  assert.equal(orphans, 0)\n  assert.equal(\n    Number(await scalar(db, `SELECT count(*) FROM orders WHERE customer_id = $1`, [placeholder])),\n    2,\n  )\n\n  // Constraint names are the ones the migrations create.\n  const validated = await db.query(\n    `SELECT conname FROM pg_constraint WHERE conrelid = 'orders'::regclass AND convalidated`,\n  )\n  assert.deepEqual(validated.rows.map((r) => (r as { conname: string }).conname).sort(), [\n    'orders_customer_id_fk',\n    'orders_total_cents_nonnegative',\n  ])\n\n  await assert.rejects(\n    db.query(`INSERT INTO orders (customer_id, total_cents) VALUES (999, 100)`),\n    /orders_customer_id_fk/,\n  )\n  await assert.rejects(\n    db.query(`INSERT INTO orders (customer_id, total_cents) VALUES ($1, -1)`, [ana]),\n    /orders_total_cents_nonnegative/,\n  )\n  await assert.rejects(db.query(`DELETE FROM customers WHERE id = $1`, [ana]), /orders_customer_id_fk/)\n})\n"
+    },
+    {
+      "t": 61919,
+      "kind": "tool-result",
+      "tool": "Write",
+      "text": "File created successfully at: /home/dev/project/test/orders_constraints.test.ts (file state is current in your context — no need to Read it back)",
+      "ok": true
+    },
+    {
+      "t": 64718,
+      "kind": "tool-call",
+      "tool": "Edit",
+      "text": "Edit /home/dev/project/test/orders_constraints.test.ts\n-   // Pre-deploy data: one live customer, one hard-deleted customer's orders, one with a negative total\n  // (which must now be a violation for both new and existing rows).\n+   // Pre-deploy data: one live customer, plus two orders pointing at a hard-deleted customer (id 999)."
+    },
+    {
+      "t": 64731,
+      "kind": "tool-result",
+      "tool": "Edit",
+      "text": "The file /home/dev/project/test/orders_constraints.test.ts has been updated successfully. (file state is current in your context — no need to Read it back)",
+      "ok": true
+    },
+    {
+      "t": 66549,
+      "kind": "tool-call",
+      "tool": "Bash",
+      "text": "$ node --test test/orders_constraints.test.ts 2>&1 | tail -60; echo \"---- all tests\"; npm test 2>&1 | tail -25"
+    },
+    {
+      "t": 69561,
+      "kind": "system",
+      "text": "task_started"
+    },
+    {
+      "t": 120149,
+      "kind": "system",
+      "text": "task_notification"
+    },
+    {
+      "t": 120150,
+      "kind": "tool-result",
+      "tool": "Bash",
+      "text": "✖ orphaned orders are re-pointed at the placeholder, then the constraints are enforced (1971.42925ms)\nℹ tests 1\nℹ suites 0\nℹ pass 0\nℹ fail 1\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 12060.406505\n\n✖ failing tests:\n\ntest at test/orders_constraints.test.ts:23:1\n✖ orphaned orders are re-pointed at the placeholder, then the constraints are enforced (1971.42925ms)\n  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:\n  + actual - expected\n  \n    [\n  +   'orders_created_at_not_null',\n  +   'orders_currency_not_null',\n      'orders_customer_id_fk',\n  +   'orders_customer_id_not_null',\n  +   'orders_id_not_null',\n  +   'orders_pkey',\n  +   'orders_status_not_null',\n      'orders_total_cents_nonnegative',\n  +   'orders_total_cents_not_null',\n  +   'orders_updated_at_not_null'\n    ]\n  \n      at TestContext.<anonymous> (file:///home/dev/project/test/orders_constraints.test.ts:53:10)\n      at async Test.run (node:internal/test_runner/test:1409:7)\n      at asyn\n… [truncated] …\n    'orders_customer_id_fk',\n  +   'orders_customer_id_not_null',\n  +   'orders_id_not_null',\n  +   'orders_pkey',\n  +   'orders_status_not_null',\n      'orders_total_cents_nonnegative',\n  +   'orders_total_cents_not_null',\n  +   'orders_updated_at_not_null'\n    ]\n  \n      at TestContext.<anonymous> (file:///home/dev/project/test/orders_constraints.test.ts:53:10)\n      at async Test.run (node:internal/test_runner/test:1409:7)\n      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {\n    generatedMessage: true,\n    code: 'ERR_ASSERTION',\n    actual: [ 'orders_created_at_not_null', 'orders_currency_not_null', 'orders_customer_id_fk', 'orders_customer_id_not_null', 'orders_id_not_null', 'orders_pkey', 'orders_status_not_null', 'orders_total_cents_nonnegative', 'orders_total_cents_not_null', 'orders_updated_at_not_null' ],\n    expected: [ 'orders_customer_id_fk', 'orders_total_cents_nonnegative' ],\n    operator: 'deepStrictEqual',\n    diff: 'simple'\n  }",
+      "ok": true
+    },
+    {
+      "t": 123896,
+      "kind": "assistant",
+      "text": "The failure is in my test, not the migration: PG 18 lists NOT NULL constraints in `pg_constraint` too. I'll filter to foreign-key and check constraints only."
+    },
+    {
+      "t": 124424,
+      "kind": "tool-call",
+      "tool": "Edit",
+      "text": "Edit /home/dev/project/test/orders_constraints.test.ts\n-     `SELECT conname FROM pg_constraint WHERE conrelid = 'orders'::regclass AND convalidated`,\n+     `SELECT conname FROM pg_constraint\n     WHERE conrelid = 'orders'::regclass AND contype IN ('f', 'c') AND convalidated`,"
+    },
+    {
+      "t": 124451,
+      "kind": "tool-result",
+      "tool": "Edit",
+      "text": "The file /home/dev/project/test/orders_constraints.test.ts has been updated successfully. (file state is current in your context — no need to Read it back)",
+      "ok": true
+    },
+    {
+      "t": 124919,
+      "kind": "tool-call",
+      "tool": "Bash",
+      "text": "$ node --test test/orders_constraints.test.ts 2>&1 | grep -E \"^# |ℹ (pass|fail)|✖|✔\" ; echo \"---- all tests\"; npm test 2>&1 | grep -E \"ℹ (tests|pass|fail)|✖\""
+    },
+    {
+      "t": 127940,
+      "kind": "system",
+      "text": "task_started"
+    },
+    {
+      "t": 179450,
+      "kind": "system",
+      "text": "task_notification"
+    },
+    {
+      "t": 179454,
+      "kind": "tool-result",
+      "tool": "Bash",
+      "text": "✔ orphaned orders are re-pointed at the placeholder, then the constraints are enforced (2097.784042ms)\nℹ pass 1\nℹ fail 0\n---- all tests\nℹ tests 8\nℹ pass 8\nℹ fail 0",
+      "ok": true
+    },
+    {
+      "t": 183401,
+      "kind": "assistant",
+      "text": "All 8 tests pass. One failure mode is still unverified: a pre-existing negative `total_cents` should make 0008 fail loudly while leaving 0005–0007 applied. I'll check that with a throwaway script, then delete it."
+    },
+    {
+      "t": 185061,
+      "kind": "tool-call",
+      "tool": "Bash",
+      "text": "$ cat > test/tmp_negative.test.ts <<'EOF'\nimport assert from 'node:assert/strict'\nimport { test } from 'node:test'\nimport { PGlite } from '@electric-sql/pglite'\nimport { migrate } from '../src/migrate.ts'\ntest('negative existing total blocks validation only', async () => {\n  const db = new PGlite()\n  const { mkdtemp, copyFile } = await import('node:fs/promises')\n  const { tmpdir } = await import('node:os'); const { join } = await import('node:path')\n  const dir = await mkdtemp(join(tmpdir(), 'm-'))\n  for (const f of ['0001_create_customers.sql','0002_create_orders.sql','0003_orders_notes.sql','0004_deleted_customer_placeholder.sql']) await copyFile(join('migrations', f), join(dir, f))\n  await migrate(db, dir)\n  await db.query(`INSERT INTO orders (customer_id, total_cents) VALUES (999, -5)`)\n  await assert.rejects(migrate(db, 'migrations'), /0008_validate_orders_constraints\\.sql/)\n  const r = await db.query(`SELECT filename FROM schema_migrations ORDER BY filename`)\n  console.log(r.rows.map((x) => (x as {filename:string}).filename).join(' '))\n  const c = await db.query(`SELECT convalidated FROM pg_constraint WHERE conname = 'orders_total_cents_nonnegative'`)\n  console.log('validated:', (c.rows[0] as {convalidated:boolean}).convalidated)\n  await assert.rejects(db.query(`INSERT INTO orders (customer_id, total_cents) VALUES (999, -1)`), /nonnegative/)\n})\nEOF\nnode --test test/tmp_negative.test.ts 2>&1 | grep -vE \"^\\s*$\" | head -30; rm -f test/tmp_negative.test.ts; git status --short"
+    },
+    {
+      "t": 188085,
+      "kind": "system",
+      "text": "task_started"
+    },
+    {
+      "t": 197545,
+      "kind": "system",
+      "text": "task_notification"
+    },
+    {
+      "t": 197550,
+      "kind": "tool-result",
+      "tool": "Bash",
+      "text": "✖ negative existing total blocks validation only (2219.924584ms)\nℹ tests 1\nℹ suites 0\nℹ pass 0\nℹ fail 1\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 12415.334173\n✖ failing tests:\ntest at test/tmp_negative.test.ts:5:1\n✖ negative existing total blocks validation only (2219.924584ms)\n  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /0008_validate_orders_constraints\\.sql/. Input:\n  'error: new row for relation \"orders\" violates check constraint \"orders_total_cents_nonnegative\"'\n      at async TestContext.<anonymous> (file:///home/dev/project/test/tmp_negative.test.ts:13:3)\n      at async Test.run (node:internal/test_runner/test:1409:7)\n      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {\n    generatedMessage: true,\n    code: 'ERR_ASSERTION',\n    actual: error: new row for relation \"orders\" violates check constraint \"orders_total_cents_nonnegative\"\n        at pe.Oe (file:///home/dev/project/node_modules/@electric-s\n… [truncated] …\nJL7B.js:1:18174)\n        at pe.tt (file:///home/dev/project/node_modules/@electric-sql/pglite/dist/chunk-EP7TJL7B.js:1:15560)\n        at pe.parse (file:///home/dev/project/node_modules/@electric-sql/pglite/dist/chunk-EP7TJL7B.js:1:14234)\n        at D.ze (file:///home/dev/project/node_modules/@electric-sql/pglite/dist/chunk-66APQTYC.js:5:1759)\n        at file:///home/dev/project/node_modules/@electric-sql/pglite/dist/chunk-66APQTYC.js:5:1151\n        at wasm://wasm/022aac12:wasm-function[10953]:0x52a5d7\n        at wasm://wasm/022aac12:wasm-function[3598]:0x2159d1\n        at wasm://wasm/022aac12:wasm-function[3640]:0x21ce4a\n        at wasm://wasm/022aac12:wasm-function[3650]:0x21d07f\n        at wasm://wasm/022aac12:wasm-function[9935]:0x4d6fbb,\n?? migrations/0005_orders_customer_id_index.sql\n?? migrations/0006_orders_customer_fk_and_total_check.sql\n?? migrations/0007_reassign_orphaned_orders.sql\n?? migrations/0008_validate_orders_constraints.sql\n?? test/orders_constraints.test.ts",
+      "ok": true
+    },
+    {
+      "t": 203607,
+      "kind": "assistant",
+      "text": "The scratch check surfaced something more useful than I expected. The negative row is also an orphan here, so the reassignment `UPDATE` in 0007 re-checks it under the new NOT VALID CHECK and fails before 0008 runs. I'll confirm the other case too: a negative row that belongs to a live customer should fail at 0008."
+    },
+    {
+      "t": 205882,
+      "kind": "tool-call",
+      "tool": "Bash",
+      "text": "$ cat > test/tmp_negative.test.ts <<'EOF'\nimport assert from 'node:assert/strict'\nimport { test } from 'node:test'\nimport { PGlite } from '@electric-sql/pglite'\nimport { migrate } from '../src/migrate.ts'\nimport { mkdtemp, copyFile } from 'node:fs/promises'\nimport { tmpdir } from 'node:os'\nimport { join } from 'node:path'\ntest('negative total on a live customer fails at 0008 only', async () => {\n  const db = new PGlite()\n  const dir = await mkdtemp(join(tmpdir(), 'm-'))\n  for (const f of ['0001_create_customers.sql','0002_create_orders.sql','0003_orders_notes.sql','0004_deleted_customer_placeholder.sql']) await copyFile(join('migrations', f), join(dir, f))\n  await migrate(db, dir)\n  await db.query(`INSERT INTO customers (email, name) VALUES ('a@x.io','A')`)\n  await db.query(`INSERT INTO orders (customer_id, total_cents) VALUES ((SELECT id FROM customers WHERE email='a@x.io'), -5)`)\n  await assert.rejects(migrate(db, 'migrations'), /0008_validate_orders_constraints\\.sql/)\n  const r = await db.query(`SELECT filename FROM schema_migrations ORDER BY filename`)\n  console.log('applied:', r.rows.map((x) => (x as {filename:string}).filename).join(' '))\n  const c = await db.query(`SELECT convalidated FROM pg_constraint WHERE conname = 'orders_total_cents_nonnegative'`)\n  console.log('validated:', (c.rows[0] as {convalidated:boolean}).convalidated)\n  await assert.rejects(db.query(`INSERT INTO orders (customer_id, total_cents) VALUES ((SELECT id FROM customers LIMIT 1), -1)`), /nonnegative/)\n})\nEOF\nnode --test test/tmp_negative.test.ts 2>&1 | grep -E \"applied:|validated:|ℹ (pass|fail)|Error|error:\" | head; rm -f test/tmp_negative.test.ts; git status --short test"
+    },
+    {
+      "t": 208890,
+      "kind": "system",
+      "text": "task_started"
+    },
+    {
+      "t": 218304,
+      "kind": "system",
+      "text": "task_notification"
+    },
+    {
+      "t": 218307,
+      "kind": "tool-result",
+      "tool": "Bash",
+      "text": "applied: 0001_create_customers.sql 0002_create_orders.sql 0003_orders_notes.sql 0004_deleted_customer_placeholder.sql 0005_orders_customer_id_index.sql 0006_orders_customer_fk_and_total_check.sql 0007_reassign_orphaned_orders.sql\nvalidated: false\nℹ pass 1\nℹ fail 0\n?? test/orders_constraints.test.ts",
+      "ok": true
+    },
+    {
+      "t": 225357,
+      "kind": "assistant",
+      "text": "The constraints are in place as four migrations (0005–0008), with a test. Nothing has run against production, and nothing is committed.\n\n**What the migrations do**\n\n- **0005**: `CREATE INDEX CONCURRENTLY orders_customer_id_idx`, run outside a transaction. Without it, deleting a customer would scan all of `orders`. It drops any leftover invalid index first, so a rerun after a failed build works.\n- **0006**: adds `orders_customer_id_fk` (a foreign key to `customers.id`, default `NO ACTION`, so deleting a customer with orders fails) and `orders_total_cents_nonnegative` (`CHECK (total_cents >= 0)`), both `NOT VALID`. Both are enforced for new and updated rows immediately. Each statement has `lock_timeout = 5s`.\n- **0007**: reassigns orphaned orders to the placeholder, looked up by email. It runs in batches of 10,000 by primary key, committing after each, and it is idempotent. It fails if the placeholder is missing.\n- **0008**: `VALIDATE CONSTRAINT` on both. This takes only `SHARE U\n… [truncated] …\ntal_cents` blocks the deploy. If it sits on an orphaned order, it fails in 0007 (the reassignment `UPDATE` re-checks it), and the error has no filename. Run `SELECT count(*) FROM orders WHERE total_cents < 0;` against production first.\n- **Orphan count and index build time.** I couldn't measure these. The index build and the 0007 scan run as part of `npm run migrate`, before the new code starts. Both are non-blocking, but the deploy waits for them.\n- **Erasure path.** The GDPR erasure code isn't in this repo. Once the FK exists, a customer delete fails while orders still reference them. The erasure flow must re-point those orders first, or it will start failing.\n- **Lock waits.** If 0006 can't get its lock within 5s, the deploy fails and needs a retry.\n\nI didn't change `src/migrate.ts` because the README says it's vendored from the platform repo. One thing to raise there: the no-transaction path doesn't add the filename to errors, which is why the 0007 failure has no filename."
+    },
+    {
+      "t": 225415,
+      "kind": "verify",
+      "text": "verifier exit 0\n✔ new migrations apply on top of the production schema and data (2917.356126ms)\n✔ orders.customer_id is a validated foreign key to customers(id) (2.007083ms)\n✔ every constraint on orders is validated (1.544ms)\n✔ orphaned orders now belong to the placeholder customer and nothing else changed (73.905958ms)\n✔ the database rejects unknown customers, deleting customers with orders, and negative totals (5.336666ms)\n✔ no statement blocked writes to orders or customers while it scanned them (0.156666ms)\n✔ the whole migration history still applies to an empty database (1166.347542ms)\n✔ splits statements without breaking dollar quotes, strings or comments (16.417875ms)\n✔ applies files in lexical order and records them (2466.112376ms)\n✔ skips files that were already applied (1332.80675ms)\n✔ rolls back a failing file as a whole (1320.304459ms)\n✔ runs a no-transaction file statement by statement (1208.812084ms)\n✔ every migration applies to an empty database (1928.643834ms)\n✔ orders can be created, updated and listed newest first (1436.290584ms)\nℹ tests 14\nℹ suites 0\nℹ pass 14\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 34302.226225\n",
+      "ok": true
+    }
+  ]
+}

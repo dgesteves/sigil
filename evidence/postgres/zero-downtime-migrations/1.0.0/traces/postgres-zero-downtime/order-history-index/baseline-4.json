@@ -1,0 +1,219 @@
+{
+  "sigil": 1,
+  "capability": "postgres/zero-downtime-migrations",
+  "version": "1.0.0",
+  "suite": "postgres-zero-downtime",
+  "task": "order-history-index",
+  "condition": "baseline",
+  "run": 4,
+  "agent": {
+    "id": "claude-code",
+    "version": "2.1.316"
+  },
+  "model": "claude-haiku-5-5",
+  "at": "2026-11-01T15:24:34.089Z",
+  "passed": true,
+  "tampered": false,
+  "falseDone": false,
+  "tokens": 210760,
+  "seconds": 184.6,
+  "costUsd": 0.00942741,
+  "verifyOutput": "✔ a new migration applies on top of the production schema and data (3239.563919ms)\n✔ order history reads the newest rows straight from an index, without a sort (8.666041ms)\n✔ no statement blocked writes to orders while it scanned or rewrote the table (0.116833ms)\n✔ no invalid index is left behind (0.681292ms)\n✔ the whole migration history still applies to an empty database (1274.339042ms)\n✔ splits statements without breaking dollar quotes, strings or comments (16.588416ms)\n✔ applies files in lexical order and records them (2196.266626ms)\n✔ skips files that were already applied (1083.786543ms)\n✔ rolls back a failing file as a whole (1125.794084ms)\n✔ runs a no-transaction file statement by statement (1160.785959ms)\n✔ every migration applies to an empty database (1809.326834ms)\n✔ orders can be created, updated and listed newest first (1254.438709ms)\nℹ tests 12\nℹ suites 0\nℹ pass 12\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 33691.036641\n",
+  "events": [
+    {
+      "t": 778,
+      "kind": "system",
+      "text": "session started: claude-haiku-5-5, Claude Code 2.1.316"
+    },
+    {
+      "t": 1803,
+      "kind": "assistant",
+      "text": "I'll start with the README, the query in `src/orders.ts`, and the existing migrations."
+    },
+    {
+      "t": 2300,
+      "kind": "tool-call",
+      "tool": "Bash",
+      "text": "$ git status --short && ls -la && cat README.md && echo ---- && cat src/orders.ts && echo ---- && find . -path ./node_modules -prune -o -type f -print | grep -i -E 'migrat|schema|\\.sql$' | head -100"
+    },
+    {
+      "t": 2360,
+      "kind": "tool-result",
+      "tool": "Bash",
+      "text": "total 56\ndrwxr-xr-x 1 dev dev 4096 Nov  1 15:20 .\ndrwxr-xr-x 1 dev dev 4096 Nov  1 15:20 ..\n-rw------- 1 dev dev  197 Nov  1 15:20 .env\ndrwxr-xr-x 8 dev dev 4096 Nov  1 15:20 .git\n-rw-r--r-- 1 dev dev   23 Nov  1 14:24 .gitignore\n-rw-r--r-- 1 dev dev 1278 Nov  1 14:24 README.md\ndrwxr-xr-x 2 dev dev 4096 Nov  1 14:24 migrations\ndrwxr-xr-x 5 dev dev 4096 Nov  1 15:20 node_modules\n-rw-r--r-- 1 dev dev 1314 Nov  1 14:24 package-lock.json\n-rw-r--r-- 1 dev dev  317 Nov  1 14:24 package.json\ndrwxr-xr-x 2 dev dev 4096 Nov  1 14:24 src\ndrwxr-xr-x 2 dev dev 4096 Nov  1 14:24 test\n-rw-r--r-- 1 dev dev  318 Nov  1 14:24 tsconfig.json\n# orders-service\n\nOrder API for the shop: customers, orders and order history. Node 24 runs the TypeScript directly;\nthe database is PostgreSQL 18.\n\n## Commands\n\n```sh\nnpm test          # test/*.test.ts against an in-memory Postgres 18 (PGlite)\nnpm run migrate   # applies pending migrations to the local dev database in .pglite/\n```\n\n## Database\n\nProduction is \n… [truncated] …\nR BY created_at DESC\n  LIMIT $2`\n\n/** Backs GET /customers/:id/orders (newest first, paginated by the client). */\nexport async function orderHistory(db: Queryable, customerId: number, limit = 20) {\n  return (await db.query(ORDER_HISTORY_SQL, [customerId, limit])).rows\n}\n\nexport async function createOrder(db: Queryable, order: NewOrder) {\n  const { rows } = await db.query(\n    `INSERT INTO orders (customer_id, total_cents, currency)\n     VALUES ($1, $2, $3)\n     RETURNING id, status, total_cents, currency, created_at`,\n    [order.customerId, order.totalCents, order.currency ?? 'EUR'],\n  )\n  return rows[0]\n}\n\nexport async function setStatus(db: Queryable, orderId: number, status: string) {\n  await db.query('UPDATE orders SET status = $2, updated_at = now() WHERE id = $1', [\n    orderId,\n    status,\n  ])\n}\n----\n./migrations/0001_create_customers.sql\n./migrations/0003_orders_notes.sql\n./migrations/0002_create_orders.sql\n./src/migrate.ts\n./test/migrate.test.ts\n./test/schema.test.ts",
+      "ok": true
+    },
+    {
+      "t": 3891,
+      "kind": "tool-call",
+      "tool": "Bash",
+      "text": "$ for f in migrations/*.sql; do echo \"== $f\"; cat \"$f\"; echo; done; echo ==== migrate.ts; cat src/migrate.ts; echo ==== schema.test; cat test/schema.test.ts; echo ==== package.json; cat package.json; echo; git log --oneline | head"
+    },
+    {
+      "t": 3911,
+      "kind": "tool-result",
+      "tool": "Bash",
+      "text": "== migrations/0001_create_customers.sql\nCREATE TABLE customers (\n  id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,\n  email text NOT NULL,\n  name text NOT NULL,\n  created_at timestamptz NOT NULL DEFAULT now()\n);\n\nCREATE UNIQUE INDEX customers_email_key ON customers (lower(email));\n\n== migrations/0002_create_orders.sql\n-- customer_id has no foreign key: orders were bulk-imported from the old shop before customers was clean.\nCREATE TABLE orders (\n  id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,\n  customer_id bigint NOT NULL,\n  status text NOT NULL DEFAULT 'pending',\n  total_cents integer NOT NULL,\n  currency text NOT NULL DEFAULT 'EUR',\n  created_at timestamptz NOT NULL DEFAULT now(),\n  updated_at timestamptz NOT NULL DEFAULT now()\n);\n\nCREATE INDEX orders_created_at_idx ON orders (created_at);\n\n== migrations/0003_orders_notes.sql\nSET lock_timeout = '5s';\n\nALTER TABLE orders ADD COLUMN notes text;\n\n==== migrate.ts\n// Vendored from the platform repo (platform/db/migrate.ts)\n… [truncated] …\nO customers (email, name) VALUES ('ana@example.com', 'Ana') RETURNING id`,\n  )\n  const customerId = Number((rows[0] as { id: number }).id)\n  const first = await createOrder(db, { customerId, totalCents: 1200 })\n  const second = await createOrder(db, { customerId, totalCents: 900 })\n  await setStatus(db, Number((first as { id: number }).id), 'paid')\n  const history = await orderHistory(db, customerId)\n  assert.equal(history.length, 2)\n  const ids = history.map((r) => Number((r as { id: number }).id)).sort((a, b) => a - b)\n  assert.deepEqual(ids, [Number((first as { id: number }).id), Number((second as { id: number }).id)])\n})\n==== package.json\n{\n  \"name\": \"orders-service\",\n  \"version\": \"0.0.0\",\n  \"private\": true,\n  \"type\": \"module\",\n  \"engines\": {\n    \"node\": \">=24\"\n  },\n  \"scripts\": {\n    \"test\": \"node --test test/*.test.ts\",\n    \"migrate\": \"node src/cli.ts\"\n  },\n  \"dependencies\": {\n    \"@electric-sql/pglite\": \"0.5.14\",\n    \"libpg-query\": \"18.2.2\"\n  }\n}\n\nc77ca2e Initial commit",
+      "ok": true
+    },
+    {
+      "t": 13573,
+      "kind": "assistant",
+      "text": "The runner runs `-- migrate:no-transaction` files one statement at a time, which is what `CREATE INDEX CONCURRENTLY` needs. Before writing anything, I'll check the baseline test run and the Node version."
+    },
+    {
+      "t": 13835,
+      "kind": "tool-call",
+      "tool": "Bash",
+      "text": "$ node --version && npm test 2>&1 | tail -25"
+    },
+    {
+      "t": 16851,
+      "kind": "system",
+      "text": "task_started"
+    },
+    {
+      "t": 43903,
+      "kind": "system",
+      "text": "task_notification"
+    },
+    {
+      "t": 43907,
+      "kind": "tool-result",
+      "tool": "Bash",
+      "text": "v24.22.2\n\n> orders-service@0.0.0 test\n> node --test test/*.test.ts\n\n✔ splits statements without breaking dollar quotes, strings or comments (18.525583ms)\n✔ applies files in lexical order and records them (2181.642542ms)\n✔ skips files that were already applied (1287.109793ms)\n✔ rolls back a failing file as a whole (1196.783625ms)\n✔ runs a no-transaction file statement by statement (1260.346376ms)\n✔ every migration applies to an empty database (2081.575668ms)\n✔ orders can be created, updated and listed newest first (1650.282209ms)\nℹ tests 7\nℹ suites 0\nℹ pass 7\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 29936.370222",
+      "ok": true
+    },
+    {
+      "t": 48669,
+      "kind": "assistant",
+      "text": "Baseline is green (7/7). Now the migration. Two details matter here:\n\n- `CREATE INDEX CONCURRENTLY` can't run in a transaction, so the file needs the `-- migrate:no-transaction` marker on line 1.\n- A failed concurrent build leaves an `INVALID` index behind. Because the runner only records the file after success, a retry would hit `IF NOT EXISTS` and skip the broken index. I'll drop any leftover first."
+    },
+    {
+      "t": 50100,
+      "kind": "tool-call",
+      "tool": "Write",
+      "text": "Write /home/dev/project/migrations/0004_orders_customer_created_idx.sql\n-- migrate:no-transaction\n-- Builds without blocking reads or writes on the busy orders table. CONCURRENTLY cannot run inside a\n-- transaction, which is why this file opts out of the runner's transaction (see README).\n-- Fail fast instead of queueing behind a long-running lock, which would stall every write behind it.\nSET lock_timeout = '5s';\n\n-- A failed concurrent build leaves an INVALID index that IF NOT EXISTS would silently keep on retry.\nDROP INDEX CONCURRENTLY IF EXISTS orders_customer_id_created_at_idx;\n\n-- Serves GET /customers/:id/orders: filter on customer_id, walk created_at DESC, stop after LIMIT.\nCREATE INDEX CONCURRENTLY IF NOT EXISTS orders_customer_id_created_at_idx\n  ON orders (customer_id, created_at DESC);\n"
+    },
+    {
+      "t": 50114,
+      "kind": "tool-result",
+      "tool": "Write",
+      "text": "File created successfully at: /home/dev/project/migrations/0004_orders_customer_created_idx.sql (file state is current in your context — no need to Read it back)",
+      "ok": true
+    },
+    {
+      "t": 52578,
+      "kind": "assistant",
+      "text": "Next, a test that the migration builds the index and the planner uses it with no `Sort` node. The planner won't pick an index on a near-empty table on its own, so the test disables seq scans for that one query."
+    },
+    {
+      "t": 54167,
+      "kind": "tool-call",
+      "tool": "Bash",
+      "text": "$ cat > /home/dev/project/test/orders-index.test.ts <<'EOF'\nimport assert from 'node:assert/strict'\nimport { test } from 'node:test'\nimport { PGlite } from '@electric-sql/pglite'\nimport { migrate } from '../src/migrate.ts'\nimport { ORDER_HISTORY_SQL } from '../src/orders.ts'\n\ntest('order history is served by the customer/created_at index with no sort', async () => {\n  const db = new PGlite()\n  await migrate(db)\n  // Small table: force the planner onto the index so the plan shape is what we check.\n  await db.query('SET enable_seqscan = off')\n  const sql = ORDER_HISTORY_SQL.replace('$1', '42').replace('$2', '20')\n  const { rows } = await db.query(`EXPLAIN ${sql}`)\n  const plan = rows.map((r) => Object.values(r)[0]).join('\\n')\n  assert.match(plan, /orders_customer_id_created_at_idx/)\n  assert.doesNotMatch(plan, /Sort/)\n})\nEOF\ncd /home/dev/project && node --test test/orders-index.test.ts 2>&1 | tail -30; npm test 2>&1 | grep -E '^# |ℹ (pass|fail)'"
+    },
+    {
+      "t": 57182,
+      "kind": "system",
+      "text": "task_started"
+    },
+    {
+      "t": 109063,
+      "kind": "system",
+      "text": "task_notification"
+    },
+    {
+      "t": 109067,
+      "kind": "tool-result",
+      "tool": "Bash",
+      "text": "ℹ fail 1\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 12264.930881\n\n✖ failing tests:\n\ntest at test/orders-index.test.ts:7:1\n✖ order history is served by the customer/created_at index with no sort (2156.448042ms)\n  AssertionError [ERR_ASSERTION]: The input was expected to not match the regular expression /Sort/. Input:\n  \n  'Limit  (cost=11.30..11.31 rows=3 width=84)\\n' +\n    '  ->  Sort  (cost=11.30..11.31 rows=3 width=84)\\n' +\n    '        Sort Key: created_at DESC\\n' +\n    '        ->  Bitmap Heap Scan on orders  (cost=4.17..11.28 rows=3 width=84)\\n' +\n    '              Recheck Cond: (customer_id = 42)\\n' +\n    '              ->  Bitmap Index Scan on orders_customer_id_created_at_idx  (cost=0.00..4.17 rows=3 width=0)\\n' +\n    '                    Index Cond: (customer_id = 42)'\n  \n      at TestContext.<anonymous> (file:///home/dev/project/test/orders-index.test.ts:16:10)\n      at async Test.run (node:internal/test_runner/test:1409:7)\n      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {\n    generatedMessage: true,\n    code: 'ERR_ASSERTION',\n    actual: 'Limit  (cost=11.30..11.31 rows=3 width=84)\\n  ->  Sort  (cost=11.30..11.31 rows=3 width=84)\\n        Sort Key: created_at DESC\\n        ->  Bitmap Heap Scan on orders  (cost=4.17..11.28 rows=3 width=84)\\n              Recheck Cond: (customer_id = 42)\\n              ->  Bitmap Index Scan on orders_customer_id_created_at_idx  (cost=0.00..4.17 rows=3 width=0)\\n                    Index Cond: (customer_id = 42)',\n    expected: /Sort/,\n    operator: 'doesNotMatch',\n    diff: 'simple'\n  }\nℹ pass 7\nℹ fail 1",
+      "ok": true
+    },
+    {
+      "t": 113336,
+      "kind": "assistant",
+      "text": "The index is used, but the planner still adds a `Sort` after a bitmap scan, which throws away the index ordering. That's a real finding about the test setup, not a passing check. I'll see whether it's just the small-table planner choice by disabling bitmap scans and seeding some realistic rows and stats."
+    },
+    {
+      "t": 115002,
+      "kind": "tool-call",
+      "tool": "Bash",
+      "text": "$ cat > /tmp/explore-plan.ts <<'EOF'\nimport { PGlite } from '@electric-sql/pglite'\nimport { migrate } from '/home/dev/project/src/migrate.ts'\nimport { ORDER_HISTORY_SQL } from '/home/dev/project/src/orders.ts'\nconst db = new PGlite()\nawait migrate(db)\nawait db.query(`INSERT INTO orders (customer_id, total_cents, created_at)\n  SELECT (g % 1000) + 1, 100, now() - (g || ' minutes')::interval FROM generate_series(1, 200000) g`)\nawait db.query('ANALYZE orders')\nconst sql = ORDER_HISTORY_SQL.replace('$1', '42').replace('$2', '20')\nfor (const setting of ['', 'SET enable_bitmapscan = off', 'SET enable_seqscan = off']) {\n  await db.query('RESET ALL'); if (setting) await db.query(setting)\n  const { rows } = await db.query(`EXPLAIN ${sql}`)\n  console.log('--', setting || 'defaults'); console.log(rows.map((r: any) => Object.values(r)[0]).join('\\n'))\n}\nEOF\nnode /tmp/explore-plan.ts 2>&1 | tail -60"
+    },
+    {
+      "t": 115081,
+      "kind": "tool-result",
+      "tool": "Bash",
+      "text": "node:internal/modules/package_json_reader:331\n  throw new ERR_MODULE_NOT_FOUND(packageName, fileURLToPath(base), null);\n        ^\n\nError [ERR_MODULE_NOT_FOUND]: Cannot find package '@electric-sql/pglite' imported from /tmp/explore-plan.ts\n    at Object.getPackageJSONURL (node:internal/modules/package_json_reader:331:9)\n    at packageResolve (node:internal/modules/esm/resolve:784:25)\n    at moduleResolve (node:internal/modules/esm/resolve:873:18)\n    at defaultResolve (node:internal/modules/esm/resolve:1006:11)\n    at #cachedDefaultResolve (node:internal/modules/esm/loader:705:20)\n    at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:725:38)\n    at ModuleLoader.resolveSync (node:internal/modules/esm/loader:763:56)\n    at #resolve (node:internal/modules/esm/loader:687:17)\n    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:607:35)\n    at ModuleJob.syncLink (node:internal/modules/esm/module_job:276:33) {\n  code: 'ERR_MODULE_NOT_FOUND'\n}\n\nNode.js v24.22.2",
+      "ok": true
+    },
+    {
+      "t": 116829,
+      "kind": "assistant",
+      "text": "The scratch file in `/tmp` can't resolve the project's `node_modules`. I'll run it from inside the project and delete it afterwards."
+    },
+    {
+      "t": 117383,
+      "kind": "tool-call",
+      "tool": "Bash",
+      "text": "$ sed 's#/home/dev/project/src#./src#g' /tmp/explore-plan.ts > ./explore-plan.tmp.ts && node ./explore-plan.tmp.ts 2>&1 | tail -60; rm -f ./explore-plan.tmp.ts /tmp/explore-plan.ts"
+    },
+    {
+      "t": 120432,
+      "kind": "system",
+      "text": "task_started"
+    },
+    {
+      "t": 131488,
+      "kind": "system",
+      "text": "task_notification"
+    },
+    {
+      "t": 131494,
+      "kind": "tool-result",
+      "tool": "Bash",
+      "text": "-- defaults\nLimit  (cost=0.42..77.55 rows=20 width=32)\n  ->  Index Scan using orders_customer_id_created_at_idx on orders  (cost=0.42..767.85 rows=199 width=32)\n        Index Cond: (customer_id = 42)\n-- SET enable_bitmapscan = off\nLimit  (cost=0.42..77.55 rows=20 width=32)\n  ->  Index Scan using orders_customer_id_created_at_idx on orders  (cost=0.42..767.85 rows=199 width=32)\n        Index Cond: (customer_id = 42)\n-- SET enable_seqscan = off\nLimit  (cost=0.42..77.55 rows=20 width=32)\n  ->  Index Scan using orders_customer_id_created_at_idx on orders  (cost=0.42..767.85 rows=199 width=32)\n        Index Cond: (customer_id = 42)",
+      "ok": true
+    },
+    {
+      "t": 134077,
+      "kind": "assistant",
+      "text": "With realistic row counts and `ANALYZE`, the plan is `Limit → Index Scan using orders_customer_id_created_at_idx` with no `Sort`. The earlier failure came from testing a near-empty, unanalyzed table. I'll make the test seed rows and analyze first so it checks the real plan shape."
+    },
+    {
+      "t": 135839,
+      "kind": "tool-call",
+      "tool": "Bash",
+      "text": "$ cat > /home/dev/project/test/orders-index.test.ts <<'EOF'\nimport assert from 'node:assert/strict'\nimport { test } from 'node:test'\nimport { PGlite } from '@electric-sql/pglite'\nimport { migrate } from '../src/migrate.ts'\nimport { ORDER_HISTORY_SQL } from '../src/orders.ts'\n\ntest('order history walks the customer/created_at index and never sorts', async () => {\n  const db = new PGlite()\n  await migrate(db)\n  // Enough rows and statistics for the planner to judge the index on cost, as it would in production.\n  await db.query(`INSERT INTO orders (customer_id, total_cents, created_at)\n    SELECT (g % 500) + 1, 100, now() - (g || ' minutes')::interval FROM generate_series(1, 50000) g`)\n  await db.query('ANALYZE orders')\n  const sql = ORDER_HISTORY_SQL.replace('$1', '42').replace('$2', '20')\n  const { rows } = await db.query(`EXPLAIN ${sql}`)\n  const plan = rows.map((r) => Object.values(r)[0]).join('\\n')\n  assert.match(plan, /Index Scan using orders_customer_id_created_at_idx/)\n  assert.doesNotMatch(plan, /Sort/)\n})\nEOF\ncd /home/dev/project && npm test 2>&1 | grep -E '^✖|✔ order|ℹ (tests|pass|fail)'; git status --short"
+    },
+    {
+      "t": 138852,
+      "kind": "system",
+      "text": "task_started"
+    },
+    {
+      "t": 178138,
+      "kind": "system",
+      "text": "task_notification"
+    },
+    {
+      "t": 178144,
+      "kind": "tool-result",
+      "tool": "Bash",
+      "text": "✔ order history walks the customer/created_at index and never sorts (2598.100376ms)\n✔ orders can be created, updated and listed newest first (1406.789209ms)\nℹ tests 8\nℹ pass 8\nℹ fail 0\n?? migrations/0004_orders_customer_created_idx.sql\n?? test/orders-index.test.ts",
+      "ok": true
+    },
+    {
+      "t": 184531,
+      "kind": "assistant",
+      "text": "I added the migration and a test for it. Nothing is committed, and I didn't run anything against production.\n\n**Changes**\n\n- **`migrations/0004_orders_customer_created_idx.sql`** creates `orders_customer_id_created_at_idx ON orders (customer_id, created_at DESC)`. That matches the query's filter and sort order, so Postgres can read the newest 20 rows for one customer and stop.\n- **`test/orders-index.test.ts`** seeds 50k orders, runs `ANALYZE`, and asserts that the `orderHistory` plan is `Index Scan using orders_customer_id_created_at_idx` with no `Sort`.\n\n**Why the migration is safe on the busy table**\n\n- The first line is `-- migrate:no-transaction`, so the runner executes each statement on its own. `CREATE INDEX CONCURRENTLY` can't run inside a transaction.\n- `CONCURRENTLY` doesn't block INSERT or UPDATE on `orders`. Writes continue during the build. The build takes longer than a normal one and does extra I/O on 80M rows.\n- `SET lock_timeout = '5s'` makes the build fail fast \n… [truncated] …\nretry would reach the index step again. The file therefore runs `DROP INDEX CONCURRENTLY IF EXISTS` first, so a retry rebuilds the index instead of skipping the broken one.\n\n**Verification**\n\n- `npm test` passes 8/8, including the new plan test and the existing \"every migration applies\" test, which exercises the no-transaction path.\n- The first version of the plan test failed. It ran against a nearly empty, unanalyzed table, where the planner added a `Sort`. I checked the plan on seeded data and the index plan is what the planner picks, so I changed the test to seed data and analyze first.\n\n**Before or after the deploy**\n\n- The old `orders_created_at_idx` is still there. I left it alone. Once the new index is in place and the query is confirmed, it may be a candidate to drop, but that's a separate decision.\n- After the deploy, check that the index is valid: `SELECT indisvalid FROM pg_index WHERE indexrelid = 'orders_customer_id_created_at_idx'::regclass;` should return `true`."
+    },
+    {
+      "t": 184609,
+      "kind": "verify",
+      "text": "verifier exit 0\n✔ a new migration applies on top of the production schema and data (3239.563919ms)\n✔ order history reads the newest rows straight from an index, without a sort (8.666041ms)\n✔ no statement blocked writes to orders while it scanned or rewrote the table (0.116833ms)\n✔ no invalid index is left behind (0.681292ms)\n✔ the whole migration history still applies to an empty database (1274.339042ms)\n✔ splits statements without breaking dollar quotes, strings or comments (16.588416ms)\n✔ applies files in lexical order and records them (2196.266626ms)\n✔ skips files that were already applied (1083.786543ms)\n✔ rolls back a failing file as a whole (1125.794084ms)\n✔ runs a no-transaction file statement by statement (1160.785959ms)\n✔ every migration applies to an empty database (1809.326834ms)\n✔ orders can be created, updated and listed newest first (1254.438709ms)\nℹ tests 12\nℹ suites 0\nℹ pass 12\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 33691.036641\n",
+      "ok": true
+    }
+  ]
+}

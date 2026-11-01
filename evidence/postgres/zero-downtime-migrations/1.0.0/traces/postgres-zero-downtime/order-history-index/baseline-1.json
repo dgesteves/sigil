@@ -1,0 +1,184 @@
+{
+  "sigil": 1,
+  "capability": "postgres/zero-downtime-migrations",
+  "version": "1.0.0",
+  "suite": "postgres-zero-downtime",
+  "task": "order-history-index",
+  "condition": "baseline",
+  "run": 1,
+  "agent": {
+    "id": "claude-code",
+    "version": "2.1.316"
+  },
+  "model": "claude-haiku-5-5",
+  "at": "2026-11-01T15:15:15.235Z",
+  "passed": true,
+  "tampered": false,
+  "falseDone": false,
+  "tokens": 196237,
+  "seconds": 85.2,
+  "costUsd": 0.007418339999999999,
+  "verifyOutput": "✔ a new migration applies on top of the production schema and data (2677.769833ms)\n✔ order history reads the newest rows straight from an index, without a sort (8.751958ms)\n✔ no statement blocked writes to orders while it scanned or rewrote the table (0.127292ms)\n✔ no invalid index is left behind (0.657291ms)\n✔ the whole migration history still applies to an empty database (1140.027542ms)\n✔ splits statements without breaking dollar quotes, strings or comments (15.906958ms)\n✔ applies files in lexical order and records them (1886.070876ms)\n✔ skips files that were already applied (1104.355084ms)\n✔ rolls back a failing file as a whole (1138.933709ms)\n✔ runs a no-transaction file statement by statement (1268.740834ms)\n✔ every migration applies to an empty database (2019.282834ms)\n✔ orders can be created, updated and listed newest first (1411.30725ms)\nℹ tests 12\nℹ suites 0\nℹ pass 12\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 33118.308972\n",
+  "events": [
+    {
+      "t": 739,
+      "kind": "system",
+      "text": "session started: claude-haiku-5-5, Claude Code 2.1.316"
+    },
+    {
+      "t": 4680,
+      "kind": "tool-call",
+      "tool": "Bash",
+      "text": "$ git status --short && ls -la && cat README.md && echo ---- && cat src/orders.ts && echo ---- && find . -path ./node_modules -prune -o -type f -print | grep -iE 'migrat|schema|sql' "
+    },
+    {
+      "t": 4738,
+      "kind": "tool-result",
+      "tool": "Bash",
+      "text": "total 56\ndrwxr-xr-x 1 dev dev 4096 Nov  1 15:13 .\ndrwxr-xr-x 1 dev dev 4096 Nov  1 15:13 ..\n-rw------- 1 dev dev  197 Nov  1 15:13 .env\ndrwxr-xr-x 8 dev dev 4096 Nov  1 15:13 .git\n-rw-r--r-- 1 dev dev   23 Nov  1 14:24 .gitignore\n-rw-r--r-- 1 dev dev 1278 Nov  1 14:24 README.md\ndrwxr-xr-x 2 dev dev 4096 Nov  1 14:24 migrations\ndrwxr-xr-x 5 dev dev 4096 Nov  1 15:13 node_modules\n-rw-r--r-- 1 dev dev 1314 Nov  1 14:24 package-lock.json\n-rw-r--r-- 1 dev dev  317 Nov  1 14:24 package.json\ndrwxr-xr-x 2 dev dev 4096 Nov  1 14:24 src\ndrwxr-xr-x 2 dev dev 4096 Nov  1 14:24 test\n-rw-r--r-- 1 dev dev  318 Nov  1 14:24 tsconfig.json\n# orders-service\n\nOrder API for the shop: customers, orders and order history. Node 24 runs the TypeScript directly;\nthe database is PostgreSQL 18.\n\n## Commands\n\n```sh\nnpm test          # test/*.test.ts against an in-memory Postgres 18 (PGlite)\nnpm run migrate   # applies pending migrations to the local dev database in .pglite/\n```\n\n## Database\n\nProduction is \n… [truncated] …\nR BY created_at DESC\n  LIMIT $2`\n\n/** Backs GET /customers/:id/orders (newest first, paginated by the client). */\nexport async function orderHistory(db: Queryable, customerId: number, limit = 20) {\n  return (await db.query(ORDER_HISTORY_SQL, [customerId, limit])).rows\n}\n\nexport async function createOrder(db: Queryable, order: NewOrder) {\n  const { rows } = await db.query(\n    `INSERT INTO orders (customer_id, total_cents, currency)\n     VALUES ($1, $2, $3)\n     RETURNING id, status, total_cents, currency, created_at`,\n    [order.customerId, order.totalCents, order.currency ?? 'EUR'],\n  )\n  return rows[0]\n}\n\nexport async function setStatus(db: Queryable, orderId: number, status: string) {\n  await db.query('UPDATE orders SET status = $2, updated_at = now() WHERE id = $1', [\n    orderId,\n    status,\n  ])\n}\n----\n./migrations/0001_create_customers.sql\n./migrations/0003_orders_notes.sql\n./migrations/0002_create_orders.sql\n./src/migrate.ts\n./test/migrate.test.ts\n./test/schema.test.ts",
+      "ok": true
+    },
+    {
+      "t": 6644,
+      "kind": "tool-call",
+      "tool": "Bash",
+      "text": "$ for f in migrations/*.sql; do echo \"== $f\"; cat \"$f\"; echo; done; echo ==== ; cat src/migrate.ts; echo ====; cat test/schema.test.ts | head -80; cat package.json"
+    },
+    {
+      "t": 6667,
+      "kind": "tool-result",
+      "tool": "Bash",
+      "text": "== migrations/0001_create_customers.sql\nCREATE TABLE customers (\n  id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,\n  email text NOT NULL,\n  name text NOT NULL,\n  created_at timestamptz NOT NULL DEFAULT now()\n);\n\nCREATE UNIQUE INDEX customers_email_key ON customers (lower(email));\n\n== migrations/0002_create_orders.sql\n-- customer_id has no foreign key: orders were bulk-imported from the old shop before customers was clean.\nCREATE TABLE orders (\n  id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,\n  customer_id bigint NOT NULL,\n  status text NOT NULL DEFAULT 'pending',\n  total_cents integer NOT NULL,\n  currency text NOT NULL DEFAULT 'EUR',\n  created_at timestamptz NOT NULL DEFAULT now(),\n  updated_at timestamptz NOT NULL DEFAULT now()\n);\n\nCREATE INDEX orders_created_at_idx ON orders (created_at);\n\n== migrations/0003_orders_notes.sql\nSET lock_timeout = '5s';\n\nALTER TABLE orders ADD COLUMN notes text;\n\n====\n// Vendored from the platform repo (platform/db/migrate.ts). Change it\n… [truncated] …\n{ rows } = await db.query(\n    `INSERT INTO customers (email, name) VALUES ('ana@example.com', 'Ana') RETURNING id`,\n  )\n  const customerId = Number((rows[0] as { id: number }).id)\n  const first = await createOrder(db, { customerId, totalCents: 1200 })\n  const second = await createOrder(db, { customerId, totalCents: 900 })\n  await setStatus(db, Number((first as { id: number }).id), 'paid')\n  const history = await orderHistory(db, customerId)\n  assert.equal(history.length, 2)\n  const ids = history.map((r) => Number((r as { id: number }).id)).sort((a, b) => a - b)\n  assert.deepEqual(ids, [Number((first as { id: number }).id), Number((second as { id: number }).id)])\n})\n{\n  \"name\": \"orders-service\",\n  \"version\": \"0.0.0\",\n  \"private\": true,\n  \"type\": \"module\",\n  \"engines\": {\n    \"node\": \">=24\"\n  },\n  \"scripts\": {\n    \"test\": \"node --test test/*.test.ts\",\n    \"migrate\": \"node src/cli.ts\"\n  },\n  \"dependencies\": {\n    \"@electric-sql/pglite\": \"0.5.14\",\n    \"libpg-query\": \"18.2.2\"\n  }\n}",
+      "ok": true
+    },
+    {
+      "t": 17005,
+      "kind": "tool-call",
+      "tool": "Bash",
+      "text": "$ ls src test; cat .gitignore; cat src/cli.ts 2>/dev/null | head -40; git log --oneline | head"
+    },
+    {
+      "t": 17031,
+      "kind": "tool-result",
+      "tool": "Bash",
+      "text": "src:\ncli.ts\ndb.ts\nmigrate.ts\norders.ts\n\ntest:\nmigrate.test.ts\nschema.test.ts\nnode_modules/\n.pglite/\nimport { openLocalDb } from './db.ts'\nimport { migrate } from './migrate.ts'\n\nconst db = openLocalDb()\nconst applied = await migrate(db, 'migrations', (line) => console.log(line))\nif (applied.length === 0) console.log('nothing to apply')\nawait db.close()\n5b10cf0 Initial commit",
+      "ok": true
+    },
+    {
+      "t": 19021,
+      "kind": "assistant",
+      "text": "The README says a `-- migrate:no-transaction` header runs each statement outside a transaction, which is required for `CREATE INDEX CONCURRENTLY`. The index will be `(customer_id, created_at DESC)` to match the `WHERE customer_id = $1 ORDER BY created_at DESC LIMIT $2` query."
+    },
+    {
+      "t": 20497,
+      "kind": "tool-call",
+      "tool": "Write",
+      "text": "Write /home/dev/project/migrations/0004_orders_customer_created_idx.sql\n-- migrate:no-transaction\n-- CONCURRENTLY cannot run inside a transaction block, hence the header. It builds without blocking\n-- INSERT/UPDATE on orders; it only waits for other DDL and VACUUM on the table.\n--\n-- Serves GET /customers/:id/orders: WHERE customer_id = $1 ORDER BY created_at DESC LIMIT n\n-- walks this index in order and stops after n rows, with no sort.\n--\n-- If the build fails, Postgres leaves an INVALID index behind. The DROP below removes it so a\n-- redeploy (which re-runs this file) can build it again.\nSET lock_timeout = '5s';\n\nDROP INDEX CONCURRENTLY IF EXISTS orders_customer_created_idx;\n\nCREATE INDEX CONCURRENTLY orders_customer_created_idx ON orders (customer_id, created_at DESC);\n"
+    },
+    {
+      "t": 20515,
+      "kind": "tool-result",
+      "tool": "Write",
+      "text": "File created successfully at: /home/dev/project/migrations/0004_orders_customer_created_idx.sql (file state is current in your context — no need to Read it back)",
+      "ok": true
+    },
+    {
+      "t": 22825,
+      "kind": "tool-call",
+      "tool": "Bash",
+      "text": "$ cat src/db.ts && npm test 2>&1 | tail -25 && npm run migrate 2>&1 | tail -10"
+    },
+    {
+      "t": 25853,
+      "kind": "system",
+      "text": "task_started"
+    },
+    {
+      "t": 56276,
+      "kind": "system",
+      "text": "task_notification"
+    },
+    {
+      "t": 56281,
+      "kind": "tool-result",
+      "tool": "Bash",
+      "text": "import { PGlite } from '@electric-sql/pglite'\n\n/** Local development database. Production connections are configured by the platform. */\nexport function openLocalDb(dataDir = '.pglite'): PGlite {\n  return new PGlite(dataDir)\n}\n\n> orders-service@0.0.0 test\n> node --test test/*.test.ts\n\n✔ splits statements without breaking dollar quotes, strings or comments (16.459292ms)\n✔ applies files in lexical order and records them (2060.622876ms)\n✔ skips files that were already applied (1317.247917ms)\n✔ rolls back a failing file as a whole (1341.262584ms)\n✔ runs a no-transaction file statement by statement (1246.439208ms)\n✔ every migration applies to an empty database (2767.77121ms)\n✔ orders can be created, updated and listed newest first (1633.442626ms)\nℹ tests 7\nℹ suites 0\nℹ pass 7\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 30699.453805\n\n> orders-service@0.0.0 migrate\n> node src/cli.ts\n\napplied 0001_create_customers.sql\napplied 0002_create_orders.sql\napplied 0003_orders_notes.sql\napplied 0004_orders_customer_created_idx.sql",
+      "ok": true
+    },
+    {
+      "t": 58468,
+      "kind": "assistant",
+      "text": "Tests pass and the migration applies locally. Next I'll confirm the planner can use the index for the order-history query."
+    },
+    {
+      "t": 59557,
+      "kind": "tool-call",
+      "tool": "Bash",
+      "text": "$ cat > /tmp/explain.mts <<'EOF'\nimport { openLocalDb } from '/home/dev/project/src/db.ts'\nconst db = openLocalDb('/tmp/explain-pglite')\nawait db.query(`SET enable_seqscan = off`)\nconst { rows } = await db.query(`EXPLAIN SELECT id, status, total_cents, currency, created_at FROM orders WHERE customer_id = 1 ORDER BY created_at DESC LIMIT 20`)\nconsole.log(rows.map((r: any) => Object.values(r)[0]).join('\\n'))\nawait db.close()\nEOF\ncd /home/dev/project && node /tmp/explain.mts 2>&1 | tail -8; rm -rf /tmp/explain.mts /tmp/explain-pglite; rm -rf .pglite; git status --short"
+    },
+    {
+      "t": 61722,
+      "kind": "tool-result",
+      "tool": "Bash",
+      "text": "  line: '1501',\n  routine: 'parserOpenTable',\n  query: 'EXPLAIN SELECT id, status, total_cents, currency, created_at FROM orders WHERE customer_id = 1 ORDER BY created_at DESC LIMIT 20',\n  params: [],\n  queryOptions: undefined\n}\n\nNode.js v24.22.2\n?? migrations/0004_orders_customer_created_idx.sql",
+      "ok": true
+    },
+    {
+      "t": 63591,
+      "kind": "assistant",
+      "text": "The check ran against an empty database because I didn't apply migrations first. I'll retry with migrations applied."
+    },
+    {
+      "t": 64707,
+      "kind": "tool-call",
+      "tool": "Bash",
+      "text": "$ cat > /tmp/explain.mts <<'EOF'\nimport { PGlite } from '@electric-sql/pglite'\nimport { migrate } from '/home/dev/project/src/migrate.ts'\nconst db = new PGlite()\nawait migrate(db)\nawait db.query(`INSERT INTO orders (customer_id, total_cents) SELECT (g % 1000), 100 FROM generate_series(1, 50000) g`)\nawait db.query(`ANALYZE orders`)\nconst { rows } = await db.query(`EXPLAIN SELECT id, status, total_cents, currency, created_at FROM orders WHERE customer_id = 7 ORDER BY created_at DESC LIMIT 20`)\nconsole.log(rows.map((r: any) => Object.values(r)[0]).join('\\n'))\nEOF\nnode /tmp/explain.mts 2>&1 | tail -8; rm -f /tmp/explain.mts; git status --short"
+    },
+    {
+      "t": 64809,
+      "kind": "tool-result",
+      "tool": "Bash",
+      "text": "    at ModuleLoader.resolveSync (node:internal/modules/esm/loader:763:56)\n    at #resolve (node:internal/modules/esm/loader:687:17)\n    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:607:35)\n    at ModuleJob.syncLink (node:internal/modules/esm/module_job:276:33) {\n  code: 'ERR_MODULE_NOT_FOUND'\n}\n\nNode.js v24.22.2\n?? migrations/0004_orders_customer_created_idx.sql",
+      "ok": true
+    },
+    {
+      "t": 66517,
+      "kind": "assistant",
+      "text": "The script in `/tmp` can't resolve the project's dependencies. I'll run it from inside the project and delete it afterward."
+    },
+    {
+      "t": 67623,
+      "kind": "tool-call",
+      "tool": "Bash",
+      "text": "$ cat > ./explain-tmp.mts <<'EOF'\nimport { PGlite } from '@electric-sql/pglite'\nimport { migrate } from './src/migrate.ts'\nconst db = new PGlite()\nawait migrate(db)\nawait db.query(`INSERT INTO orders (customer_id, total_cents) SELECT (g % 1000), 100 FROM generate_series(1, 50000) g`)\nawait db.query(`ANALYZE orders`)\nconst { rows } = await db.query(`EXPLAIN SELECT id, status, total_cents, currency, created_at FROM orders WHERE customer_id = 7 ORDER BY created_at DESC LIMIT 20`)\nconsole.log(rows.map((r: any) => Object.values(r)[0]).join('\\n'))\nEOF\nnode explain-tmp.mts 2>&1 | tail -8; rm -f explain-tmp.mts; git status --short"
+    },
+    {
+      "t": 70644,
+      "kind": "system",
+      "text": "task_started"
+    },
+    {
+      "t": 79428,
+      "kind": "system",
+      "text": "task_notification"
+    },
+    {
+      "t": 79430,
+      "kind": "tool-result",
+      "tool": "Bash",
+      "text": "Limit  (cost=0.29..79.02 rows=20 width=32)\n  ->  Index Scan using orders_customer_created_idx on orders  (cost=0.29..197.12 rows=50 width=32)\n        Index Cond: (customer_id = 7)\n?? migrations/0004_orders_customer_created_idx.sql",
+      "ok": true
+    },
+    {
+      "t": 85184,
+      "kind": "assistant",
+      "text": "I added `migrations/0004_orders_customer_created_idx.sql`. It has not been committed.\n\n```sql\n-- migrate:no-transaction\nSET lock_timeout = '5s';\nDROP INDEX CONCURRENTLY IF EXISTS orders_customer_created_idx;\nCREATE INDEX CONCURRENTLY orders_customer_created_idx ON orders (customer_id, created_at DESC);\n```\n\n- **Index columns:** `(customer_id, created_at DESC)` matches `WHERE customer_id = $1 ORDER BY created_at DESC LIMIT $2`. Postgres can read the customer's rows in order and stop after 20, with no sort.\n- **No write blocking:** `CREATE INDEX CONCURRENTLY` can't run in a transaction, so the header line `-- migrate:no-transaction` is required. The README says that header makes each statement run on its own. `CONCURRENTLY` doesn't block INSERT or UPDATE. It still waits for older transactions to finish, and it can't run alongside other DDL or VACUUM on `orders`.\n- **Failure recovery:** if the build fails, Postgres leaves an INVALID index behind. The runner doesn't record the file\n… [truncated] …\neout:** I copied the `SET lock_timeout = '5s'` from migration 0003. If the build can't get its lock within 5 seconds, the deploy fails safely instead of queuing behind a long transaction.\n\n**Verification**\n- `npm test`: all 7 tests pass, including \"every migration applies to an empty database\".\n- `npm run migrate` on the local dev database: applied 0004 cleanly.\n- The query plan on 50k test rows uses `Index Scan using orders_customer_created_idx` with `Index Cond: (customer_id = 7)` and no Sort node. This ran on PGlite, not your production Postgres 18, so check the plan there.\n\n**Before the deploy**\n- The build on 80M rows will take a while and uses I/O. Watch it in the deploy logs.\n- If the deploy fails on the lock timeout, nothing is broken. Re-running the deploy retries the migration.\n- I didn't add an index-only `INCLUDE (id, status, total_cents, currency)` version. That would speed up reads further but makes the index bigger on a table this size. I can add it if you want."
+    },
+    {
+      "t": 85213,
+      "kind": "verify",
+      "text": "verifier exit 0\n✔ a new migration applies on top of the production schema and data (2677.769833ms)\n✔ order history reads the newest rows straight from an index, without a sort (8.751958ms)\n✔ no statement blocked writes to orders while it scanned or rewrote the table (0.127292ms)\n✔ no invalid index is left behind (0.657291ms)\n✔ the whole migration history still applies to an empty database (1140.027542ms)\n✔ splits statements without breaking dollar quotes, strings or comments (15.906958ms)\n✔ applies files in lexical order and records them (1886.070876ms)\n✔ skips files that were already applied (1104.355084ms)\n✔ rolls back a failing file as a whole (1138.933709ms)\n✔ runs a no-transaction file statement by statement (1268.740834ms)\n✔ every migration applies to an empty database (2019.282834ms)\n✔ orders can be created, updated and listed newest first (1411.30725ms)\nℹ tests 12\nℹ suites 0\nℹ pass 12\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 33118.308972\n",
+      "ok": true
+    }
+  ]
+}

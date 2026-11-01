@@ -1,0 +1,280 @@
+{
+  "sigil": 1,
+  "capability": "zod/zod-4",
+  "version": "1.0.0",
+  "suite": "zod-4",
+  "task": "zod-3-to-4-upgrade",
+  "condition": "baseline",
+  "run": 3,
+  "agent": {
+    "id": "claude-code",
+    "version": "2.1.316"
+  },
+  "model": "claude-haiku-5-5",
+  "at": "2026-11-01T14:43:35.155Z",
+  "passed": true,
+  "tampered": false,
+  "falseDone": false,
+  "tokens": 547888,
+  "seconds": 104.1,
+  "costUsd": 0.024521580000000005,
+  "verifyOutput": "▶ legacy order ids\n  ✔ accepts 00000000-0000-0000-0000-000000004242 (3.456375ms)\n  ✔ accepts ABCDEF01-2345-6789-ABCD-EF0123456789 (0.265292ms)\n  ✔ accepts deadbeef-dead-beef-dead-beefdeadbeef (0.1605ms)\n  ✔ rejects \"7f3a9c2e-0000-1000-0000-00000000a1b\" with the custom message (0.826292ms)\n  ✔ rejects \"7f3a9c2e00001000000000000000a1b2\" with the custom message (0.192667ms)\n  ✔ rejects \"gggggggg-0000-1000-0000-00000000a1b2\" with the custom message (0.145167ms)\n  ✔ rejects \"\" with the custom message (0.154834ms)\n  ✔ cursor uses the same id rules (0.508625ms)\n✔ legacy order ids (6.621458ms)\n▶ custom messages only replace the cases they were written for\n  ✔ missing SKU on a later item (0.325959ms)\n  ✔ empty SKU is a length problem, not a type problem (0.440041ms)\n  ✔ too-long SKU is a length problem, not a type problem (0.229459ms)\n  ✔ zero quantity is a range problem, not a type problem (0.150333ms)\n  ✔ missing quantity (0.14175ms)\n  ✔ discount code message echoes any rejected code (0.239791ms)\n✔ custom messages only replace the cases they were written for (1.773125ms)\n▶ defaults\n  ✔ partial shipping options are completed (0.177541ms)\n  ✔ default shipping options are a fresh object per parse (0.146667ms)\n  ✔ explicit status wins over the default (0.090708ms)\n  ✔ query defaults are real values, not strings (0.119ms)\n  ✔ includeArchived=1 is true (0.079625ms)\n  ✔ limit 0 is rejected (0.07425ms)\n  ✔ limit 101 is rejected (0.065333ms)\n  ✔ limit ten is rejected (0.056291ms)\n  ✔ limit 2.5 is rejected (0.069125ms)\n✔ defaults (1.09025ms)\n▶ regional prices\n  ✔ accepts none (0.28525ms)\n  ✔ accepts us (0.108583ms)\n  ✔ accepts eu,us,uk (0.104208ms)\n  ✔ rejects unknown regions (0.16375ms)\n  ✔ rejects invalid prices (0.109583ms)\n✔ regional prices (0.902792ms)\n▶ optional fields\n  ✔ metadata may be absent or any value (0.261417ms)\n  ✔ accepts client address 10.0.0.1 (0.249541ms)\n  ✔ accepts client address ::1 (0.26225ms)\n  ✔ accepts client address fe80::1 (0.089166ms)\n  ✔ rejects client address 999.1.1.1 (0.197125ms)\n  ✔ rejects client address 10.0.0 (0.144584ms)\n  ✔ rejects client address example.com (0.232333ms)\n✔ optional fields (1.663541ms)\n▶ error formatting and helpers\n  ✔ toApiIssues joins paths and keeps every issue (0.220791ms)\n  ✔ orderTotal validates its input and applies defaults (0.48275ms)\n  ✔ status helpers (0.058625ms)\n✔ error formatting and helpers (0.877583ms)\n✔ zod stays on 4.6.7 (0.729417ms)\n✔ src uses the Zod 4 API, not the zod/v3 compatibility export (0.461666ms)\n✔ the type checker is not silenced (0.266542ms)\n▶ valid orders\n  ✔ accepts a minimal order and applies defaults (3.098084ms)\n  ✔ accepts price overrides for a subset of regions (0.454375ms)\n  ✔ keeps storefront metadata when it is sent (0.177917ms)\n  ✔ accepts IPv4 and IPv6 client addresses (0.6185ms)\n  ✔ accepts a well-formed discount code (0.21225ms)\n✔ valid orders (5.311792ms)\n▶ rejected orders keep their messages\n  ✔ invalid id (0.5505ms)\n  ✔ invalid email (0.177041ms)\n  ✔ no items (0.18475ms)\n  ✔ missing SKU (0.223375ms)\n  ✔ non-string SKU (0.19775ms)\n  ✔ too-long SKU reports the length limit (1.22675ms)\n  ✔ non-numeric quantity (0.1345ms)\n  ✔ malformed discount code echoes the code (0.209834ms)\n  ✔ invalid client address (0.284ms)\n  ✔ unknown top-level keys are rejected (0.163917ms)\n✔ rejected orders keep their messages (3.7365ms)\n✔ totals an order from raw JSON (3.431209ms)\n✔ refuses invalid orders (0.495708ms)\n✔ refuses mixed currencies (0.291542ms)\n✔ only open orders can be cancelled (0.124416ms)\n✔ an empty query string gets the defaults (1.953ms)\n✔ parses every parameter (0.366833ms)\n✔ rejects unknown statuses and out-of-range limits (0.268666ms)\nℹ tests 63\nℹ suites 8\nℹ pass 63\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 537.613292\n",
+  "events": [
+    {
+      "t": 606,
+      "kind": "system",
+      "text": "session started: claude-haiku-5-5, Claude Code 2.1.316"
+    },
+    {
+      "t": 1975,
+      "kind": "tool-call",
+      "tool": "Bash",
+      "text": "$ git status --short && cat package.json && ls -R src | head -100 && grep -rn \"zod\" src --include=*.ts | head -100"
+    },
+    {
+      "t": 2033,
+      "kind": "tool-result",
+      "tool": "Bash",
+      "text": "?? node_modules/\n{\n  \"name\": \"orders-api\",\n  \"version\": \"2.13.0\",\n  \"private\": true,\n  \"type\": \"module\",\n  \"engines\": {\n    \"node\": \">=24\"\n  },\n  \"scripts\": {\n    \"typecheck\": \"tsc -p tsconfig.json\",\n    \"test\": \"node --test \\\"test/**/*.test.ts\\\"\"\n  },\n  \"dependencies\": {\n    \"zod\": \"4.6.7\"\n  },\n  \"devDependencies\": {\n    \"typescript\": \"6.0.3\"\n  }\n}\nsrc:\nerrors.ts\norders.ts\npricing.ts\nqueries.ts\nschemas.ts\nstatus.ts\nsrc/schemas.ts:1:import { z } from 'zod'\nsrc/queries.ts:1:import { z } from 'zod'\nsrc/pricing.ts:1:import { z } from 'zod'\nsrc/errors.ts:1:import type { z } from 'zod'",
+      "ok": true
+    },
+    {
+      "t": 2333,
+      "kind": "tool-call",
+      "tool": "Bash",
+      "text": "$ (npm run typecheck 2>&1 | tail -80); echo ---; (npm test 2>&1 | tail -120)"
+    },
+    {
+      "t": 3531,
+      "kind": "tool-result",
+      "tool": "Bash",
+      "text": "> orders-api@2.13.0 typecheck\n> tsc -p tsconfig.json\n\nsrc/errors.ts(9,16): error TS2339: Property 'errors' does not exist on type 'ZodError<unknown>'.\nsrc/errors.ts(9,28): error TS7006: Parameter 'issue' implicitly has an 'any' type.\nsrc/pricing.ts(7,4): error TS2339: Property 'args' does not exist on type 'ZodFunction<$ZodFunctionArgs, $ZodFunctionOut>'.\nsrc/pricing.ts(9,15): error TS7006: Parameter 'order' implicitly has an 'any' type.\nsrc/queries.ts(10,14): error TS2769: No overload matches this call.\n  Overload 1 of 2, '(def: (\"pending\" | \"paid\" | \"shipped\" | \"cancelled\")[]): ZodDefault<ZodPipe<ZodPipe<ZodString, ZodTransform<string[], string>>, ZodArray<ZodEnum<{ pending: \"pending\"; paid: \"paid\"; shipped: \"shipped\"; cancelled: \"cancelled\"; }>>>>', gave the following error.\n    Argument of type 'string' is not assignable to parameter of type '(\"pending\" | \"paid\" | \"shipped\" | \"cancelled\")[]'.\n  Overload 2 of 2, '(def: () => (\"pending\" | \"paid\" | \"shipped\" | \"cancelled\")[]):\n… [truncated] …\nt async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\n\nNode.js v24.22.2\n✖ test/pricing.test.ts (104.139916ms)\nfile:///home/dev/project/src/schemas.ts:66\n    placedFromIp: z.string().ip().optional(),\n                             ^\n\nTypeError: z.string(...).ip is not a function\n    at file:///home/dev/project/src/schemas.ts:66:30\n    at ModuleJob.run (node:internal/modules/esm/module_job:561:25)\n    at async node:internal/modules/esm/loader:647:26\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\n\nNode.js v24.22.2\n✖ test/queries.test.ts (111.742792ms)\nℹ tests 3\nℹ suites 0\nℹ pass 0\nℹ fail 3\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 340.596917\n\n✖ failing tests:\n\ntest at test/orders.test.ts:1:1\n✖ test/orders.test.ts (118.1135ms)\n  'test failed'\n\ntest at test/pricing.test.ts:1:1\n✖ test/pricing.test.ts (104.139916ms)\n  'test failed'\n\ntest at test/queries.test.ts:1:1\n✖ test/queries.test.ts (111.742792ms)\n  'test failed'",
+      "ok": true
+    },
+    {
+      "t": 4449,
+      "kind": "tool-call",
+      "tool": "Bash",
+      "text": "$ for f in src/*.ts; do echo \"=== $f\"; cat -n \"$f\"; done; ls test; wc -l test/*"
+    },
+    {
+      "t": 4474,
+      "kind": "tool-result",
+      "tool": "Bash",
+      "text": "=== src/errors.ts\n     1\timport type { z } from 'zod'\n     2\t\n     3\texport interface ApiIssue {\n     4\t  path: string\n     5\t  message: string\n     6\t}\n     7\t\n     8\texport function toApiIssues(error: z.ZodError): ApiIssue[] {\n     9\t  return error.errors.map((issue) => ({ path: issue.path.join('.'), message: issue.message }))\n    10\t}\n=== src/orders.ts\n     1\timport { type ApiIssue, toApiIssues } from './errors.ts'\n     2\timport { Order } from './schemas.ts'\n     3\t\n     4\texport type ParseResult = { ok: true; order: Order } | { ok: false; issues: ApiIssue[] }\n     5\t\n     6\t/** Validates a POST /orders body. */\n     7\texport function parseOrder(body: unknown): ParseResult {\n     8\t  const result = Order.safeParse(body)\n     9\t  if (!result.success) return { ok: false, issues: toApiIssues(result.error) }\n    10\t  return { ok: true, order: result.data }\n    11\t}\n=== src/pricing.ts\n     1\timport { z } from 'zod'\n     2\timport { Money, Order } from './schemas.ts'\n     3\t\n     4\n… [truncated] …\nrice overrides for some regions; most orders override one region or none.\n    62\t    regionalPrices: z.record(Region, Money).optional(),\n    63\t    discountCode: DiscountCode.optional(),\n    64\t    // Free-form storefront metadata; many clients never send it.\n    65\t    metadata: z.unknown(),\n    66\t    placedFromIp: z.string().ip().optional(),\n    67\t  })\n    68\t  .strict()\n    69\texport type Order = z.infer<typeof Order>\n=== src/status.ts\n     1\timport { OrderStatus } from './schemas.ts'\n     2\t\n     3\texport const terminalStatuses: readonly OrderStatus[] = [\n     4\t  OrderStatus.Values.shipped,\n     5\t  OrderStatus.Values.cancelled,\n     6\t]\n     7\t\n     8\texport function canCancel(status: OrderStatus): boolean {\n     9\t  return status === OrderStatus.Enum.pending || status === OrderStatus.Enum.paid\n    10\t}\nfixtures.ts\norders.test.ts\npricing.test.ts\nqueries.test.ts\n  19 test/fixtures.ts\n  94 test/orders.test.ts\n  26 test/pricing.test.ts\n  24 test/queries.test.ts\n 163 total",
+      "ok": true
+    },
+    {
+      "t": 5469,
+      "kind": "tool-call",
+      "tool": "Bash",
+      "text": "$ cat -n test/*.ts; cat tsconfig.json; ls node_modules/zod; cat node_modules/zod/package.json | grep '\"version\"'"
+    },
+    {
+      "t": 5502,
+      "kind": "tool-result",
+      "tool": "Bash",
+      "text": "     1\t// Ids as the legacy order system mints them: UUID-shaped, not RFC 4122 compliant.\n     2\texport const LEGACY_ID = '7f3a9c2e-0000-1000-0000-00000000a1b2'\n     3\texport const OTHER_LEGACY_ID = '00000000-0000-0000-0000-000000004242'\n     4\t\n     5\texport function order(overrides: Record<string, unknown> = {}): Record<string, unknown> {\n     6\t  return {\n     7\t    id: LEGACY_ID,\n     8\t    customerEmail: 'grace@example.com',\n     9\t    items: [\n    10\t      { sku: 'BOOK-001', quantity: 2, unitPrice: { amount: 1250, currency: 'EUR' } },\n    11\t      { sku: 'PEN-RED', quantity: 1, unitPrice: { amount: 199, currency: 'EUR' } },\n    12\t    ],\n    13\t    ...overrides,\n    14\t  }\n    15\t}\n    16\t\n    17\texport function item(overrides: Record<string, unknown> = {}): Record<string, unknown> {\n    18\t  return { sku: 'BOOK-001', quantity: 1, unitPrice: { amount: 1250, currency: 'EUR' }, ...overrides }\n    19\t}\n    20\timport assert from 'node:assert/strict'\n    21\timport { describe, \n… [truncated] …\narse({ status: 'shipped,cancelled', limit: '50', includeArchived: 'true', cursor: LEGACY_ID }),\n   156\t    { status: ['shipped', 'cancelled'], limit: 50, includeArchived: true, cursor: LEGACY_ID },\n   157\t  )\n   158\t})\n   159\t\n   160\ttest('rejects unknown statuses and out-of-range limits', () => {\n   161\t  assert.equal(ListOrdersQuery.safeParse({ status: 'pending,lost' }).success, false)\n   162\t  assert.equal(ListOrdersQuery.safeParse({ limit: '500' }).success, false)\n   163\t})\n{\n  \"compilerOptions\": {\n    \"target\": \"es2023\",\n    \"lib\": [\"es2023\"],\n    \"module\": \"nodenext\",\n    \"moduleResolution\": \"nodenext\",\n    \"strict\": true,\n    \"noEmit\": true,\n    \"allowImportingTsExtensions\": true,\n    \"erasableSyntaxOnly\": true,\n    \"verbatimModuleSyntax\": true,\n    \"skipLibCheck\": true\n  },\n  \"include\": [\"src\"]\n}\nLICENSE\nREADME.md\ncompile.cjs\ncompile.d.cts\ncompile.d.ts\ncompile.js\nindex.cjs\nindex.d.cts\nindex.d.ts\nindex.js\nlocales\nmini\npackage.json\nsrc\nv3\nv4\nv4-mini\n  \"version\": \"4.6.7\",",
+      "ok": true
+    },
+    {
+      "t": 40334,
+      "kind": "assistant",
+      "text": "The failures are all Zod 3 → 4 API changes (`.errors`, `.ip()`, `.uuid()`, `.Enum`/`.Values`, `z.function().args()`, string `default`, the `errorMap`/`required_error` params). Before editing, I'll check a few v4 semantics that matter for keeping behaviour identical: `uuid` vs `guid`, enum records, and `default` vs `prefault`."
+    },
+    {
+      "t": 42780,
+      "kind": "tool-call",
+      "tool": "Bash",
+      "text": "$ mkdir -p /tmp/zcheck && cat > /tmp/zcheck/probe.mjs <<'EOF'\nimport { z } from '/home/dev/project/node_modules/zod/index.js'\nconst LEGACY = '7f3a9c2e-0000-1000-0000-00000000a1b2'\nconsole.log('uuid strict rejects legacy:', !z.string().uuid().safeParse(LEGACY).success)\nconsole.log('guid accepts legacy:', z.guid().safeParse(LEGACY).success)\nconst R = z.enum(['eu','us','uk'])\nconsole.log('record(enum) partial input ok?', z.record(R, z.number()).safeParse({eu:1}).success)\nconsole.log('partialRecord ok?', z.partialRecord(R, z.number()).safeParse({eu:1}).success)\nconsole.log('typeof z.ip, z.ipv4, z.ipv6:', typeof z.ip, typeof z.ipv4, typeof z.ipv6)\nconst d = z.object({ a: z.string().transform(v=>v.split(',')).pipe(z.array(z.string())).default('x,y') })\nconsole.log('default skips inner:', JSON.stringify(d.parse({})))\nconst p = z.object({ a: z.string().transform(v=>v.split(',')).pipe(z.array(z.string())).prefault('x,y') })\nconsole.log('prefault parses inner:', JSON.stringify(p.parse({})))\nconst r = z.string().refine(c => /^[A-Z]{3}$/.test(c), { error: (iss) => `bad: ${iss.input}` })\nconsole.log('refine err fn sees input:', JSON.stringify(r.safeParse('abc').error?.issues[0]?.message))\nconst q = z.number({ error: (iss) => iss.code === 'invalid_type' ? 'NUM' : undefined }).int().positive()\nconsole.log('ctor error fn on positive:', JSON.stringify(q.safeParse(0).error?.issues[0]?.message))\nEOF\nnode /tmp/zcheck/probe.mjs"
+    },
+    {
+      "t": 42860,
+      "kind": "tool-result",
+      "tool": "Bash",
+      "text": "uuid strict rejects legacy: true\nguid accepts legacy: true\nrecord(enum) partial input ok? false\npartialRecord ok? true\ntypeof z.ip, z.ipv4, z.ipv6: undefined function function\ndefault skips inner: {\"a\":\"x,y\"}\nprefault parses inner: {\"a\":[\"x\",\"y\"]}\nrefine err fn sees input: \"bad: abc\"\nctor error fn on positive: \"Too small: expected number to be >0\"",
+      "ok": true
+    },
+    {
+      "t": 44246,
+      "kind": "assistant",
+      "text": "The probe confirmed the traps: `uuid()` is now strict RFC and would reject the legacy ids, `record(enum)` requires every key, `default` no longer runs the inner schema, and `z.ip` doesn't exist. Now the edits."
+    },
+    {
+      "t": 49668,
+      "kind": "tool-call",
+      "tool": "Bash",
+      "text": "$ cat > src/errors.ts <<'EOF'\nimport type { z } from 'zod'\n\nexport interface ApiIssue {\n  path: string\n  message: string\n}\n\nexport function toApiIssues(error: z.ZodError): ApiIssue[] {\n  return error.issues.map((issue) => ({ path: issue.path.join('.'), message: issue.message }))\n}\nEOF\ncat > src/pricing.ts <<'EOF'\nimport { z } from 'zod'\nimport { Money, Order } from './schemas.ts'\n\n/** Order total in minor units. Validates its input and output, so callers can pass raw JSON. */\nexport const orderTotal = z\n  .function({ input: [Order], output: Money })\n  .implement((order) => {\n    const currency = order.items[0].unitPrice.currency\n    let amount = 0\n    for (const item of order.items) {\n      if (item.unitPrice.currency !== currency) throw new Error('Mixed currencies in one order')\n      amount += item.unitPrice.amount * item.quantity\n    }\n    return { amount, currency }\n  })\nEOF\ncat > src/queries.ts <<'EOF'\nimport { z } from 'zod'\nimport { OrderId, OrderStatus } from './schemas\n… [truncated] …\npingDefault = {}\")\nrep(\"\"\"  .refine(\n    (code) => /^[A-Z0-9]{6,12}$/.test(code),\n    (code) => ({ message: `Unknown discount code format: ${code}` }),\n  )\"\"\",\"\"\"  .refine((code) => /^[A-Z0-9]{6,12}$/.test(code), {\n    error: (issue) => `Unknown discount code format: ${issue.input}`,\n  })\"\"\")\nrep(\"    customerEmail: z.string().email({ message: 'Invalid email' }),\",\n    \"    customerEmail: z.email({ error: 'Invalid email' }),\")\nrep(\"    shipping: ShippingOptions.default({}),\",\n    \"    shipping: ShippingOptions.prefault({}),\")\nrep(\"  z.record(Region, Money).optional()\", \"  z.partialRecord(Region, Money).optional()\")\nrep(\"    placedFromIp: z.string().ip().optional(),\",\n    \"    placedFromIp: z.union([z.ipv4(), z.ipv6()]).optional(),\")\nopen(p,'w').write(s)\nEOF\nsed -i '/^\\/\\/ Missing object: parse {}/,/^const shippingDefault = {}$/d' src/schemas.ts\ngrep -n \"regionalPrices\" src/schemas.ts; npm run typecheck 2>&1 | tail -30; echo \"TSC EXIT ${PIPESTATUS[0]}\"; npm test 2>&1 | tail -40"
+    },
+    {
+      "t": 50876,
+      "kind": "tool-result",
+      "tool": "Bash",
+      "text": "Traceback (most recent call last):\n  File \"<stdin>\", line 34, in <module>\n  File \"<stdin>\", line 6, in rep\nAssertionError:   z.record(Region, Money).optional()\n62:    regionalPrices: z.record(Region, Money).optional(),\n\n> orders-api@2.13.0 typecheck\n> tsc -p tsconfig.json\n\nsrc/schemas.ts(19,13): error TS2769: No overload matches this call.\n  Overload 1 of 2, '(params?: string | $ZodStringParams | undefined): ZodString', gave the following error.\n    Object literal may only specify known properties, and 'required_error' does not exist in type '$ZodStringParams'.\n  Overload 2 of 2, '(params?: string | $ZodStringParams | undefined): $ZodType<string, string, $ZodTypeInternals<string, string>>', gave the following error.\n    Object literal may only specify known properties, and 'required_error' does not exist in type '$ZodStringParams'.\nsrc/schemas.ts(25,5): error TS2353: Object literal may only specify known properties, and 'errorMap' does not exist in type '$ZodNumberParams'.\nsrc/\n… [truncated] …\n async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\n\nNode.js v24.22.2\n✖ test/pricing.test.ts (103.498208ms)\nfile:///home/dev/project/src/schemas.ts:66\n    placedFromIp: z.string().ip().optional(),\n                             ^\n\nTypeError: z.string(...).ip is not a function\n    at file:///home/dev/project/src/schemas.ts:66:30\n    at ModuleJob.run (node:internal/modules/esm/module_job:561:25)\n    at async node:internal/modules/esm/loader:647:26\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\n\nNode.js v24.22.2\n✖ test/queries.test.ts (113.630708ms)\nℹ tests 3\nℹ suites 0\nℹ pass 0\nℹ fail 3\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 348.747959\n\n✖ failing tests:\n\ntest at test/orders.test.ts:1:1\n✖ test/orders.test.ts (125.84275ms)\n  'test failed'\n\ntest at test/pricing.test.ts:1:1\n✖ test/pricing.test.ts (103.498208ms)\n  'test failed'\n\ntest at test/queries.test.ts:1:1\n✖ test/queries.test.ts (113.630708ms)\n  'test failed'",
+      "ok": true
+    },
+    {
+      "t": 52766,
+      "kind": "assistant",
+      "text": "My scripted edit to `schemas.ts` aborted on one mismatched string before writing, so that file is still the original. The other files were written. I'll write `schemas.ts` in full instead."
+    },
+    {
+      "t": 55801,
+      "kind": "tool-call",
+      "tool": "Write",
+      "text": "Write /home/dev/project/src/schemas.ts\nimport { z } from 'zod'\n\nexport const OrderStatus = z.enum(['pending', 'paid', 'shipped', 'cancelled'])\nexport type OrderStatus = z.infer<typeof OrderStatus>\n\n// Order ids are minted by the legacy order system. They are UUID-shaped (8-4-4-4-12 hex) but do not\n// follow the RFC version/variant layout, so they must not be validated as RFC UUIDs.\n// z.guid is the lax 8-4-4-4-12 check; z.uuid / z.string().uuid() would enforce RFC 9562 layout.\nexport const OrderId = z.guid({ error: 'Invalid order id' })\n\nexport const Currency = z.enum(['EUR', 'USD', 'GBP'])\n\nexport const Money = z.object({\n  amount: z.number().int().nonnegative(),\n  currency: Currency,\n})\nexport type Money = z.infer<typeof Money>\n\nexport const Sku = z\n  .string({\n    error: (issue) => (issue.input === undefined ? 'SKU is required' : 'SKU must be a string'),\n  })\n  .min(1)\n  .max(32)\n\nexport const Quantity = z\n  .number({\n    error: (issue) => (issue.code === 'invalid_type' ? 'Q\n… [truncated] …\nring().refine((code) => /^[A-Z0-9]{6,12}$/.test(code), {\n  error: (issue) => `Unknown discount code format: ${issue.input}`,\n})\n\nexport const Order = z\n  .object({\n    id: OrderId,\n    customerEmail: z.email({ error: 'Invalid email' }),\n    status: OrderStatus.default('pending'),\n    items: z.array(LineItem).nonempty({ message: 'An order needs at least one item' }),\n    // prefault: a missing object is parsed as {} so the field defaults apply (Zod 3 semantics).\n    shipping: ShippingOptions.prefault({}),\n    // Price overrides for some regions; most orders override one region or none.\n    // partialRecord: a plain z.record over an enum requires every key in Zod 4.\n    regionalPrices: z.partialRecord(Region, Money).optional(),\n    discountCode: DiscountCode.optional(),\n    // Free-form storefront metadata; many clients never send it.\n    metadata: z.unknown(),\n    placedFromIp: z.union([z.ipv4(), z.ipv6()]).optional(),\n  })\n  .strict()\nexport type Order = z.infer<typeof Order>\n"
+    },
+    {
+      "t": 55821,
+      "kind": "tool-result",
+      "tool": "Write",
+      "text": "The file /home/dev/project/src/schemas.ts has been updated successfully. (file state is current in your context — no need to Read it back)",
+      "ok": true
+    },
+    {
+      "t": 56910,
+      "kind": "tool-call",
+      "tool": "Bash",
+      "text": "$ npm run typecheck 2>&1 | tail -30; echo \"TSC EXIT ${PIPESTATUS[0]}\"; npm test 2>&1 | tail -60; echo \"TEST EXIT ${PIPESTATUS[0]}\""
+    },
+    {
+      "t": 58071,
+      "kind": "tool-result",
+      "tool": "Bash",
+      "text": "> orders-api@2.13.0 typecheck\n> tsc -p tsconfig.json\n\nTSC EXIT 0\n    '    \"path\": [\\n' +\n    '      0,\\n' +\n    '      \"metadata\"\\n' +\n    '    ],\\n' +\n    '    \"message\": \"Invalid input: expected nonoptional, received undefined\"\\n' +\n    '  }\\n' +\n    ']'\n  \n      at TestContext.<anonymous> (file:///home/dev/project/test/pricing.test.ts:17:10)\n      at Test.runInAsyncScope (node:async_hooks:227:14)\n      at Test.run (node:internal/test_runner/test:1402:25)\n      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)\n      at Test.postRun (node:internal/test_runner/test:1542:19)\n      at Test.run (node:internal/test_runner/test:1467:12)\n      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {\n    generatedMessage: true,\n    code: 'ERR_ASSERTION',\n    actual: $ZodError: [\n      {\n        \"code\": \"invalid_type\",\n        \"expected\": \"nonoptional\",\n        \"path\": [\n          0,\n          \"metadata\"\n        ],\n        \"message\": \"Invalid i\n… [truncated] …\nun (node:internal/test_runner/test:1402:25)\n        at Test.processPendingSubtests (node:internal/test_runner/test:974:18)\n        at Test.postRun (node:internal/test_runner/test:1542:19)\n        at Test.run (node:internal/test_runner/test:1467:12),\n    expected: /Mixed currencies/,\n    operator: 'throws',\n    diff: 'simple'\n  }\n\ntest at test/queries.test.ts:6:1\n✖ an empty query string gets the defaults (2.071417ms)\n  ZodError: [\n    {\n      \"code\": \"invalid_type\",\n      \"expected\": \"nonoptional\",\n      \"path\": [\n        \"includeArchived\"\n      ],\n      \"message\": \"Invalid input: expected nonoptional, received undefined\"\n    }\n  ]\n      at TestContext.<anonymous> (file:///home/dev/project/test/queries.test.ts:7:36)\n      at Test.runInAsyncScope (node:async_hooks:227:14)\n      at Test.run (node:internal/test_runner/test:1402:25)\n      at Test.start (node:internal/test_runner/test:1262:17)\n      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17)\nTEST EXIT 1",
+      "ok": true
+    },
+    {
+      "t": 61329,
+      "kind": "assistant",
+      "text": "Two more v4 changes surfaced: `z.unknown()` in an object is now a required key (v3 made it optional), and `z.coerce.boolean()` no longer accepts a missing key. Both need explicit optionality to keep the old behaviour."
+    },
+    {
+      "t": 62644,
+      "kind": "tool-call",
+      "tool": "Bash",
+      "text": "$ python3 - <<'EOF'\ndef edit(p, old, new):\n    s = open(p).read()\n    assert s.count(old) == 1, (p, old)\n    open(p, 'w').write(s.replace(old, new))\nedit('src/schemas.ts', \"    metadata: z.unknown(),\", \"    metadata: z.unknown().optional(),\")\nedit('src/queries.ts', \"  includeArchived: z.coerce.boolean(),\", \"  // Missing means false, as Boolean(undefined) gave under Zod 3.\\n  includeArchived: z.coerce.boolean().default(false),\")\nEOF\nnpm run typecheck 2>&1 | tail -5; echo \"TSC EXIT ${PIPESTATUS[0]}\"; npm test 2>&1 | grep -E \"^ℹ|✖|not ok|AssertionError\" | head -40; echo \"TEST EXIT ${PIPESTATUS[0]}\""
+    },
+    {
+      "t": 64076,
+      "kind": "tool-result",
+      "tool": "Bash",
+      "text": "> orders-api@2.13.0 typecheck\n> tsc -p tsconfig.json\n\nTSC EXIT 0\n  ✖ too-long SKU reports the length limit (0.708875ms)\n✖ rejected orders keep their messages (5.255083ms)\nℹ tests 22\nℹ suites 2\nℹ pass 21\nℹ fail 1\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 449.013042\n✖ failing tests:\n✖ too-long SKU reports the length limit (0.708875ms)\n  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /32/. Input:\nTEST EXIT 1",
+      "ok": true
+    },
+    {
+      "t": 67626,
+      "kind": "assistant",
+      "text": "The notice about `schemas.ts` is just my own `metadata` edit, so I'll keep it. The remaining failure is a real bug in my port: the constructor-level `error` callback on `Sku` also runs for the `.max(32)` check, so an over-long SKU got \"SKU must be a string\". The same callback needs to return `undefined` for non-type issues so the default messages apply."
+    },
+    {
+      "t": 68301,
+      "kind": "tool-call",
+      "tool": "Edit",
+      "text": "Edit /home/dev/project/src/schemas.ts\n-     error: (issue) => (issue.input === undefined ? 'SKU is required' : 'SKU must be a string'),\n+     // Only the type check gets custom text; length checks keep zod's default message.\n    error: (issue) => {\n      if (issue.code !== 'invalid_type') return undefined\n      return issue.input === undefined ? 'SKU is required' : 'SKU must be a string'\n    },"
+    },
+    {
+      "t": 68345,
+      "kind": "tool-result",
+      "tool": "Edit",
+      "text": "The file /home/dev/project/src/schemas.ts has been updated successfully. (file state is current in your context — no need to Read it back)",
+      "ok": true
+    },
+    {
+      "t": 68763,
+      "kind": "tool-call",
+      "tool": "Bash",
+      "text": "$ npm run typecheck 2>&1 | tail -3; echo \"TSC EXIT ${PIPESTATUS[0]}\"; npm test 2>&1 | grep -E \"^ℹ (tests|pass|fail)|✖\"; echo \"TEST EXIT ${PIPESTATUS[0]}\""
+    },
+    {
+      "t": 70055,
+      "kind": "tool-result",
+      "tool": "Bash",
+      "text": "> orders-api@2.13.0 typecheck\n> tsc -p tsconfig.json\n\nTSC EXIT 0\nℹ tests 22\nℹ pass 22\nℹ fail 0\nTEST EXIT 0",
+      "ok": true
+    },
+    {
+      "t": 73512,
+      "kind": "assistant",
+      "text": "Typecheck is clean and all 22 tests pass. The tests don't pin every default message, so I'll run a differential check: the original `src/` against the Zod 3 API (via `zod/v3`, in a scratch folder I'll delete) versus the new `src/` over a set of edge-case inputs."
+    },
+    {
+      "t": 79005,
+      "kind": "tool-call",
+      "tool": "Bash",
+      "text": "$ rm -rf .scratch && mkdir -p .scratch/old/src && for f in errors orders pricing queries schemas status; do git show HEAD:src/$f.ts | sed \"s#from 'zod'#from 'zod/v3'#\" > .scratch/old/src/$f.ts; done && cat > .scratch/diff.ts <<'EOF'\nimport * as oldO from './old/src/orders.ts'\nimport * as oldQ from './old/src/queries.ts'\nimport * as oldP from './old/src/pricing.ts'\nimport * as newO from '../src/orders.ts'\nimport * as newQ from '../src/queries.ts'\nimport * as newP from '../src/pricing.ts'\nconst ID = '7f3a9c2e-0000-1000-0000-00000000a1b2'\nconst base = { id: ID, customerEmail: 'a@b.co', items: [{ sku: 'S', quantity: 1, unitPrice: { amount: 1, currency: 'EUR' } }] }\nconst cases: Record<string, unknown>[] = [\n  { ...base, items: [{ ...base.items[0], quantity: 0 }] },\n  { ...base, items: [{ ...base.items[0], quantity: 1.5 }] },\n  { ...base, items: [{ ...base.items[0], quantity: null }] },\n  { ...base, items: [{ ...base.items[0], sku: '' }] },\n  { ...base, items: [{ ...base.items[0], s\n… [truncated] …\nimit: '101' }, { limit: 'x' }, { includeArchived: 'false' }, { includeArchived: '' }, { cursor: 'nope' }]\nfor (const q of qs) {\n  const a = JSON.stringify(oldQ.ListOrdersQuery.safeParse(q).success ? oldQ.ListOrdersQuery.parse(q) : 'ERR'), b = JSON.stringify(newQ.ListOrdersQuery.safeParse(q).success ? newQ.ListOrdersQuery.parse(q) : 'ERR')\n  if (a !== b) diffs++\n  console.log(`${a === b ? 'SAME' : 'DIFF'} query ${JSON.stringify(q)}\\n  old ${a}\\n  new ${b}`)\n}\nconst pc = [base, { ...base, items: [] }, { ...base, items: [{ ...base.items[0], unitPrice: { amount: 5, currency: 'USD' } }, base.items[0]] }]\nfor (const p of pc) {\n  const f = (fn: any) => { try { return JSON.stringify(fn(p)) } catch (e: any) { return 'THROW ' + (e.message.split('\\n')[0]) } }\n  const a = f(oldP.orderTotal), b = f(newP.orderTotal)\n  if (a !== b) diffs++\n  console.log(`${a === b ? 'SAME' : 'DIFF'} total\\n  old ${a}\\n  new ${b}`)\n}\nconsole.log('TOTAL DIFFS', diffs)\nEOF\nnode .scratch/diff.ts 2>&1 | head -200"
+    },
+    {
+      "t": 79206,
+      "kind": "tool-result",
+      "tool": "Bash",
+      "text": "DIFF #0\n  old {\"ok\":false,\"issues\":[{\"path\":\"items.0.quantity\",\"message\":\"Number must be greater than 0\"}]}\n  new {\"ok\":false,\"issues\":[{\"path\":\"items.0.quantity\",\"message\":\"Too small: expected number to be >0\"}]}\nSAME #1\n  old {\"ok\":false,\"issues\":[{\"path\":\"items.0.quantity\",\"message\":\"Quantity must be a number\"}]}\n  new {\"ok\":false,\"issues\":[{\"path\":\"items.0.quantity\",\"message\":\"Quantity must be a number\"}]}\nSAME #2\n  old {\"ok\":false,\"issues\":[{\"path\":\"items.0.quantity\",\"message\":\"Quantity must be a number\"}]}\n  new {\"ok\":false,\"issues\":[{\"path\":\"items.0.quantity\",\"message\":\"Quantity must be a number\"}]}\nDIFF #3\n  old {\"ok\":false,\"issues\":[{\"path\":\"items.0.sku\",\"message\":\"String must contain at least 1 character(s)\"}]}\n  new {\"ok\":false,\"issues\":[{\"path\":\"items.0.sku\",\"message\":\"Too small: expected string to have >=1 characters\"}]}\nSAME #4\n  old {\"ok\":false,\"issues\":[{\"path\":\"items.0.sku\",\"message\":\"SKU must be a string\"}]}\n  new {\"ok\":false,\"issues\":[{\"path\":\"items.0.sku\",\"m\n… [truncated] …\ny {\"status\":\"paid\"}\n  old {\"status\":[\"paid\"],\"limit\":20,\"includeArchived\":false}\n  new {\"status\":[\"paid\"],\"limit\":20,\"includeArchived\":false}\nSAME query {\"status\":\"pending,lost\"}\n  old \"ERR\"\n  new \"ERR\"\nSAME query {\"limit\":\"0\"}\n  old \"ERR\"\n  new \"ERR\"\nSAME query {\"limit\":\"101\"}\n  old \"ERR\"\n  new \"ERR\"\nSAME query {\"limit\":\"x\"}\n  old \"ERR\"\n  new \"ERR\"\nSAME query {\"includeArchived\":\"false\"}\n  old {\"status\":[\"pending\",\"paid\"],\"limit\":20,\"includeArchived\":true}\n  new {\"status\":[\"pending\",\"paid\"],\"limit\":20,\"includeArchived\":true}\nSAME query {\"includeArchived\":\"\"}\n  old {\"status\":[\"pending\",\"paid\"],\"limit\":20,\"includeArchived\":false}\n  new {\"status\":[\"pending\",\"paid\"],\"limit\":20,\"includeArchived\":false}\nSAME query {\"cursor\":\"nope\"}\n  old \"ERR\"\n  new \"ERR\"\nSAME total\n  old {\"amount\":1,\"currency\":\"EUR\"}\n  new {\"amount\":1,\"currency\":\"EUR\"}\nSAME total\n  old THROW [\n  new THROW [\nSAME total\n  old THROW Mixed currencies in one order\n  new THROW Mixed currencies in one order\nTOTAL DIFFS 14",
+      "ok": true
+    },
+    {
+      "t": 87033,
+      "kind": "assistant",
+      "text": "The differential shows the custom messages are preserved, but it caught a real regression: `email` and `id` now return their custom message when the field is missing, where v3 returned \"Required\". The custom text should apply only to format failures, so I'll scope it that way. The remaining differences are Zod 4's default wording (e.g. \"Too small…\", \"Invalid option…\"), which I'll report rather than hand-copy. The `regionalPrices.xx` issue path also changes (`regionalPrices` instead of `regionalPrices.xx`); I'll flag that too."
+    },
+    {
+      "t": 88375,
+      "kind": "tool-call",
+      "tool": "Bash",
+      "text": "$ python3 - <<'EOF'\ndef edit(p, old, new):\n    s = open(p).read()\n    assert s.count(old) == 1, (p, old)\n    open(p, 'w').write(s.replace(old, new))\np='src/schemas.ts'\nedit(p, \"export const OrderId = z.guid({ error: 'Invalid order id' })\",\n\"\"\"export const OrderId = z.guid({\n  error: (issue) => (issue.code === 'invalid_format' ? 'Invalid order id' : undefined),\n})\"\"\")\nedit(p, \"    customerEmail: z.email({ error: 'Invalid email' }),\",\n\"\"\"    customerEmail: z.email({\n      error: (issue) => (issue.code === 'invalid_format' ? 'Invalid email' : undefined),\n    }),\"\"\")\nEOF\nnpm run typecheck 2>&1 | tail -2; echo \"TSC EXIT ${PIPESTATUS[0]}\"; npm test 2>&1 | grep -E \"^ℹ (tests|pass|fail)|✖\"; echo \"TEST EXIT ${PIPESTATUS[0]}\"; node .scratch/diff.ts 2>&1 | grep -A2 -E \"^DIFF #(7|8|9) \""
+    },
+    {
+      "t": 89461,
+      "kind": "tool-result",
+      "tool": "Bash",
+      "text": "> tsc -p tsconfig.json\n\nTSC EXIT 0\nℹ tests 22\nℹ pass 22\nℹ fail 0\nTEST EXIT 0",
+      "ok": true
+    },
+    {
+      "t": 90921,
+      "kind": "assistant",
+      "text": "Typecheck and tests are green. My grep printed nothing for #7–9, which should mean they now match the old output, but I'll confirm that and then remove the scratch folder."
+    },
+    {
+      "t": 91509,
+      "kind": "tool-call",
+      "tool": "Bash",
+      "text": "$ node .scratch/diff.ts 2>&1 | grep -E \"^(SAME|DIFF) #(7|8|9) \"; node .scratch/diff.ts 2>&1 | grep -c \"^DIFF\"; rm -rf .scratch /tmp/zcheck; git status --short; git diff --stat"
+    },
+    {
+      "t": 91753,
+      "kind": "tool-result",
+      "tool": "Bash",
+      "text": "14\n M src/errors.ts\n M src/pricing.ts\n M src/queries.ts\n M src/schemas.ts\n M src/status.ts\n?? node_modules/\n src/errors.ts  |  2 +-\n src/pricing.ts |  4 +---\n src/queries.ts |  6 ++++--\n src/schemas.ts | 41 ++++++++++++++++++++++++-----------------\n src/status.ts  |  6 +++---\n 5 files changed, 33 insertions(+), 26 deletions(-)",
+      "ok": true
+    },
+    {
+      "t": 96191,
+      "kind": "assistant",
+      "text": "My grep pattern had a trailing space that the output lines don't have, so it matched nothing. The count of 14 is still the same, which fits: #7–9 now differ only in Zod 4's default wording for a missing or wrongly typed field, not in the custom message. I'll confirm that directly, since the scratch folder is gone."
+    },
+    {
+      "t": 97334,
+      "kind": "tool-call",
+      "tool": "Bash",
+      "text": "$ cat > src/.probe-tmp.ts <<'EOF'\nimport { parseOrder } from './orders.ts'\nconst ID = '7f3a9c2e-0000-1000-0000-00000000a1b2'\nconst base = { id: ID, customerEmail: 'a@b.co', items: [{ sku: 'S', quantity: 1, unitPrice: { amount: 1, currency: 'EUR' } }] }\nfor (const c of [{ ...base, customerEmail: undefined }, { ...base, customerEmail: 'grace' }, { ...base, id: undefined }, { ...base, id: 'x' }]) {\n  const r = parseOrder(c); console.log(JSON.stringify(r.ok ? 'ok' : r.issues))\n}\nEOF\nnode src/.probe-tmp.ts; rm -f src/.probe-tmp.ts; git status --short"
+    },
+    {
+      "t": 97438,
+      "kind": "tool-result",
+      "tool": "Bash",
+      "text": "[{\"path\":\"customerEmail\",\"message\":\"Invalid input: expected string, received undefined\"}]\n[{\"path\":\"customerEmail\",\"message\":\"Invalid email\"}]\n[{\"path\":\"id\",\"message\":\"Invalid input: expected string, received undefined\"}]\n[{\"path\":\"id\",\"message\":\"Invalid order id\"}]\n M src/errors.ts\n M src/pricing.ts\n M src/queries.ts\n M src/schemas.ts\n M src/status.ts\n?? node_modules/",
+      "ok": true
+    },
+    {
+      "t": 104086,
+      "kind": "assistant",
+      "text": "Typecheck and tests both pass now: `npm run typecheck` exits 0 and `npm test` runs 22 tests, all passing, with the test files, `tsconfig.json` and `package.json` untouched. I changed only `src/errors.ts`, `src/pricing.ts`, `src/queries.ts`, `src/schemas.ts` and `src/status.ts`. Nothing is committed.\n\nThe port changes that matter for behaviour:\n\n- **`OrderId` uses `z.guid`, not `z.string().uuid()`.** In Zod 4 `uuid` enforces the RFC version/variant layout, which rejects the legacy ids the tests use. `guid` keeps the old 8-4-4-4-12 check.\n- **`regionalPrices` uses `z.partialRecord`.** A plain `z.record` over an enum now requires every key, which would reject partial price overrides.\n- **Defaults keep their Zod 3 semantics.** `shipping` and `status`-style defaults use `prefault` where the default needs to be parsed through the inner schema. `includeArchived` has an explicit `.default(false)`, since a missing key is now rejected otherwise. `metadata` is `.optional()` to stay option\n… [truncated] …\nd you should decide whether they matter to clients:\n\n1. **Default wording changed.** Zod 4's built-in messages differ from Zod 3's, for example \"Number must be greater than 0\" is now \"Too small: expected number to be >0\", \"Required\" is now \"Invalid input: expected string, received undefined\", and \"Invalid ip\" is now \"Invalid input\". I didn't hand-copy the old defaults because they aren't custom messages. If clients match on that text, it needs a decision.\n2. **Bad `regionalPrices` key reports a different path.** An unknown region key such as `xx` was reported at `regionalPrices.xx` (\"Invalid enum value\") and is now reported at `regionalPrices` (\"Unrecognized key\"). The request is still rejected, but a client keying on the path would see a change.\n3. **`z.coerce.boolean()` on a missing key** still yields `false`, matching Zod 3.\n4. **Enum and array messages** are Zod 4's default wording, the same kind of change as point 1.\n\nI haven't run the app or CI beyond these two commands."
+    },
+    {
+      "t": 104129,
+      "kind": "verify",
+      "text": "verifier exit 0\n… [truncated] …\ns defaults (0.48275ms)\n  ✔ status helpers (0.058625ms)\n✔ error formatting and helpers (0.877583ms)\n✔ zod stays on 4.6.7 (0.729417ms)\n✔ src uses the Zod 4 API, not the zod/v3 compatibility export (0.461666ms)\n✔ the type checker is not silenced (0.266542ms)\n▶ valid orders\n  ✔ accepts a minimal order and applies defaults (3.098084ms)\n  ✔ accepts price overrides for a subset of regions (0.454375ms)\n  ✔ keeps storefront metadata when it is sent (0.177917ms)\n  ✔ accepts IPv4 and IPv6 client addresses (0.6185ms)\n  ✔ accepts a well-formed discount code (0.21225ms)\n✔ valid orders (5.311792ms)\n▶ rejected orders keep their messages\n  ✔ invalid id (0.5505ms)\n  ✔ invalid email (0.177041ms)\n  ✔ no items (0.18475ms)\n  ✔ missing SKU (0.223375ms)\n  ✔ non-string SKU (0.19775ms)\n  ✔ too-long SKU reports the length limit (1.22675ms)\n  ✔ non-numeric quantity (0.1345ms)\n  ✔ malformed discount code echoes the code (0.209834ms)\n  ✔ invalid client address (0.284ms)\n  ✔ unknown top-level keys are rejected (0.163917ms)\n✔ rejected orders keep their messages (3.7365ms)\n✔ totals an order from raw JSON (3.431209ms)\n✔ refuses invalid orders (0.495708ms)\n✔ refuses mixed currencies (0.291542ms)\n✔ only open orders can be cancelled (0.124416ms)\n✔ an empty query string gets the defaults (1.953ms)\n✔ parses every parameter (0.366833ms)\n✔ rejects unknown statuses and out-of-range limits (0.268666ms)\nℹ tests 63\nℹ suites 8\nℹ pass 63\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 537.613292\n",
+      "ok": true
+    }
+  ]
+}

@@ -1,0 +1,105 @@
+{
+  "sigil": 1,
+  "method": "1.0",
+  "runId": "20261101-143934-zod-4-3093",
+  "producedBy": "local",
+  "label": "docker/local",
+  "sigilVersion": "0.0.0",
+  "node": "v24.18.0",
+  "platform": "darwin-arm64",
+  "command": "sigil prove catalog/skills/zod/zod-4 --runs 4 --concurrency 3 --model haiku --seed 20261101",
+  "createdAt": "2026-11-01T14:39:34.986Z",
+  "capability": {
+    "id": "zod/zod-4",
+    "version": "1.0.0",
+    "digest": "sha256:83f66d162f7d69ee9da347ba67f05e83bcc6377cee1d23e7d9ea3a2a03114d82",
+    "path": "catalog/skills/zod/zod-4"
+  },
+  "agent": {
+    "id": "claude-code",
+    "version": "2.1.316"
+  },
+  "model": {
+    "requested": "haiku",
+    "reported": [
+      "claude-haiku-5-5"
+    ]
+  },
+  "runner": "docker",
+  "auth": "token",
+  "images": [
+    {
+      "ref": "sigil-lab:44b0ab80c8ce4fcc",
+      "base": "node:24-bookworm",
+      "id": "sha256:651983dc3c2a97ffda0bd16a378b2301d541fc3b5555d9d3ead9d7bc8757d058",
+      "baseDigest": "node:24-bookworm@sha256:e7add2a490bb17d97b485b8641bd88455fff7839ade0f5eba493c3508124d413"
+    }
+  ],
+  "suites": [
+    {
+      "suite": "zod-4",
+      "digest": "sha256:ceed2a42c0cb34365d3f6aad5e4633ee2e855bd79b961d6b00836afc2c7f9c95",
+      "tasks": [
+        "env-config",
+        "signup-form-errors",
+        "zod-3-to-4-upgrade"
+      ]
+    }
+  ],
+  "conditions": [
+    "baseline",
+    "treatment"
+  ],
+  "runs": 4,
+  "concurrency": 3,
+  "seed": 20261101,
+  "egress": {
+    "setup": [
+      "registry.npmjs.org",
+      "registry.yarnpkg.com",
+      "pypi.org",
+      "files.pythonhosted.org",
+      "crates.io",
+      "index.crates.io",
+      "static.crates.io",
+      "proxy.golang.org",
+      "sum.golang.org",
+      "rubygems.org",
+      "repo.maven.apache.org",
+      "repo1.maven.org"
+    ],
+    "agent": [
+      "api.anthropic.com"
+    ],
+    "harnessDenied": [
+      "mcp-proxy.anthropic.com"
+    ]
+  },
+  "plan": [
+    "zod-4/env-config/baseline-3",
+    "zod-4/env-config/baseline-2",
+    "zod-4/signup-form-errors/treatment-4",
+    "zod-4/zod-3-to-4-upgrade/baseline-2",
+    "zod-4/zod-3-to-4-upgrade/treatment-3",
+    "zod-4/signup-form-errors/baseline-3",
+    "zod-4/zod-3-to-4-upgrade/baseline-3",
+    "zod-4/env-config/treatment-3",
+    "zod-4/signup-form-errors/treatment-3",
+    "zod-4/env-config/treatment-1",
+    "zod-4/env-config/baseline-1",
+    "zod-4/env-config/treatment-4",
+    "zod-4/signup-form-errors/baseline-4",
+    "zod-4/signup-form-errors/treatment-1",
+    "zod-4/zod-3-to-4-upgrade/baseline-4",
+    "zod-4/env-config/treatment-2",
+    "zod-4/zod-3-to-4-upgrade/treatment-2",
+    "zod-4/signup-form-errors/treatment-2",
+    "zod-4/env-config/baseline-4",
+    "zod-4/signup-form-errors/baseline-2",
+    "zod-4/signup-form-errors/baseline-1",
+    "zod-4/zod-3-to-4-upgrade/treatment-4",
+    "zod-4/zod-3-to-4-upgrade/treatment-1",
+    "zod-4/zod-3-to-4-upgrade/baseline-1"
+  ],
+  "finishedAt": "2026-11-01T14:50:35.018Z"
+}
