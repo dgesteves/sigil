@@ -3,7 +3,10 @@ dist/
 .next/
 .vercel/
 .turbo/
-coverage/
+# Test coverage output (anchored, so routes named coverage are not ignored)
+/coverage/
+/packages/*/coverage/
+/site/coverage/
 *.log
 .DS_Store
 .env
