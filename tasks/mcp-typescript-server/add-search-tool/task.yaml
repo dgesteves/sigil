@@ -9,7 +9,7 @@ prompt: |
   read, not as a crash. The tool doesn't change anything, so mark it read-only in its tool
   annotations. Keep `npm test` and `npm run typecheck` passing.
 verify:
-  command: node --test "test/hidden/*.test.mjs"
+  command: node --test "test/hidden/*.test.mjs" && node --test test/*.test.ts && ./node_modules/.bin/tsc -p .
   timeoutSeconds: 120
 protected:
   - test/server.test.ts
