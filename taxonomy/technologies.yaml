@@ -1,0 +1,229 @@
+# Sigil technology taxonomy.
+#
+# The controlled vocabulary for `technologies:` in sigil.yaml, and the signatures the Oracle uses to
+# detect a repo's stack. `detect` keys are package ecosystems (exact package names) plus `files`
+# (paths or simple globs that indicate the technology). Add entries freely; ids are permanent.
+#
+# kinds: language | runtime | framework | library | database | platform | infrastructure | tool |
+#        ai-provider | ai-framework | protocol | practice
+
+sigil: 1
+technologies:
+  # ── Languages ─────────────────────────────────────────────────────────────
+  - { id: javascript, name: JavaScript, kind: language, detect: { files: [package.json] } }
+  - { id: typescript, name: TypeScript, kind: language, detect: { npm: [typescript], files: [tsconfig.json] } }
+  - { id: python, name: Python, kind: language, detect: { files: [pyproject.toml, requirements.txt, setup.py, Pipfile, uv.lock] } }
+  - { id: java, name: Java, kind: language, detect: { files: [pom.xml, build.gradle, build.gradle.kts] } }
+  - { id: csharp, name: 'C#', kind: language, detect: { files: ['*.csproj', '*.sln', global.json] } }
+  - { id: cpp, name: C++, kind: language, detect: { files: [CMakeLists.txt, conanfile.txt, vcpkg.json] } }
+  - { id: c, name: C, kind: language, detect: { files: [Makefile, meson.build] } }
+  - { id: go, name: Go, kind: language, detect: { files: [go.mod] } }
+  - { id: rust, name: Rust, kind: language, detect: { files: [Cargo.toml] } }
+  - { id: php, name: PHP, kind: language, detect: { files: [composer.json] } }
+  - { id: kotlin, name: Kotlin, kind: language, detect: { files: [build.gradle.kts, settings.gradle.kts] } }
+  - { id: swift, name: Swift, kind: language, detect: { files: [Package.swift, '*.xcodeproj'] } }
+  - { id: ruby, name: Ruby, kind: language, detect: { files: [Gemfile] } }
+  - { id: dart, name: Dart, kind: language, detect: { files: [pubspec.yaml] } }
+  - { id: scala, name: Scala, kind: language, detect: { files: [build.sbt] } }
+  - { id: elixir, name: Elixir, kind: language, detect: { files: [mix.exs] } }
+  - { id: r, name: R, kind: language, detect: { files: [DESCRIPTION, renv.lock, '*.Rproj'] } }
+  - { id: sql, name: SQL, kind: language, detect: { files: ['*.sql'] } }
+  - { id: bash, name: Bash, kind: language, detect: { files: ['*.sh'] } }
+  - { id: powershell, name: PowerShell, kind: language, detect: { files: ['*.ps1'] } }
+  - { id: lua, name: Lua, kind: language, detect: { files: ['*.rockspec'] } }
+  - { id: zig, name: Zig, kind: language, detect: { files: [build.zig] } }
+  - { id: haskell, name: Haskell, kind: language, detect: { files: [stack.yaml, '*.cabal'] } }
+  - { id: julia, name: Julia, kind: language, detect: { files: [Project.toml] } }
+  - { id: solidity, name: Solidity, kind: language, detect: { files: [foundry.toml, hardhat.config.ts, hardhat.config.js] } }
+
+  # ── Runtimes ──────────────────────────────────────────────────────────────
+  - { id: nodejs, name: Node.js, kind: runtime, detect: { files: ['.nvmrc', '.node-version'] } }
+  - { id: bun, name: Bun, kind: runtime, detect: { files: [bun.lock, bun.lockb, bunfig.toml] } }
+  - { id: deno, name: Deno, kind: runtime, detect: { files: [deno.json, deno.jsonc] } }
+  - { id: dotnet, name: '.NET', kind: runtime, detect: { files: ['*.csproj', global.json] } }
+  - { id: jvm, name: JVM, kind: runtime }
+  - { id: wasm, name: WebAssembly, kind: runtime, detect: { cargo: [wasm-bindgen], npm: [wasm-pack] } }
+
+  # ── Frontend ──────────────────────────────────────────────────────────────
+  - { id: react, name: React, kind: framework, detect: { npm: [react] } }
+  - { id: nextjs, name: Next.js, kind: framework, parent: react, detect: { npm: [next], files: [next.config.js, next.config.ts, next.config.mjs] } }
+  - { id: react-router, name: React Router, kind: framework, parent: react, detect: { npm: [react-router, '@react-router/dev'] } }
+  - { id: tanstack, name: TanStack, kind: library, detect: { npm: ['@tanstack/react-query', '@tanstack/react-router', '@tanstack/react-start', '@tanstack/react-table'] } }
+  - { id: vue, name: Vue, kind: framework, detect: { npm: [vue] } }
+  - { id: nuxt, name: Nuxt, kind: framework, parent: vue, detect: { npm: [nuxt] } }
+  - { id: angular, name: Angular, kind: framework, detect: { npm: ['@angular/core'], files: [angular.json] } }
+  - { id: svelte, name: Svelte, kind: framework, detect: { npm: [svelte] } }
+  - { id: sveltekit, name: SvelteKit, kind: framework, parent: svelte, detect: { npm: ['@sveltejs/kit'] } }
+  - { id: astro, name: Astro, kind: framework, detect: { npm: [astro] } }
+  - { id: solid, name: SolidJS, kind: framework, detect: { npm: [solid-js] } }
+  - { id: qwik, name: Qwik, kind: framework, detect: { npm: ['@builder.io/qwik', '@qwik.dev/core'] } }
+  - { id: htmx, name: htmx, kind: library, detect: { npm: [htmx.org] } }
+  - { id: tailwindcss, name: Tailwind CSS, kind: library, detect: { npm: [tailwindcss, '@tailwindcss/vite', '@tailwindcss/postcss'] } }
+  - { id: shadcn-ui, name: shadcn/ui, kind: library, detect: { files: [components.json] } }
+  - { id: css, name: CSS, kind: language, detect: { files: ['*.css'] } }
+  - { id: html, name: HTML, kind: language, detect: { files: [index.html] } }
+  - { id: threejs, name: three.js, kind: library, detect: { npm: [three, '@react-three/fiber'] } }
+  - { id: vite, name: Vite, kind: tool, detect: { npm: [vite] } }
+  - { id: storybook, name: Storybook, kind: tool, detect: { npm: [storybook], files: ['.storybook/main.ts', '.storybook/main.js'] } }
+  - { id: redux, name: Redux, kind: library, detect: { npm: ['@reduxjs/toolkit', redux] } }
+  - { id: zustand, name: Zustand, kind: library, detect: { npm: [zustand] } }
+  - { id: zod, name: Zod, kind: library, detect: { npm: [zod] } }
+
+  # ── Backend ───────────────────────────────────────────────────────────────
+  - { id: express, name: Express, kind: framework, detect: { npm: [express] } }
+  - { id: nestjs, name: NestJS, kind: framework, detect: { npm: ['@nestjs/core'] } }
+  - { id: fastify, name: Fastify, kind: framework, detect: { npm: [fastify] } }
+  - { id: hono, name: Hono, kind: framework, detect: { npm: [hono] } }
+  - { id: trpc, name: tRPC, kind: library, detect: { npm: ['@trpc/server'] } }
+  - { id: graphql, name: GraphQL, kind: protocol, detect: { npm: [graphql], pypi: [strawberry-graphql, graphene] } }
+  - { id: grpc, name: gRPC, kind: protocol, detect: { npm: ['@grpc/grpc-js'], pypi: [grpcio], go: [google.golang.org/grpc] } }
+  - { id: django, name: Django, kind: framework, detect: { pypi: [django], files: [manage.py] } }
+  - { id: fastapi, name: FastAPI, kind: framework, detect: { pypi: [fastapi] } }
+  - { id: flask, name: Flask, kind: framework, detect: { pypi: [flask] } }
+  - { id: pydantic, name: Pydantic, kind: library, detect: { pypi: [pydantic] } }
+  - { id: spring-boot, name: Spring Boot, kind: framework, detect: { maven: [org.springframework.boot] } }
+  - { id: aspnet-core, name: ASP.NET Core, kind: framework, parent: dotnet, detect: { nuget: [Microsoft.AspNetCore.App] } }
+  - { id: laravel, name: Laravel, kind: framework, detect: { composer: [laravel/framework] } }
+  - { id: symfony, name: Symfony, kind: framework, detect: { composer: [symfony/framework-bundle] } }
+  - { id: rails, name: Ruby on Rails, kind: framework, detect: { gem: [rails] } }
+  - { id: gin, name: Gin, kind: framework, detect: { go: [github.com/gin-gonic/gin] } }
+  - { id: echo, name: Echo, kind: framework, detect: { go: [github.com/labstack/echo/v4] } }
+  - { id: axum, name: Axum, kind: framework, detect: { cargo: [axum] } }
+  - { id: actix-web, name: Actix Web, kind: framework, detect: { cargo: [actix-web] } }
+  - { id: tokio, name: Tokio, kind: library, detect: { cargo: [tokio] } }
+  - { id: phoenix, name: Phoenix, kind: framework, detect: { hex: [phoenix] } }
+
+  # ── Mobile and desktop ────────────────────────────────────────────────────
+  - { id: react-native, name: React Native, kind: framework, detect: { npm: [react-native] } }
+  - { id: expo, name: Expo, kind: platform, parent: react-native, detect: { npm: [expo] } }
+  - { id: flutter, name: Flutter, kind: framework, detect: { pub: [flutter] } }
+  - { id: swiftui, name: SwiftUI, kind: framework }
+  - { id: jetpack-compose, name: Jetpack Compose, kind: framework, detect: { maven: [androidx.compose.ui] } }
+  - { id: android, name: Android, kind: platform, detect: { files: [AndroidManifest.xml, app/src/main/AndroidManifest.xml] } }
+  - { id: ios, name: iOS, kind: platform, detect: { files: [Podfile, '*.xcworkspace'] } }
+  - { id: electron, name: Electron, kind: framework, detect: { npm: [electron] } }
+  - { id: tauri, name: Tauri, kind: framework, detect: { npm: ['@tauri-apps/api'], cargo: [tauri] } }
+
+  # ── Data, ML and AI ───────────────────────────────────────────────────────
+  - { id: pandas, name: pandas, kind: library, detect: { pypi: [pandas] } }
+  - { id: polars, name: Polars, kind: library, detect: { pypi: [polars], npm: [nodejs-polars] } }
+  - { id: numpy, name: NumPy, kind: library, detect: { pypi: [numpy] } }
+  - { id: jupyter, name: Jupyter, kind: tool, detect: { pypi: [jupyterlab, notebook], files: ['*.ipynb'] } }
+  - { id: spark, name: Apache Spark, kind: framework, detect: { pypi: [pyspark] } }
+  - { id: dbt, name: dbt, kind: tool, detect: { pypi: [dbt-core], files: [dbt_project.yml] } }
+  - { id: airflow, name: Apache Airflow, kind: platform, detect: { pypi: [apache-airflow] } }
+  - { id: duckdb, name: DuckDB, kind: database, detect: { pypi: [duckdb], npm: ['@duckdb/node-api', duckdb] } }
+  - { id: scikit-learn, name: scikit-learn, kind: library, detect: { pypi: [scikit-learn] } }
+  - { id: pytorch, name: PyTorch, kind: framework, detect: { pypi: [torch] } }
+  - { id: tensorflow, name: TensorFlow, kind: framework, detect: { pypi: [tensorflow] } }
+  - { id: jax, name: JAX, kind: framework, detect: { pypi: [jax] } }
+  - { id: huggingface, name: Hugging Face, kind: platform, detect: { pypi: [transformers, datasets, huggingface-hub], npm: ['@huggingface/transformers'] } }
+  - { id: vllm, name: vLLM, kind: tool, detect: { pypi: [vllm] } }
+  - { id: ollama, name: Ollama, kind: tool, detect: { pypi: [ollama], npm: [ollama] } }
+  - { id: mlflow, name: MLflow, kind: platform, detect: { pypi: [mlflow] } }
+  - { id: openai, name: OpenAI API, kind: ai-provider, detect: { npm: [openai], pypi: [openai] } }
+  - { id: anthropic, name: Anthropic API, kind: ai-provider, detect: { npm: ['@anthropic-ai/sdk'], pypi: [anthropic] } }
+  - { id: gemini, name: Gemini API, kind: ai-provider, detect: { npm: ['@google/genai'], pypi: [google-genai] } }
+  - { id: mistral, name: Mistral API, kind: ai-provider, detect: { npm: ['@mistralai/mistralai'], pypi: [mistralai] } }
+  - { id: bedrock, name: Amazon Bedrock, kind: ai-provider, detect: { npm: ['@aws-sdk/client-bedrock-runtime'] } }
+  - { id: ai-sdk, name: AI SDK, kind: ai-framework, detect: { npm: [ai, '@ai-sdk/react', '@ai-sdk/openai', '@ai-sdk/anthropic'] } }
+  - { id: langchain, name: LangChain, kind: ai-framework, detect: { npm: [langchain, '@langchain/core'], pypi: [langchain, langchain-core] } }
+  - { id: langgraph, name: LangGraph, kind: ai-framework, detect: { npm: ['@langchain/langgraph'], pypi: [langgraph] } }
+  - { id: llamaindex, name: LlamaIndex, kind: ai-framework, detect: { npm: [llamaindex], pypi: [llama-index] } }
+  - { id: mastra, name: Mastra, kind: ai-framework, detect: { npm: ['@mastra/core'] } }
+  - { id: crewai, name: CrewAI, kind: ai-framework, detect: { pypi: [crewai] } }
+  - { id: autogen, name: AutoGen, kind: ai-framework, detect: { pypi: [autogen-agentchat, pyautogen] } }
+  - { id: openai-agents, name: OpenAI Agents SDK, kind: ai-framework, detect: { npm: ['@openai/agents'], pypi: [openai-agents] } }
+  - { id: claude-agent-sdk, name: Claude Agent SDK, kind: ai-framework, detect: { npm: ['@anthropic-ai/claude-agent-sdk'], pypi: [claude-agent-sdk] } }
+  - { id: pydantic-ai, name: Pydantic AI, kind: ai-framework, detect: { pypi: [pydantic-ai] } }
+  - { id: dspy, name: DSPy, kind: ai-framework, detect: { pypi: [dspy] } }
+  - { id: mcp, name: Model Context Protocol, kind: protocol, detect: { npm: ['@modelcontextprotocol/sdk'], pypi: [mcp, fastmcp], files: ['.mcp.json'] } }
+  - { id: a2a, name: Agent2Agent, kind: protocol, detect: { npm: ['@a2a-js/sdk'], pypi: [a2a-sdk] } }
+  - { id: ag-ui, name: AG-UI, kind: protocol, detect: { npm: ['@ag-ui/client', '@ag-ui/core'] } }
+  - { id: rag, name: Retrieval-augmented generation, kind: practice }
+  - { id: evals, name: LLM evaluations, kind: practice, detect: { npm: [promptfoo, evalite], pypi: [inspect-ai, deepeval, ragas] } }
+  - { id: embeddings, name: Embeddings, kind: practice }
+  - { id: pgvector, name: pgvector, kind: database, parent: postgresql, detect: { npm: [pgvector], pypi: [pgvector] } }
+  - { id: pinecone, name: Pinecone, kind: database, detect: { npm: ['@pinecone-database/pinecone'], pypi: [pinecone] } }
+  - { id: qdrant, name: Qdrant, kind: database, detect: { npm: ['@qdrant/js-client-rest'], pypi: [qdrant-client] } }
+  - { id: weaviate, name: Weaviate, kind: database, detect: { npm: [weaviate-client], pypi: [weaviate-client] } }
+  - { id: chroma, name: Chroma, kind: database, detect: { npm: [chromadb], pypi: [chromadb] } }
+
+  # ── Databases and data access ─────────────────────────────────────────────
+  - { id: postgresql, name: PostgreSQL, kind: database, detect: { npm: [pg, postgres, '@neondatabase/serverless'], pypi: [psycopg, psycopg2-binary, asyncpg] } }
+  - { id: mysql, name: MySQL, kind: database, detect: { npm: [mysql2], pypi: [pymysql, mysqlclient] } }
+  - { id: sqlite, name: SQLite, kind: database, detect: { npm: [better-sqlite3, '@libsql/client'], files: ['*.sqlite', '*.db'] } }
+  - { id: mongodb, name: MongoDB, kind: database, detect: { npm: [mongodb, mongoose], pypi: [pymongo, motor] } }
+  - { id: redis, name: Redis, kind: database, detect: { npm: [redis, ioredis, '@upstash/redis'], pypi: [redis] } }
+  - { id: elasticsearch, name: Elasticsearch, kind: database, detect: { npm: ['@elastic/elasticsearch'], pypi: [elasticsearch] } }
+  - { id: clickhouse, name: ClickHouse, kind: database, detect: { npm: ['@clickhouse/client'], pypi: [clickhouse-connect] } }
+  - { id: kafka, name: Apache Kafka, kind: platform, detect: { npm: [kafkajs], pypi: [confluent-kafka, kafka-python] } }
+  - { id: supabase, name: Supabase, kind: platform, detect: { npm: ['@supabase/supabase-js'], pypi: [supabase], files: [supabase/config.toml] } }
+  - { id: firebase, name: Firebase, kind: platform, detect: { npm: [firebase, firebase-admin], files: [firebase.json] } }
+  - { id: prisma, name: Prisma, kind: library, detect: { npm: [prisma, '@prisma/client'], files: [prisma/schema.prisma] } }
+  - { id: drizzle, name: Drizzle ORM, kind: library, detect: { npm: [drizzle-orm] } }
+  - { id: sqlalchemy, name: SQLAlchemy, kind: library, detect: { pypi: [sqlalchemy] } }
+
+  # ── Infrastructure, cloud and delivery ────────────────────────────────────
+  - { id: docker, name: Docker, kind: infrastructure, detect: { files: [Dockerfile, compose.yaml, docker-compose.yml, '.dockerignore'] } }
+  - { id: kubernetes, name: Kubernetes, kind: infrastructure, detect: { files: ['k8s/*.yaml', kustomization.yaml, skaffold.yaml] } }
+  - { id: helm, name: Helm, kind: tool, detect: { files: [Chart.yaml] } }
+  - { id: terraform, name: Terraform, kind: infrastructure, detect: { files: ['*.tf', '.terraform.lock.hcl'] } }
+  - { id: opentofu, name: OpenTofu, kind: infrastructure, detect: { files: ['*.tofu'] } }
+  - { id: pulumi, name: Pulumi, kind: infrastructure, detect: { files: [Pulumi.yaml] } }
+  - { id: ansible, name: Ansible, kind: tool, detect: { files: [ansible.cfg, playbook.yml] } }
+  - { id: aws, name: AWS, kind: platform, detect: { npm: [aws-cdk-lib], pypi: [boto3], files: [cdk.json, serverless.yml, template.yaml] } }
+  - { id: gcp, name: Google Cloud, kind: platform, detect: { files: [app.yaml, cloudbuild.yaml] } }
+  - { id: azure, name: Microsoft Azure, kind: platform, detect: { files: [azure.yaml, azure-pipelines.yml] } }
+  - { id: cloudflare, name: Cloudflare, kind: platform, detect: { npm: [wrangler], files: [wrangler.toml, wrangler.jsonc] } }
+  - { id: vercel, name: Vercel, kind: platform, detect: { npm: [vercel], files: [vercel.json] } }
+  - { id: netlify, name: Netlify, kind: platform, detect: { files: [netlify.toml] } }
+  - { id: github-actions, name: GitHub Actions, kind: platform, detect: { files: ['.github/workflows/*.yml', '.github/workflows/*.yaml'] } }
+  - { id: gitlab-ci, name: GitLab CI, kind: platform, detect: { files: ['.gitlab-ci.yml'] } }
+  - { id: nginx, name: nginx, kind: infrastructure, detect: { files: [nginx.conf] } }
+  - { id: opentelemetry, name: OpenTelemetry, kind: library, detect: { npm: ['@opentelemetry/api'], pypi: [opentelemetry-api] } }
+  - { id: prometheus, name: Prometheus, kind: tool, detect: { files: [prometheus.yml] } }
+  - { id: grafana, name: Grafana, kind: tool }
+  - { id: sentry, name: Sentry, kind: platform, detect: { npm: ['@sentry/node', '@sentry/nextjs', '@sentry/react'], pypi: [sentry-sdk] } }
+  - { id: git, name: Git, kind: tool, detect: { files: ['.gitignore'] } }
+  - { id: monorepo, name: Monorepos, kind: practice, detect: { npm: [turbo, nx, lerna], files: [pnpm-workspace.yaml, turbo.json, nx.json] } }
+  - { id: pnpm, name: pnpm, kind: tool, detect: { files: [pnpm-lock.yaml] } }
+  - { id: uv, name: uv, kind: tool, detect: { files: [uv.lock] } }
+
+  # ── Quality ───────────────────────────────────────────────────────────────
+  - { id: vitest, name: Vitest, kind: tool, detect: { npm: [vitest] } }
+  - { id: jest, name: Jest, kind: tool, detect: { npm: [jest] } }
+  - { id: playwright, name: Playwright, kind: tool, detect: { npm: ['@playwright/test'], pypi: [playwright] } }
+  - { id: cypress, name: Cypress, kind: tool, detect: { npm: [cypress] } }
+  - { id: testing-library, name: Testing Library, kind: library, detect: { npm: ['@testing-library/react', '@testing-library/dom'] } }
+  - { id: pytest, name: pytest, kind: tool, detect: { pypi: [pytest] } }
+  - { id: junit, name: JUnit, kind: tool, detect: { maven: [org.junit.jupiter] } }
+  - { id: eslint, name: ESLint, kind: tool, detect: { npm: [eslint], files: [eslint.config.js, eslint.config.mjs, eslint.config.ts] } }
+  - { id: biome, name: Biome, kind: tool, detect: { npm: ['@biomejs/biome'], files: [biome.json, biome.jsonc] } }
+  - { id: ruff, name: Ruff, kind: tool, detect: { pypi: [ruff], files: [ruff.toml] } }
+  - { id: owasp, name: OWASP practices, kind: practice }
+  - { id: wcag, name: WCAG, kind: practice, detect: { npm: [axe-core, '@axe-core/react'] } }
+  - { id: oauth, name: OAuth and OIDC, kind: protocol, detect: { npm: [better-auth, next-auth, '@auth/core', openid-client], pypi: [authlib] } }
+
+  # ── Game, embedded, blockchain ────────────────────────────────────────────
+  - { id: unity, name: Unity, kind: platform, detect: { files: [ProjectSettings/ProjectVersion.txt] } }
+  - { id: unreal, name: Unreal Engine, kind: platform, detect: { files: ['*.uproject'] } }
+  - { id: godot, name: Godot, kind: platform, detect: { files: [project.godot] } }
+  - { id: arduino, name: Arduino, kind: platform, detect: { files: ['*.ino', platformio.ini] } }
+  - { id: esp-idf, name: ESP-IDF, kind: platform, detect: { files: [sdkconfig] } }
+  - { id: zephyr, name: Zephyr RTOS, kind: platform, detect: { files: [prj.conf, west.yml] } }
+  - { id: ethereum, name: Ethereum, kind: platform, detect: { npm: [viem, ethers, wagmi, hardhat] } }
+
+  # ── Practices ─────────────────────────────────────────────────────────────
+  - { id: markdown, name: Markdown, kind: language, detect: { files: [README.md] } }
+  - { id: openapi, name: OpenAPI, kind: protocol, detect: { files: [openapi.yaml, openapi.json, swagger.json] } }
+  - { id: rest, name: REST APIs, kind: practice }
+  - { id: microservices, name: Microservices, kind: practice }
+  - { id: event-driven, name: Event-driven architecture, kind: practice }
+  - { id: domain-driven-design, name: Domain-driven design, kind: practice }
+  - { id: ci-cd, name: CI/CD, kind: practice }
+  - { id: incident-response, name: Incident response, kind: practice }
+  - { id: code-review, name: Code review, kind: practice }
+  - { id: refactoring, name: Refactoring, kind: practice }
+  - { id: legacy-modernization, name: Legacy modernization, kind: practice }
+  - { id: technical-writing, name: Technical writing, kind: practice }
