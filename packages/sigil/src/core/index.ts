@@ -1,5 +1,6 @@
 export * from './digest.js'
 export * from './frontmatter.js'
+export * from './glyph.js'
 export * from './ids.js'
 export * from './level.js'
 export * from './load.js'
