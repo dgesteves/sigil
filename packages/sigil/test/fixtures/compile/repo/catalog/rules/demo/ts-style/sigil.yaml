@@ -1,0 +1,15 @@
+sigil: 1
+id: demo/ts-style
+type: rule
+version: 1.0.0
+name: TypeScript style
+summary: A small rule used to test the Sigil compiler end to end.
+domains: [developer-workflow]
+license: MIT
+authors:
+  - github: dgesteves
+payload:
+  format: rule
+  entry: rule.md
+targets: [claude-code, codex, cursor, github-copilot, gemini-cli, opencode]
+

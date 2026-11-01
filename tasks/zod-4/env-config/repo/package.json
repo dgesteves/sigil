@@ -1,0 +1,16 @@
+{
+  "name": "billing-worker",
+  "version": "1.4.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "start": "node src/main.ts",
+    "test": "node --test \"test/**/*.test.ts\""
+  },
+  "dependencies": {
+    "zod": "4.6.7"
+  }
+}

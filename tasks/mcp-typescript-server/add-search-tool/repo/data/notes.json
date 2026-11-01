@@ -1,0 +1,134 @@
+[
+  {
+    "id": "n-101",
+    "title": "MCP server rollout plan",
+    "body": "Ship the notes server to the desktop hosts first, then the web app.",
+    "tags": [
+      "mcp",
+      "plan"
+    ],
+    "updatedAt": "2026-03-02T09:15:00Z"
+  },
+  {
+    "id": "n-102",
+    "title": "Retro: March incident",
+    "body": "The deploy pipeline stalled because the cache key ignored the lockfile.",
+    "tags": [
+      "retro"
+    ],
+    "updatedAt": "2026-03-20T16:40:00Z"
+  },
+  {
+    "id": "n-103",
+    "title": "Tool naming conventions",
+    "body": "Keep MCP tool names snake_case and under 64 characters so every host accepts them.",
+    "tags": [
+      "mcp",
+      "style"
+    ],
+    "updatedAt": "2026-04-11T08:05:00Z"
+  },
+  {
+    "id": "n-104",
+    "title": "Onboarding checklist",
+    "body": "Laptop, SSO, the mcp hosts config, and a pairing session in week one.",
+    "tags": [
+      "onboarding"
+    ],
+    "updatedAt": "2026-05-01T10:00:00Z"
+  },
+  {
+    "id": "n-105",
+    "title": "Quarterly offsite logistics",
+    "body": "Book the venue in Porto, collect dietary needs, plan the boat trip.",
+    "tags": [
+      "events"
+    ],
+    "updatedAt": "2026-05-19T12:30:00Z"
+  },
+  {
+    "id": "n-106",
+    "title": "Mcp inspector tips",
+    "body": "Run the inspector against src/server.ts to poke at tools by hand.",
+    "tags": [
+      "mcp",
+      "debugging"
+    ],
+    "updatedAt": "2026-06-03T14:20:00Z"
+  },
+  {
+    "id": "n-107",
+    "title": "Rate limits for search",
+    "body": "Search queries hit the index directly; MCP clients may retry aggressively.",
+    "tags": [
+      "search"
+    ],
+    "updatedAt": "2026-06-28T07:45:00Z"
+  },
+  {
+    "id": "n-108",
+    "title": "Design review: notes v2",
+    "body": "Structured output for list tools so MCP hosts can render tables.",
+    "tags": [
+      "design",
+      "mcp"
+    ],
+    "updatedAt": "2026-07-14T15:10:00Z"
+  },
+  {
+    "id": "n-109",
+    "title": "Postgres upgrade notes",
+    "body": "Upgrade the replicas first; the mcp audit table needs a new index.",
+    "tags": [
+      "database"
+    ],
+    "updatedAt": "2026-08-02T11:00:00Z"
+  },
+  {
+    "id": "n-110",
+    "title": "Hiring loop",
+    "body": "Two technical interviews and one product conversation; MCP experience is a plus.",
+    "tags": [
+      "hiring"
+    ],
+    "updatedAt": "2026-08-21T09:30:00Z"
+  },
+  {
+    "id": "n-111",
+    "title": "Office move checklist",
+    "body": "Movers on Friday. Mind the zebra crossing when unloading the van.",
+    "tags": [
+      "office"
+    ],
+    "updatedAt": "2026-09-05T17:00:00Z"
+  },
+  {
+    "id": "n-112",
+    "title": "Prompt library",
+    "body": "Prompts the MCP server could expose next: weekly summary and stand-up notes.",
+    "tags": [
+      "mcp",
+      "ideas"
+    ],
+    "updatedAt": "2026-09-30T13:25:00Z"
+  },
+  {
+    "id": "n-113",
+    "title": "Security review: MCP tokens",
+    "body": "Hosts pass no credentials over stdio; the server reads the notes file only.",
+    "tags": [
+      "security",
+      "mcp"
+    ],
+    "updatedAt": "2026-10-12T10:50:00Z"
+  },
+  {
+    "id": "n-114",
+    "title": "On-call handbook",
+    "body": "Page the owner of the failing check; the mCp server has no pager yet.",
+    "tags": [
+      "oncall"
+    ],
+    "updatedAt": "2026-10-27T08:00:00Z"
+  }
+]

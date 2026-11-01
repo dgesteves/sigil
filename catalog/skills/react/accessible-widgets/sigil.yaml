@@ -1,0 +1,37 @@
+sigil: 1
+id: react/accessible-widgets
+type: skill
+version: 1.0.0
+name: Accessible React Widgets
+summary: WAI-ARIA APG keyboard, focus and ARIA contracts for React dialogs, menu buttons, comboboxes and tabs, plus how to test them in jsdom.
+description: >-
+  Gives a coding agent the exact contracts from the WAI-ARIA Authoring Practices and the ARIA 1.2
+  Recommendation for the widgets teams most often build by hand: modal dialogs, menu buttons,
+  editable comboboxes with a listbox popup, tabs, disclosures and accordions. It covers roles and
+  states, what every key must do, roving tabindex versus aria-activedescendant, focus return, React 19
+  mechanics (useId, refs and focus timing, inert, native dialog and why autoFocus does not reach it),
+  and how to prove the behaviour with Testing Library, user-event and axe-core, including the jsdom
+  gaps that make tests lie.
+domains: [frontend, accessibility, testing]
+lifecycle: [build, test, review]
+technologies: [react, typescript, wcag, testing-library, vitest]
+license: MIT
+authors:
+  - github: dgesteves
+payload:
+  format: agent-skill
+  entry: SKILL.md
+targets: [claude-code, codex, cursor, github-copilot, gemini-cli, opencode]
+permissions:
+  network: []
+  shell: []
+  filesystem: write
+  env: []
+proof:
+  suites: [react-accessible-widgets]
+limitations:
+  - The proof suite runs in jsdom, which has no <dialog>.showModal(), Popover API or layout, so it has no dialog task; dialog guidance is checked against the HTML standard and MDN, not measured.
+  - Covers single-level menus and listbox popups. Submenus, menubars, grids, trees and grid or tree combobox popups are out of scope.
+  - Passing keyboard tests and axe-core does not prove what a screen reader announces; new widgets still need a manual pass with VoiceOver or NVDA.
+  - React DOM only. React Native and other renderers use different accessibility APIs.
+  - Browser support figures come from MDN browser-compat-data 8.1.7 (checked 2026-11-01) and will age.

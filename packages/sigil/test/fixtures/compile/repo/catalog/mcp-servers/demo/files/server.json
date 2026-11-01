@@ -1,0 +1,20 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.dgesteves/files",
+  "description": "Reads files for the agent",
+  "version": "1.2.3",
+  "packages": [
+    {
+      "registryType": "npm",
+      "registryBaseUrl": "https://registry.npmjs.org",
+      "identifier": "@example/files-mcp",
+      "version": "1.2.3",
+      "transport": { "type": "stdio" },
+      "packageArguments": [{ "type": "named", "name": "--root", "value": "." }],
+      "environmentVariables": [
+        { "name": "FILES_TOKEN", "description": "Access token", "isRequired": true, "isSecret": true },
+        { "name": "FILES_DEBUG", "description": "Verbose logs" }
+      ]
+    }
+  ]
+}

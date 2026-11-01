@@ -1,0 +1,15 @@
+sigil: 1
+id: demo/reviewer
+type: agent
+version: 1.0.0
+name: Reviewer
+summary: A small agent used to test the Sigil compiler end to end.
+domains: [developer-workflow]
+license: MIT
+authors:
+  - github: dgesteves
+payload:
+  format: subagent
+  entry: reviewer.md
+targets: [claude-code, codex, cursor, github-copilot, gemini-cli, opencode]
+

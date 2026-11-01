@@ -1,0 +1,30 @@
+sigil: 1
+id: support-agent-tools
+title: Let the helpdesk bot search and reprioritise tickets in a multi-step turn
+prompt: |
+  The helpdesk bot in src/agent.ts can only chat. Teach `runSupportTurn()` to work with tickets:
+
+  - Add two tools backed by `tickets`: `searchTickets` (free-text query) and `setTicketPriority`
+    (a ticket id plus one of low, normal, high, urgent). Both must only ever act inside the
+    signed-in user's org (`user.orgId`); never let the model choose the org.
+  - It should be able to chain several tool calls before it replies, but stop after at most 6
+    model calls per turn. If it hits that limit without a final answer, reply with
+    `FALLBACK_REPLY` from src/policy.ts.
+  - `newMessages` is what src/handler.ts appends to the stored conversation, so it must hold this
+    turn's user message followed by every assistant and tool message the run produced, in order.
+    Otherwise the next turn loses track of what the tools did.
+  - `toolsUsed` lists the tools called this turn in call order, and `usage` is the input/output
+    token total for the whole turn.
+  - Conversations saved by the old bot start with that bot's system prompt (see
+    fixtures/legacy-conversation.json). They must keep working, and only the current
+    `SUPPORT_POLICY` may reach the model as instructions.
+verify:
+  command: node --test "test/*.test.ts" "test/hidden/*.test.mjs"
+  timeoutSeconds: 120
+protected:
+  - test/handler.test.ts
+  - fixtures/*.json
+image: node:24-bookworm
+setup: npm ci --ignore-scripts --no-audit --no-fund
+timeoutSeconds: 900
+tags: [ai-sdk, tool-calling, agents, typescript]

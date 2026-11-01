@@ -1,0 +1,17 @@
+{
+  "name": "orders-service",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "test": "node --test test/*.test.ts",
+    "migrate": "node src/cli.ts"
+  },
+  "dependencies": {
+    "@electric-sql/pglite": "0.5.14",
+    "libpg-query": "18.2.2"
+  }
+}

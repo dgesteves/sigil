@@ -1,0 +1,15 @@
+sigil: 1
+id: demo/pack
+type: collection
+version: 1.0.0
+name: Pack
+summary: A small collection used to test the Sigil compiler end to end.
+domains: [developer-workflow]
+license: MIT
+authors:
+  - github: dgesteves
+payload:
+  format: plugin
+  entry: .claude-plugin/plugin.json
+targets: [claude-code]
+

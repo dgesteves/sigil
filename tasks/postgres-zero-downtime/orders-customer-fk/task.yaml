@@ -1,0 +1,30 @@
+sigil: 1
+id: orders-customer-fk
+title: Enforce the orders to customers foreign key and a total check on live tables
+prompt: |
+  orders.customer_id never got a foreign key (see the comment in migrations/0002). Now that the
+  customer data is clean we want Postgres to enforce it: every order must reference an existing
+  customer, and deleting a customer who still has orders must fail. While you're at it, add a check
+  that orders.total_cents is never negative; refunds live elsewhere, so a negative total is always a
+  bug.
+
+  Two things to know:
+  - Some orders from the 2019 import point at customers that were hard-deleted back then. Reassign
+    those orders to the placeholder customer deleted-customer@internal.invalid (added in 0004).
+  - orders has about 80M rows and takes writes all day; customers has about 6M. This goes out with
+    the next deploy (`npm run migrate` against production) and must not block writes to either table
+    while the existing rows are being checked.
+verify:
+  command: node --test test/migrate.test.ts test/schema.test.ts test/hidden/orders-customer-fk.test.ts
+  timeoutSeconds: 120
+protected:
+  - test/*.test.ts
+  - src/migrate.ts
+  - migrations/0001_create_customers.sql
+  - migrations/0002_create_orders.sql
+  - migrations/0003_orders_notes.sql
+  - migrations/0004_deleted_customer_placeholder.sql
+image: node:24-bookworm
+setup: npm ci --ignore-scripts --no-audit --no-fund
+timeoutSeconds: 900
+tags: [postgres, migrations, constraints, zero-downtime]

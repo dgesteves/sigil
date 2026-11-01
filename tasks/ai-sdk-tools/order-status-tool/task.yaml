@@ -1,0 +1,20 @@
+sigil: 1
+id: order-status-tool
+title: Give the support assistant an order-status tool
+prompt: |
+  Customers keep asking the support assistant where their order is, and it just says it doesn't
+  know. Give it a `getOrderStatus` tool backed by the `orders` store that `answerCustomer()` in
+  src/assistant.ts already receives. The tool takes an order ID (format `ORD-` followed by digits)
+  and returns the order's status, carrier and ETA, or a clear not-found result when there is no
+  such order. The assistant should then answer the customer using what the tool returned, and it
+  may need to look up more than one order for a single question. Don't let it loop forever: cap
+  each question at 4 model calls.
+verify:
+  command: node --test "test/*.test.ts" "test/hidden/*.test.mjs"
+  timeoutSeconds: 120
+protected:
+  - test/assistant.test.ts
+image: node:24-bookworm
+setup: npm ci --ignore-scripts --no-audit --no-fund
+timeoutSeconds: 900
+tags: [ai-sdk, tool-calling, typescript]

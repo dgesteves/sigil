@@ -1,0 +1,25 @@
+sigil: 1
+id: menu-button
+title: Make the account menu an accessible menu button
+prompt: |
+  The account menu in the app header (src/MenuButton.tsx, used by src/AppHeader.tsx) only works
+  with a mouse, and our accessibility review flagged it.
+
+  Please turn it into a proper accessible menu button following the WAI-ARIA Authoring Practices
+  menu button pattern. Screen readers should announce a button that opens a menu and whether it is
+  open. Keyboard users need to be able to open it from the button with Enter or Space, move through
+  the items with the arrow keys (wrapping around at the ends) and Home/End, choose an item with
+  Enter, and close it with Escape. After choosing an item or pressing Escape, focus should go back
+  to the button.
+
+  Keep the component's props and the mouse behaviour (including closing on an outside click), and
+  keep the tests in test/ passing.
+verify:
+  command: ./node_modules/.bin/vitest run --config test/hidden/vitest.config.ts && ./node_modules/.bin/vitest run test/MenuButton.test.tsx
+  timeoutSeconds: 120
+protected:
+  - test/MenuButton.test.tsx
+image: node:24-bookworm
+setup: npm ci --ignore-scripts --no-audit --no-fund
+timeoutSeconds: 900
+tags: [react, accessibility, wai-aria, keyboard, menu]

@@ -1,0 +1,16 @@
+sigil: 1
+id: demo/hello-skill
+type: skill
+version: 1.0.0
+name: Hello Skill
+summary: A small skill used to test the Sigil compiler end to end.
+domains: [developer-workflow]
+license: MIT
+authors:
+  - github: dgesteves
+payload:
+  format: agent-skill
+  entry: SKILL.md
+targets: [claude-code, codex, cursor, github-copilot, gemini-cli, opencode]
+permissions:
+  filesystem: read

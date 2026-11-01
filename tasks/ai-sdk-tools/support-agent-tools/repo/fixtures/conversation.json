@@ -1,0 +1,12 @@
+[
+  { "role": "user", "content": "Hi, the export to CSV button does nothing." },
+  {
+    "role": "assistant",
+    "content": [{ "type": "text", "text": "Thanks for reporting it. Is this on the Invoices page?" }]
+  },
+  { "role": "user", "content": "Yes, since this morning." },
+  {
+    "role": "assistant",
+    "content": [{ "type": "text", "text": "Understood. I can look up related tickets for you." }]
+  }
+]

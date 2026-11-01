@@ -4,12 +4,34 @@ import { fileURLToPath } from 'node:url'
 import pc from 'picocolors'
 import pkg from '../../package.json' with { type: 'json' }
 import { type Command, type CommandContext, fmt, parse } from './command.js'
+import { add } from './commands/add.js'
 import { digest } from './commands/digest.js'
+import { exportCommand } from './commands/export.js'
+import { init } from './commands/init.js'
+import { lab } from './commands/lab.js'
+import { list } from './commands/list.js'
+import { prove } from './commands/prove.js'
 import { registry } from './commands/registry.js'
+import { remove } from './commands/remove.js'
+import { scan } from './commands/scan.js'
+import { task } from './commands/task.js'
 import { validate } from './commands/validate.js'
 
 /** Every command lives in ./commands/<name>.ts and is registered here, in help order. */
-export const COMMANDS: Command[] = [validate, digest, registry]
+export const COMMANDS: Command[] = [
+  init,
+  add,
+  remove,
+  list,
+  exportCommand,
+  validate,
+  scan,
+  prove,
+  task,
+  lab,
+  digest,
+  registry,
+]
 
 const { version } = pkg
 

@@ -1,0 +1,14 @@
+From: billing@acme-tools.example
+Subject: Invoice INV-2026-0417
+
+Hello,
+
+Please find our invoice INV-2026-0417 dated 3 November 2026 for the October order.
+
+  2 x Cordless drill DX-20 @ 149.00 EUR
+  5 x Drill bit set (10 pcs) @ 18.50 EUR
+
+Total due: 390.50 EUR, payable by 3 December 2026.
+
+Kind regards,
+ACME Tools GmbH

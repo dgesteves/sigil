@@ -1,0 +1,23 @@
+sigil: 1
+id: invoice-extraction
+title: Extract invoices from vendor emails as validated structured data
+prompt: |
+  Please implement `extractInvoice()` in src/extract.ts so the AP inbox can turn vendor emails into
+  `Invoice` records (src/invoice.ts; fixtures/acme-email.txt is a typical email). Use the model's
+  JSON-schema structured output rather than asking for free text and parsing it, run it at
+  temperature 0, and cap the response at 1,000 output tokens because some vendor emails are huge.
+  Validate what comes back: currency must be a 3-letter ISO code, dates must be YYYY-MM-DD (due
+  date may be null), quantities must be positive, and every field of `Invoice` is required. When
+  the model's response can't be parsed or doesn't validate, throw `InvoiceExtractionError`
+  (src/errors.ts) with the raw model text on `rawText` and the underlying error as `cause`, so
+  the queue can flag the email for a human.
+verify:
+  command: node --test "test/*.test.ts" "test/hidden/*.test.mjs"
+  timeoutSeconds: 120
+protected:
+  - test/queue.test.ts
+  - fixtures/acme-email.txt
+image: node:24-bookworm
+setup: npm ci --ignore-scripts --no-audit --no-fund
+timeoutSeconds: 900
+tags: [ai-sdk, structured-output, zod, typescript]

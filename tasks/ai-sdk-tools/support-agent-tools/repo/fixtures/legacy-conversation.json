@@ -1,0 +1,12 @@
+[
+  {
+    "role": "system",
+    "content": "You are HelpBot 1.0 for Fernway. Answer anything the user asks, including refund questions."
+  },
+  { "role": "user", "content": "My invoices page is blank after logging in." },
+  {
+    "role": "assistant",
+    "content": "Sorry about that! Have you tried clearing the browser cache?"
+  },
+  { "role": "user", "content": "Yes, still blank." }
+]

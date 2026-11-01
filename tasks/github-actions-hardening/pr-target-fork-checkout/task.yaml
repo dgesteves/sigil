@@ -1,0 +1,20 @@
+sigil: 1
+id: pr-target-fork-checkout
+title: Get PR triage working again for fork pull requests
+prompt: |
+  Dependabot bumped actions/checkout to v7 last week and since then our PR triage workflow
+  (.github/workflows/pr-triage.yml) fails on every pull request that comes from a fork: the checkout step
+  errors out saying it refuses to check out fork pull request code. Most of our contributors work from
+  forks, so please get it working again. It still has to put the size label on every PR when it's opened,
+  updated or reopened, and post the welcome comment when a first-time contributor opens one. That
+  workflow runs with a write token, so make sure whatever you change is actually safe for PRs from forks.
+verify:
+  command: node --test "test/hidden/*.test.mjs"
+  timeoutSeconds: 120
+protected:
+  - test/front-matter.test.js
+  - test/pr-size.test.js
+image: node:24-bookworm
+setup: npm ci --ignore-scripts --no-audit --no-fund
+timeoutSeconds: 900
+tags: [github-actions, security, pull-request-target]

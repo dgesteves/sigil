@@ -1,0 +1,28 @@
+sigil: 1
+id: json-error-handling
+title: Return safe JSON errors from an Express 5 API instead of crashing
+prompt: |
+  Error handling in this API is a mess. Failures come back as Express's HTML error page with a stack
+  trace, a bad request to `POST /api/orders` blows up with a 500, and cancelling an order that doesn't
+  exist takes the whole server down. Please fix it so every error response is JSON shaped like
+  `{ "error": { "code": "...", "message": "..." } }`:
+
+  - unknown route, or unknown order id: 404 with code `not_found`
+  - invalid body for `POST /api/orders` (it needs `sku`, a non-empty string, and `quantity`, an integer
+    from 1 to 100): 400 with code `validation_failed`
+  - malformed JSON: 400; a body over the 10kb limit: 413 (pick sensible codes)
+  - cancelling an order that has already shipped: 409 with code `conflict`
+  - anything unexpected: 500 with code `internal_error` and a generic message
+
+  Never send stack traces or internal error details to clients (log them server-side instead), and the
+  server must keep serving requests after any of these errors.
+verify:
+  command: node --test "test/**/*.test.mjs"
+  timeoutSeconds: 120
+protected:
+  - test/orders.test.mjs
+  - src/orders-repo.mjs
+image: node:24-bookworm
+setup: npm ci --ignore-scripts --no-audit --no-fund
+timeoutSeconds: 900
+tags: [express, error-handling, security, nodejs]
