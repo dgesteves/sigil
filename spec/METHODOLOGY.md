@@ -44,8 +44,10 @@ agent stops, so the agent can neither read it nor edit it.
 
 Two failure modes are counted separately and published, because they matter more than a pass rate:
 
-- **Tampered**: the agent modified a protected file (usually the project's own tests). The run counts
-  as a failure even if the verifier passes.
+- **Tampered**: the agent deleted a protected file (usually the project's own tests) or changed or
+  removed any of its original lines. The run counts as a failure even if the verifier passes. Adding
+  new tests is good engineering, not tampering. Protected files are restored to their original bytes
+  before the verifier runs, so editing tests can never turn a failing run into a passing one.
 - **False done**: the agent's final message claims the work is done or passing, but the verifier fails.
 
 We also record tokens, wall time and cost per run, and report medians. A capability that keeps the pass
@@ -162,6 +164,13 @@ npx sigil prove catalog/skills/<namespace>/<slug> --suite <suite> --runs 6 --mod
 ```
 
 Every result page lists the exact command, agent version, model, image, seed and suite digest used.
+
+## Where runs happen
+
+Published results come from the container sandbox. A host runner exists for maintainers iterating on
+first-party catalog content: it uses the operator's own agent login, refuses third-party
+capabilities, never produces a canary result, and labels its evidence as local. Results produced in CI
+carry attestations; locally produced results say so on the capability page.
 
 ## Known limitations
 
