@@ -230,10 +230,11 @@ export const PRIMARY_AGENTS: AgentId[] = [
 ]
 
 /** Mirrors the groups commented in core's DOMAINS. Checked below so a new domain cannot be lost. */
-export const DOMAIN_GROUPS: { id: string; label: string; domains: Domain[] }[] = [
+export const DOMAIN_GROUPS: { id: string; label: string; short: string; domains: Domain[] }[] = [
   {
     id: 'build',
     label: 'Building software',
+    short: 'Build',
     domains: [
       'frontend',
       'backend',
@@ -251,6 +252,7 @@ export const DOMAIN_GROUPS: { id: string; label: string; domains: Domain[] }[] =
   {
     id: 'data',
     label: 'Data and AI',
+    short: 'Data · AI',
     domains: [
       'databases',
       'data',
@@ -264,21 +266,25 @@ export const DOMAIN_GROUPS: { id: string; label: string; domains: Domain[] }[] =
   {
     id: 'run',
     label: 'Running software',
+    short: 'Run',
     domains: ['devops', 'cloud', 'platform-engineering', 'observability', 'performance'],
   },
   {
     id: 'trust',
     label: 'Quality and trust',
+    short: 'Trust',
     domains: ['testing', 'code-review', 'security', 'compliance', 'accessibility'],
   },
   {
     id: 'around',
     label: 'Around the code',
+    short: 'Around',
     domains: ['design', 'developer-workflow', 'documentation', 'product', 'blockchain'],
   },
   {
     id: 'beyond',
     label: 'Beyond software',
+    short: 'Beyond',
     domains: [
       'research',
       'writing',
@@ -325,6 +331,11 @@ export function pp(x: number): string {
 
 export function shortDigest(d: string, n = 12): string {
   return d.replace(/^sha256:/, '').slice(0, n)
+}
+
+/** The one line that installs a loadout. */
+export function installLine(ids: readonly string[], agents: readonly string[]): string {
+  return `npx sigil add ${ids.join(' ')} --agent ${agents.join(',')}`
 }
 
 export const REPO = process.env.NEXT_PUBLIC_SIGIL_REPO ?? 'dgesteves/sigil'

@@ -16,15 +16,16 @@ import {
   AGENTS,
   type CapView,
   CONTRIBUTE_URL,
+  installLine,
   LEVEL,
   PRIMARY_AGENTS,
   pp,
   TYPE_LABEL,
   VERDICT,
 } from '@/lib/model'
-import { type FetchLog, RateLimited, readRepo } from '@/lib/oracle/github'
-import { emptySignals, parseRepo, readText, type Signals, type Tech } from '@/lib/oracle/intent'
-import { buildIndex, compose, installLine, type Ranked, search, weigh } from '@/lib/oracle/rank'
+import type { FetchLog } from '@/lib/oracle/github'
+import type { Signals, Tech } from '@/lib/oracle/intent'
+import type { Index, Ranked } from '@/lib/oracle/rank'
 import styles from './observatory.module.css'
 
 const Field = dynamic(() => import('@/components/field/Field'), { ssr: false })
@@ -75,7 +76,12 @@ export function Observatory({ caps, meta }: { caps: CapView[]; meta: Observatory
   const runId = useRef(0)
   const abort = useRef<AbortController | null>(null)
   const techsRef = useRef<Map<string, Tech> | null>(null)
-  const index = useMemo(() => buildIndex(caps), [caps])
+  const oracleRef = useRef<Promise<typeof import('@/lib/oracle')> | null>(null)
+  const indexRef = useRef<{ caps: CapView[]; index: Index } | null>(null)
+  const loadOracle = useCallback(() => {
+    oracleRef.current ??= import('@/lib/oracle')
+    return oracleRef.current
+  }, [])
   const lay = useMemo(() => layout(caps, dimension), [caps, dimension])
   const stats = useMemo(() => countOf(caps), [caps])
 
@@ -140,7 +146,22 @@ export function Observatory({ caps, meta }: { caps: CapView[]; meta: Observatory
 
       // 1. Understand
       let t0 = performance.now()
-      const techs = await loadTechs()
+      const [
+        {
+          RateLimited,
+          buildIndex,
+          compose,
+          emptySignals,
+          parseRepo,
+          readRepo,
+          readText,
+          search,
+          weigh,
+        },
+        techs,
+      ] = await Promise.all([loadOracle(), loadTechs()])
+      if (indexRef.current?.caps !== caps) indexRef.current = { caps, index: buildIndex(caps) }
+      const index = indexRef.current.index
       const repo = parseRepo(text)
       let signals = emptySignals()
       const lines: string[] = []
@@ -164,7 +185,7 @@ export function Observatory({ caps, meta }: { caps: CapView[]; meta: Observatory
           signals = read.signals
           lines.push(
             ...logs.map(fmtLog),
-            `${read.paths.toLocaleString()} paths${read.truncated ? ' (tree truncated by GitHub)' : ''} · ${read.manifests.length} manifests read`,
+            `${read.paths.toLocaleString()} paths${read.shallow ? ' at the root (large repo: read shallow to keep the download small)' : ''}${read.truncated ? ' (tree truncated by GitHub)' : ''} · ${read.manifests.length} manifests read`,
           )
           if (read.description) readText(read.description, techs, signals)
           publish({ repo: `${repo.owner}/${repo.repo}` })
@@ -199,7 +220,9 @@ export function Observatory({ caps, meta }: { caps: CapView[]; meta: Observatory
         summary:
           techList.length || facets.length
             ? [
-                techList.length ? `${techList.length} technologies` : '',
+                techList.length
+                  ? `${techList.length} ${techList.length === 1 ? 'technology' : 'technologies'}`
+                  : '',
                 facets.slice(0, 4).join(', '),
               ]
                 .filter(Boolean)
@@ -244,7 +267,7 @@ export function Observatory({ caps, meta }: { caps: CapView[]; meta: Observatory
       })
       publish({ loadout, excluded: weighed.excluded })
     },
-    [agents, index, loadTechs],
+    [agents, caps, loadOracle, loadTechs],
   )
 
   // Latest values for listeners registered once.
@@ -326,12 +349,18 @@ export function Observatory({ caps, meta }: { caps: CapView[]; meta: Observatory
     }
     window.addEventListener('resize', again)
     window.addEventListener('scroll', again, true)
-    // Fonts and the reveal transition move things for a moment after mount.
-    const late = setTimeout(measure, 450)
+    // Slots glide in on a staggered entrance; follow them until it settles.
+    const until = performance.now() + 1600
+    let follow = 0
+    const track = () => {
+      measure()
+      if (performance.now() < until) follow = requestAnimationFrame(track)
+    }
+    follow = requestAnimationFrame(track)
     return () => {
       window.removeEventListener('resize', again)
       window.removeEventListener('scroll', again, true)
-      clearTimeout(late)
+      cancelAnimationFrame(follow)
       cancelAnimationFrame(raf)
     }
   }, [measure, run])
@@ -384,7 +413,7 @@ export function Observatory({ caps, meta }: { caps: CapView[]; meta: Observatory
             <dt>Capabilities</dt>
             <dd className="num">{stats.total}</dd>
           </div>
-          <div data-tone="flare">
+          <div data-tone={stats.proven ? 'flare' : undefined}>
             <dt>Proven</dt>
             <dd className="num">{stats.proven}</dd>
           </div>
@@ -396,7 +425,7 @@ export function Observatory({ caps, meta }: { caps: CapView[]; meta: Observatory
             <dt>Verified</dt>
             <dd className="num">{stats.verified}</dd>
           </div>
-          <div data-tone="harm">
+          <div data-tone={stats.harmful ? 'harm' : undefined}>
             <dt>Harmful</dt>
             <dd className="num">{stats.harmful}</dd>
           </div>
@@ -433,6 +462,10 @@ export function Observatory({ caps, meta }: { caps: CapView[]; meta: Observatory
                   className={styles.input}
                   value={q}
                   onChange={(e) => setQ(e.target.value)}
+                  onFocus={() => {
+                    void loadOracle()
+                    void loadTechs()
+                  }}
                   onKeyDown={(e) => {
                     if (e.key === 'Escape') {
                       if (q) setQ('')
@@ -464,10 +497,14 @@ export function Observatory({ caps, meta }: { caps: CapView[]; meta: Observatory
                 </button>
               </div>
               <p id="intent-hint" className={styles.hint}>
-                describe the task, or paste a GitHub repo URL · <kbd>⌘</kbd>
-                <kbd>K</kbd> from anywhere
+                describe the task, or paste a GitHub repo URL
+                <span className={styles.kHint}>
+                  {' '}
+                  · <kbd>⌘</kbd>
+                  <kbd>K</kbd> from anywhere
+                </span>
               </p>
-              {!active ? (
+              {!active && caps.length > 0 ? (
                 <div className={styles.examples}>
                   <span className="micro">try</span>
                   {EXAMPLES.map((ex) => (
@@ -484,17 +521,16 @@ export function Observatory({ caps, meta }: { caps: CapView[]; meta: Observatory
                   ))}
                 </div>
               ) : null}
+              {!active && caps.length === 0 ? <EmptyRegistry /> : null}
+              {!active && caps.length > 0 && stats.proven === 0 ? (
+                <p className={styles.nothing}>
+                  {caps.length} in the registry, none proven yet. Proof is produced by runs, not
+                  claims: <code>npx sigil prove</code> · <Link href="/method">how proof works</Link>
+                </p>
+              ) : null}
             </div>
           </form>
         </search>
-
-        {!active && caps.length === 0 ? <EmptyRegistry /> : null}
-        {!active && caps.length > 0 && stats.proven === 0 ? (
-          <p className={styles.nothing}>
-            {caps.length} in the registry, none proven yet. Proof is produced by runs, not claims:{' '}
-            <code>npx sigil prove</code> · <Link href="/method">how proof works</Link>
-          </p>
-        ) : null}
 
         {run ? (
           <OraclePanel
@@ -511,7 +547,7 @@ export function Observatory({ caps, meta }: { caps: CapView[]; meta: Observatory
         <Legend />
       </footer>
 
-      <fieldset className={styles.bc}>
+      <fieldset className={styles.bc} hidden={caps.length === 0}>
         <legend className="sr-only">Arrange the field by</legend>
         <span className="micro" aria-hidden="true">
           arrange by
@@ -932,17 +968,8 @@ function EmptyRegistry() {
   return (
     <div className={styles.empty}>
       <p className="display">The proving ground is open. Nothing has been proven yet.</p>
-      <p>
-        A capability appears here only after its content is sealed and measured. Every light in this
-        field will be the result of a recorded run.
-      </p>
-      <pre>
-        <code>
-          {
-            'npx sigil validate catalog/<type>/<ns>/<slug>\nnpx sigil prove catalog/<type>/<ns>/<slug> --suite <suite> --runs 6'
-          }
-        </code>
-      </pre>
+      <p>Every light in this field will be the result of a recorded run on sealed content.</p>
+      <code>{'npx sigil prove catalog/<type>/<ns>/<slug> --suite <suite> --runs 6'}</code>
       <p>
         <Link href="/method">How proof works</Link> ·{' '}
         <a href={CONTRIBUTE_URL}>Submit a capability</a>

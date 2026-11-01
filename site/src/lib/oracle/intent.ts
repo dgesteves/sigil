@@ -1,10 +1,12 @@
 import type { CapabilityType, Domain, Industry, LifecycleStage } from '@core/ids'
 import {
+  AMBIGUOUS,
   DOMAIN_WORDS,
   INDUSTRY_WORDS,
   LIFECYCLE_WORDS,
   STOPWORDS,
   TECH_ALIASES,
+  TECH_CONTEXT,
   TYPE_WORDS,
 } from './vocab'
 
@@ -87,6 +89,38 @@ export function addTech(s: Signals, techs: Map<string, Tech>, id: string, signal
   }
 }
 
+/** "React app", "a Go service", "REST": yes. "react to", "next week", "let's go": no. */
+export function meantAsTech(text: string, word: string): boolean {
+  const re = new RegExp(
+    `(^|[^A-Za-z0-9])(${word.replace(/[.+]/g, '\\$&')})(?=$|[^A-Za-z0-9])`,
+    'gi',
+  )
+  for (const m of text.matchAll(re)) {
+    const found = m[2]!
+    const at = (m.index ?? 0) + m[1]!.length
+    const before = text.slice(0, at).trimEnd()
+    const initial = before === '' || /[.!?]$/.test(before)
+    if (found.length <= 4 && found === found.toUpperCase() && /[A-Z]/.test(found)) return true
+    if (/^[A-Z]/.test(found) && !initial) return true
+    const prev =
+      before
+        .split(/\s+/)
+        .at(-1)
+        ?.toLowerCase()
+        .replace(/[^a-z]/g, '') ?? ''
+    const next =
+      text
+        .slice(at + found.length)
+        .trimStart()
+        .split(/\s+/)[0]
+        ?.toLowerCase()
+        .replace(/[^a-z]/g, '') ?? ''
+    if (TECH_CONTEXT.has(next) || TECH_CONTEXT.has(prev) || (prev === 'in' && /^[A-Z]/.test(found)))
+      return true
+  }
+  return false
+}
+
 /** Reads a plain-language intent. Phrases first, then single words; every hit says why. */
 export function readText(text: string, techs: Map<string, Tech>, into = emptySignals()): Signals {
   const lower = ` ${text.toLowerCase().replace(/\s+/g, ' ')} `
@@ -103,7 +137,9 @@ export function readText(text: string, techs: Map<string, Tech>, into = emptySig
   for (const [word, id] of names) {
     if (word.length < 2) continue
     const hit = word.includes(' ') ? phrase(word) : tokens.includes(word)
-    if (hit) addTech(into, techs, id, { weight: 1, source: `you wrote “${word}”` })
+    if (!hit) continue
+    if (AMBIGUOUS.has(word) && !meantAsTech(text, word)) continue
+    addTech(into, techs, id, { weight: 1, source: `you wrote “${word}”` })
   }
 
   const scan = <K extends string>(table: Partial<Record<K, string[]>>, m: Map<K, number>) => {

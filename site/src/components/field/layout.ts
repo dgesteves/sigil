@@ -37,6 +37,7 @@ export interface Sector {
 
 export interface Arc {
   label: string
+  short: string
   start: number
   end: number
 }
@@ -110,7 +111,7 @@ export function layout(caps: readonly CapView[], dimension: Dimension): FieldLay
         })
         a += step
       }
-      groups.push({ label: g.label, start, end: a })
+      groups.push({ label: g.label, short: g.short, start, end: a })
       a += gap
     }
   } else {

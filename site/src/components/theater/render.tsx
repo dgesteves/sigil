@@ -124,6 +124,17 @@ export async function renderTheater(
             <Link href={`/c/${namespace}/${slug}`}>Back to the dossier</Link> ·{' '}
             <Link href="/method">How proof works</Link>
           </p>
+          <div className={styles.ghost} aria-hidden="true">
+            {['Baseline', 'With the capability'].map((label) => (
+              <div key={label} className={styles.ghostPane}>
+                <span>{label}</span>
+                <i />
+                <i />
+                <i />
+                <em>awaiting runs</em>
+              </div>
+            ))}
+          </div>
         </div>
       )}
     </Frame>

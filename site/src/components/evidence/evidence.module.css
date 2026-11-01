@@ -69,7 +69,7 @@
 .table td {
   color: var(--bone-2);
 }
-.table .num {
+.table :global(.num) {
   margin-left: 8px;
 }
 .table .r {

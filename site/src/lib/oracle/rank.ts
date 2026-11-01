@@ -211,11 +211,14 @@ export function weigh(hits: readonly Ranked[], agents: readonly AgentId[]): Weig
 /** A loadout is the few that matter: top scores, one per type and technology, nothing marginal. */
 export function compose(ranked: Ranked[], max = 5): Ranked[] {
   const top = ranked[0]?.score ?? 0
+  // When something matched on technology or discipline, a bare word overlap is not enough.
+  const structured = ranked.some((r) => r.why.length > 0)
   const chosen: Ranked[] = []
   const seen = new Set<string>()
   for (const r of ranked) {
     if (chosen.length >= max) break
     if (r.score < top * 0.2) break
+    if (structured && r.why.length === 0 && r.score < top * 0.5) continue
     const key = `${r.cap.type}:${r.cap.technologies[0] ?? r.cap.domains[0]}`
     if (seen.has(key) && r.score < top * 0.8) continue
     seen.add(key)
@@ -224,6 +227,4 @@ export function compose(ranked: Ranked[], max = 5): Ranked[] {
   return chosen
 }
 
-export function installLine(ids: readonly string[], agents: readonly AgentId[]): string {
-  return `npx sigil add ${ids.join(' ')} --agent ${agents.join(',')}`
-}
+export { installLine } from '@/lib/model'

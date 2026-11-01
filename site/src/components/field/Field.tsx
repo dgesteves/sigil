@@ -213,18 +213,23 @@ export default function Field({ caps, dimension, reducedMotion, onOpen, onReady,
   }, [caps, reducedMotion])
 
   return (
-    <div ref={wrap} className={styles.field} aria-hidden="true">
-      <canvas ref={under} className={styles.layer} />
-      <div ref={labels} className={styles.labels}>
-        {Array.from({ length: LABELS }, (_, i) => (
-          // biome-ignore lint/suspicious/noArrayIndexKey: a fixed pool of label slots
-          <span key={i} className={styles.near} />
-        ))}
+    <>
+      <div ref={wrap} className={styles.field} aria-hidden="true">
+        <canvas ref={under} className={styles.layer} />
+        <div ref={labels} className={styles.labels}>
+          {Array.from({ length: LABELS }, (_, i) => (
+            // biome-ignore lint/suspicious/noArrayIndexKey: a fixed pool of label slots
+            <span key={i} className={styles.near} />
+          ))}
+        </div>
       </div>
-      <div ref={tip} className={styles.tip}>
-        {hovered ? <Readout cap={hovered} /> : null}
+      {/* Its own fixed layer, so the readout sits above the intent line and the corners. */}
+      <div className={styles.tipLayer} aria-hidden="true">
+        <div ref={tip} className={styles.tip}>
+          {hovered ? <Readout cap={hovered} /> : null}
+        </div>
       </div>
-    </div>
+    </>
   )
 }
 

@@ -114,7 +114,8 @@ export function drawGraticule(
     const p = place((g.start + g.end) / 2, 1.13)
     ctx.font = `500 ${engine.compact ? 8.5 : 10}px ${fonts.mono}`
     ctx.fillStyle = `rgba(214,206,192,${0.95 * labelsOn * depthFade(p.depth, engine)})`
-    letterSpaced(ctx, g.label.toUpperCase(), p.x, p.y, 1.8)
+    const label = (engine.compact ? g.short : g.label).toUpperCase()
+    letterSpaced(ctx, label, clampX(ctx, label, p.x, w, 1.8), p.y, 1.8)
   }
   for (const s of layout.sectors) {
     const mid = (s.start + s.end) / 2
@@ -130,8 +131,17 @@ export function drawGraticule(
     const p = place(mid, layout.groups.length ? 1.06 : 1.1)
     ctx.font = `400 ${small}px ${fonts.mono}`
     ctx.fillStyle = `rgba(236,229,216,${alpha})`
-    letterSpaced(ctx, `${s.label.toUpperCase()}${s.count ? ` · ${s.count}` : ''}`, p.x, p.y, 0.8)
+    const text = `${s.label.toUpperCase()}${s.count ? ` · ${s.count}` : ''}`
+    letterSpaced(ctx, text, clampX(ctx, text, p.x, w, 0.8), p.y, 0.8)
   }
+}
+
+/** Keeps a label inside the canvas, whatever its alignment. */
+function clampX(ctx: CanvasRenderingContext2D, text: string, x: number, w: number, track: number) {
+  const width = ctx.measureText(text).width + text.length * track
+  const left = ctx.textAlign === 'left' ? x : ctx.textAlign === 'right' ? x - width : x - width / 2
+  const shift = Math.max(0, 8 - left) - Math.max(0, left + width - (w - 8))
+  return x + shift
 }
 
 /** The far side of the disk is dimmer, like any lit scene with depth. */

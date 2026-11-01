@@ -32,8 +32,16 @@
   background: repeating-linear-gradient(-45deg, var(--flare) 0 4px, transparent 4px 8px);
 }
 @media (max-width: 560px) {
+  .demo {
+    padding: 3px 4px;
+    font-size: 9px;
+  }
   .demo span:not(.demoStripe) {
     display: none;
+  }
+  .demoStripe {
+    width: 18px;
+    height: 9px;
   }
 }
 

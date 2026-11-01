@@ -29,6 +29,8 @@ export interface RepoRead {
   topics: string[]
   paths: number
   truncated: boolean
+  /** Large repos are read at the root only, to keep the download small. */
+  shallow: boolean
   manifests: string[]
   signals: Signals
 }
@@ -50,6 +52,7 @@ const MANIFESTS: Record<string, string> = {
   'mix.exs': 'hex',
 }
 const MAX_MANIFESTS = 8
+const SHALLOW_KB = 150_000
 
 export async function readRepo(
   owner: string,
@@ -65,15 +68,35 @@ export async function readRepo(
     language: string | null
     topics?: string[]
     private?: boolean
+    /** Repository size in KB, as GitHub reports it. */
+    size?: number
   }>(api, 'repository', log, signal)
   const branch = meta.default_branch
-  const tree = await getJson<{ tree: { path: string; type: string }[]; truncated: boolean }>(
-    `${api}/git/trees/${encodeURIComponent(branch)}?recursive=1`,
-    'file tree',
+  type Tree = { tree: { path: string; type: string }[]; truncated: boolean }
+  // A recursive tree of a very large repo runs to many megabytes. Above this size, read the root
+  // and the workflows folder instead: two small calls rather than one huge one.
+  const shallow = (meta.size ?? 0) > SHALLOW_KB
+  const tree = await getJson<Tree>(
+    `${api}/git/trees/${encodeURIComponent(branch)}${shallow ? '' : '?recursive=1'}`,
+    shallow ? 'root listing' : 'file tree',
     log,
     signal,
   )
-  const files = tree.tree.filter((t) => t.type === 'blob').map((t) => t.path)
+  let files = tree.tree.filter((t) => t.type === 'blob').map((t) => t.path)
+  if (shallow && tree.tree.some((t) => t.path === '.github' && t.type === 'tree')) {
+    try {
+      const wf = await getJson<Tree>(
+        `${api}/contents/.github/workflows?ref=${encodeURIComponent(branch)}`,
+        'workflows',
+        log,
+        signal,
+      )
+      const list = Array.isArray(wf) ? (wf as { path: string; type: string }[]) : []
+      files = files.concat(list.filter((t) => t.type === 'file').map((t) => t.path))
+    } catch (e) {
+      if ((e as Error).name === 'AbortError' || e instanceof RateLimited) throw e
+    }
+  }
   const s = emptySignals()
 
   // 1. File signatures: paths and simple globs from the taxonomy.
@@ -137,6 +160,7 @@ export async function readRepo(
     topics: meta.topics ?? [],
     paths: files.length,
     truncated: tree.truncated,
+    shallow,
     manifests,
     signals: s,
   }

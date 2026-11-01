@@ -29,7 +29,7 @@
   font-size: 13px;
   color: var(--bone-2);
 }
-.empty .display {
+.empty :global(.display) {
   font-size: 34px;
   color: var(--bone);
 }

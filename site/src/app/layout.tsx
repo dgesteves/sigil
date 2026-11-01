@@ -48,7 +48,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const { demo } = await getData()
   return (
     <html lang="en" className={`${mono.variable} ${display.variable}`}>
-      <body>
+      <body data-demo={demo ? '' : undefined}>
         <a className="skip" href="#main">
           Skip to content
         </a>

@@ -25,7 +25,7 @@
   font-size: 13px;
   color: var(--bone-2);
 }
-.empty .display {
+.empty :global(.display) {
   font-size: 32px;
   color: var(--bone);
 }
@@ -55,7 +55,7 @@
   align-items: center;
   gap: 6px;
 }
-.pickGroup .micro {
+.pickGroup :global(.micro) {
   margin-right: 4px;
 }
 .chip {
@@ -415,4 +415,51 @@
   .head {
     align-items: flex-start;
   }
+}
+
+.ghost {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 18px;
+}
+.ghostPane {
+  position: relative;
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  height: 220px;
+  padding: 16px;
+  border: 1px dashed var(--line-2);
+  border-radius: 4px;
+}
+.ghostPane span {
+  font-family: var(--serif);
+  font-size: 18px;
+  color: var(--bone-3);
+}
+.ghostPane i {
+  display: block;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--void-3);
+}
+.ghostPane i:nth-of-type(1) {
+  width: 62%;
+}
+.ghostPane i:nth-of-type(2) {
+  width: 44%;
+}
+.ghostPane i:nth-of-type(3) {
+  width: 71%;
+}
+.ghostPane em {
+  position: absolute;
+  bottom: 14px;
+  left: 16px;
+  font-style: normal;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ash);
 }

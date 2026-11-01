@@ -9,6 +9,7 @@
   align-items: center;
   gap: 22px;
   padding: 16px var(--gutter);
+  padding-top: calc(16px + var(--demo-offset));
   background: linear-gradient(180deg, rgba(5, 5, 5, 0.94), rgba(5, 5, 5, 0.78));
   backdrop-filter: blur(8px);
   border-bottom: 1px solid var(--line);

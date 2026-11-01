@@ -15,7 +15,6 @@ export const TECH_ALIASES: Record<string, string> = {
   'c++': 'cpp',
   node: 'nodejs',
   'node.js': 'nodejs',
-  next: 'nextjs',
   'next.js': 'nextjs',
   'app router': 'nextjs',
   rsc: 'react',
@@ -93,6 +92,23 @@ export const TECH_ALIASES: Record<string, string> = {
   eval: 'evals',
   evaluations: 'evals',
 }
+
+/**
+ * Technology names that are also ordinary English ("next week", "react to", "let's go"). They count
+ * only when the text shows it means the technology: Capitalised mid-sentence, in capitals, or next to
+ * a technical word.
+ */
+export const AMBIGUOUS = new Set(
+  'go react express echo gin rails solid swift rust spark flutter helm unity unreal julia rag jest bun phoenix expo electron mistral gemini bedrock pinecone kafka drizzle sentry biome zephyr rest chroma ruby dart lua hono astro remix make tanstack git'.split(
+    ' ',
+  ),
+)
+
+export const TECH_CONTEXT = new Set(
+  'app apps component components hook hooks project projects codebase repo repos server servers api apis sdk framework library libraries version versions upgrade migrate migration code tests test module modules package packages crate crates gem gems service services stack frontend backend binary cli lang language native router routes project files file config'.split(
+    ' ',
+  ),
+)
 
 export const DOMAIN_WORDS: Partial<Record<Domain, string[]>> = {
   frontend: [

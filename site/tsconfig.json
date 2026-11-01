@@ -19,6 +19,14 @@
       "@core/ids": ["../packages/sigil/src/core/ids.ts"]
     }
   },
-  "include": ["next-env.d.ts", "src", "scripts", ".next/types/**/*.ts", "next.config.ts"],
+  "include": [
+    "next-env.d.ts",
+    "src",
+    "scripts",
+    "test",
+    ".next/types/**/*.ts",
+    "next.config.ts",
+    "vitest.config.ts"
+  ],
   "exclude": ["node_modules", "fixtures"]
 }
