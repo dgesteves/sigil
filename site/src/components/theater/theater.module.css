@@ -463,3 +463,11 @@
   text-transform: uppercase;
   color: var(--ash);
 }
+
+/* Leave room for the fixed Human / Machine switch at the bottom right. */
+@media (min-width: 861px) {
+  .controls,
+  .lanes {
+    padding-right: 250px;
+  }
+}

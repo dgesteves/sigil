@@ -169,6 +169,7 @@
   align-items: center;
   gap: 8px 16px;
   padding: 14px var(--gutter);
+  padding-top: calc(14px + var(--demo-offset));
   border-bottom: 1px solid var(--line);
   font-size: 12px;
 }
