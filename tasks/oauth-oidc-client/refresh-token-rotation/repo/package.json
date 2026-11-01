@@ -1,0 +1,23 @@
+{
+  "name": "billing-dashboard",
+  "version": "1.12.3",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "start": "node src/server.ts",
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "node --test \"test/**/*.test.ts\""
+  },
+  "dependencies": {
+    "express": "5.3.0",
+    "openid-client": "6.8.8"
+  },
+  "devDependencies": {
+    "@types/express": "5.0.6",
+    "@types/node": "24.19.2",
+    "typescript": "6.0.3"
+  }
+}

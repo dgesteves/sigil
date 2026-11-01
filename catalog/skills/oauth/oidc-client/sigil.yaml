@@ -1,0 +1,41 @@
+sigil: 1
+id: oauth/oidc-client
+type: skill
+version: 1.0.0
+name: OAuth and OpenID Connect Clients and APIs in Node.js
+summary: Secure OIDC sign-in, JWT access token validation and rotating refresh tokens in Node.js with openid-client 6, jose 6 and oauth4webapi 3.
+description: >-
+  Teaches an agent current OAuth 2.x and OpenID Connect practice for Node.js and TypeScript, checked
+  against openid-client 6.8.8, jose 6.2.14 and oauth4webapi 3.8.8 and the OAuth Security BCP
+  (RFC 9700). It covers what agents trained on openid-client v5 and hand-rolled JWT code get wrong:
+  the v6 functional API (no Issuer, Client or generators), the async PKCE challenge, exact
+  expectedState/expectedNonce semantics, the redirect_uri openid-client derives from the callback
+  URL (and why it breaks behind a TLS proxy), RFC 9207 iss checks, the ID token checks openid-client
+  performs and the signature check it skips by default, single-use login state and session
+  regeneration, JWT access token validation with jose (RFC 9068 typ, issuer, audience, pinned
+  algorithms, exp only checked when required, JWKS from discovery with rotation, RFC 6750 errors),
+  and refresh token rotation with reuse detection: storing the rotated token, one refresh in flight
+  per session, and telling invalid_grant apart from outages.
+domains: [security, backend, api-design]
+lifecycle: [build, secure, review]
+technologies: [oauth, nodejs, typescript, javascript, express]
+license: MIT
+authors:
+  - github: dgesteves
+payload:
+  format: agent-skill
+  entry: SKILL.md
+targets: [claude-code, codex, cursor, github-copilot, gemini-cli, opencode]
+permissions:
+  network: []
+  shell: [node, npm ls, npm test, npx tsc]
+  filesystem: write
+  env: []
+proof:
+  suites: [oauth-oidc-client]
+limitations:
+  - Written and verified against openid-client 6.8.8, jose 6.2.14 and oauth4webapi 3.8.8 on Node 24. openid-client v5 is covered only as a migration map.
+  - Provider-specific behaviour (Auth0, Okta, Entra ID, Keycloak, Cognito) is not covered, such as whether access tokens carry typ at+jwt, scope versus scp, or refresh token grace periods.
+  - The single-flight refresh pattern shown is per process; multi-instance deployments are described (sticky sessions, distributed locks) but not tested by the proof suite.
+  - Browser-only clients (SPAs without a backend), native apps, DPoP, PAR, JAR and FAPI profiles are mentioned, not taught in depth.
+  - The proof suite uses a local test IdP over plain HTTP with allowInsecureRequests enabled by configuration; TLS and certificate handling are out of scope.

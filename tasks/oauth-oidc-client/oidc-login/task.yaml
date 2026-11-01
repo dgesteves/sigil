@@ -1,0 +1,31 @@
+sigil: 1
+id: oidc-login
+title: Implement OpenID Connect sign-in and logout for an Express portal with openid-client
+prompt: |
+  Partners still can't sign in to the portal: `GET /login` and `GET /auth/callback` in src/app.ts
+  are stubs. Please implement sign-in with our IdP using the authorization code flow and
+  openid-client (already installed; src/oidc.ts does discovery and holds the client credentials,
+  and `config.oidc` has everything else).
+
+  - `/login` sends the browser to the IdP. `/auth/callback` completes the sign-in, stores the user
+    (`sub`, `email` and `name` from the ID token) in the session as `req.session.user` and
+    redirects to `/`. `/me` already reads `req.session.user`.
+  - Follow the current OAuth security BCP: PKCE with S256, protection against CSRF and code
+    injection on the callback, a callback URL that only works once, a check of the issuer (`iss`)
+    the IdP sends back on the callback (RFC 9207), and proper ID token validation. A failed or
+    cancelled sign-in must leave the user signed out.
+  - Give the user a fresh session once they are signed in.
+  - `POST /logout` should also end the session at the IdP: clear our session and redirect to the
+    IdP's end-session endpoint with the ID token hint and `config.oidc.postLogoutRedirectUri`.
+
+  The portal runs behind our load balancer, which terminates TLS; the redirect URI registered at
+  the IdP is `config.oidc.redirectUri`.
+verify:
+  command: node --test "test/**/*.test.ts"
+  timeoutSeconds: 120
+protected:
+  - test/**
+image: node:24-bookworm
+setup: npm ci --ignore-scripts --no-audit --no-fund
+timeoutSeconds: 900
+tags: [oauth, openid-connect, express, security, typescript]

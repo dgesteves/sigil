@@ -1,0 +1,29 @@
+sigil: 1
+id: refresh-token-rotation
+title: Refresh rotating OAuth refresh tokens in an Express BFF without logging users out
+prompt: |
+  Users of the billing dashboard get sent back to the sign-in page every five minutes, because
+  nothing ever refreshes their access token: `BillingApi` in src/billing-api.ts uses whatever
+  access token is in the session until the billing API rejects it. Please add token refresh.
+
+  - Before calling the billing API, refresh the access token with the session's refresh token when
+    it has expired or will expire within the next 30 seconds. Use openid-client, which is already
+    set up in src/oidc.ts.
+  - Our IdP rotates refresh tokens: every refresh returns a new refresh token and the old one stops
+    working. If a refresh token that was already used is presented again, the IdP treats it as
+    stolen and revokes the whole login.
+  - When the IdP rejects the refresh token (`invalid_grant`), the user has to sign in again: delete
+    their session and answer 401 `{ "error": "login_required" }`, the same as for a missing session.
+  - If the IdP is temporarily unavailable, answer 503 and keep the session, so a later request can
+    try again.
+  - Sessions live in Redis in production. Keep the `SessionStore` interface and the `Session` shape
+    in src/session-store.ts as they are.
+verify:
+  command: node --test "test/**/*.test.ts"
+  timeoutSeconds: 120
+protected:
+  - test/**
+image: node:24-bookworm
+setup: npm ci --ignore-scripts --no-audit --no-fund
+timeoutSeconds: 900
+tags: [oauth, refresh-tokens, concurrency, express, typescript]
