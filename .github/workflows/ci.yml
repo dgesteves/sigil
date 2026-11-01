@@ -33,7 +33,12 @@ jobs:
       - run: pnpm --dir packages/sigil test
       - run: pnpm --dir packages/sigil build
       - name: Validate the catalog
-        run: pnpm sigil validate catalog
+        run: |
+          if [ -n "$(find catalog -name sigil.yaml 2>/dev/null | head -1)" ]; then
+            pnpm sigil validate catalog
+          else
+            echo "No capabilities in the catalog yet."
+          fi
       - name: Spec schemas are up to date
         run: |
           pnpm --dir packages/sigil schemas

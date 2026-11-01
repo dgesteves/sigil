@@ -5,19 +5,23 @@
 
 export const SPEC_VERSION = '1.0' as const
 
-/** Ten first-class capability types plus collections. They are different artefacts, not flavours of "skill". */
+/**
+ * First-class capability types. They are different artefacts with different risks and different ways
+ * to prove them, not flavours of "skill".
+ */
 export const CAPABILITY_TYPES = [
-  'skill',
-  'agent',
-  'rule',
-  'command',
-  'workflow',
-  'hook',
-  'mcp-server',
-  'tool',
-  'template',
-  'evaluation',
-  'collection',
+  'skill', // knowledge and procedures loaded on demand (Agent Skills)
+  'agent', // a specialised subagent definition
+  'rule', // persistent instructions (AGENTS.md, CLAUDE.md, .mdc, copilot-instructions)
+  'command', // an explicitly invoked prompt (slash commands, prompt files)
+  'workflow', // a multi-step procedure spanning tools and stages
+  'hook', // event-driven automation run by the agent harness
+  'mcp-server', // tools and context over the Model Context Protocol
+  'tool', // an executable the agent calls
+  'policy', // enforceable permissions and sandbox settings
+  'template', // a project starter
+  'evaluation', // a task suite that measures other capabilities
+  'collection', // a curated set, or a native plugin/extension pack
 ] as const
 export type CapabilityType = (typeof CAPABILITY_TYPES)[number]
 
@@ -31,12 +35,18 @@ export const PAYLOAD_FORMATS = [
   'mcp-server', // server.json (MCP registry shape)
   'tool', // executable + usage docs
   'template', // project tree copied as-is
+  'policy', // agent permission / sandbox settings fragment
   'task-suite', // Sigil tasks/ format
   'bundle', // collection of other capability ids
+  'plugin', // a native plugin or extension pack (Claude Code plugin, Gemini CLI extension, ...)
 ] as const
 export type PayloadFormat = (typeof PAYLOAD_FORMATS)[number]
 
-/** Agents Sigil can compile for. `generic` means AGENTS.md / plain files any agent can read. */
+/**
+ * Agents Sigil can compile for, roughly by adoption. `generic` means AGENTS.md / plain files any agent
+ * can read. An agent being listed does not mean it is supported: docs/AGENTS-MATRIX.md records which
+ * formats each one really loads, with sources, and unresearched combinations compile to "unsupported".
+ */
 export const AGENTS = [
   'claude-code',
   'codex',
@@ -45,30 +55,123 @@ export const AGENTS = [
   'gemini-cli',
   'opencode',
   'windsurf',
+  'cline',
+  'roo-code',
+  'kilo-code',
+  'amp',
+  'aider',
+  'zed',
+  'junie',
+  'kiro',
+  'goose',
+  'continue',
+  'augment',
+  'qwen-code',
+  'factory-droid',
+  'trae',
+  'warp',
   'generic',
 ] as const
 export type AgentId = (typeof AGENTS)[number]
 
+/** Disciplines: what kind of work a capability helps with. Industries are a separate axis. */
 export const DOMAINS = [
+  // Building software
   'frontend',
   'backend',
   'mobile',
+  'desktop',
+  'embedded',
+  'game-development',
+  'systems',
+  'networking',
+  'api-design',
+  'architecture',
+  'migration',
+  // Data and AI
   'databases',
+  'data', // analytics and BI
+  'data-engineering',
+  'data-science',
+  'machine-learning',
+  'ai-engineering',
+  'mlops',
+  // Running software
   'devops',
   'cloud',
-  'ai-engineering',
-  'security',
+  'platform-engineering',
+  'observability',
+  'performance',
+  // Quality and trust
   'testing',
-  'architecture',
-  'data',
+  'code-review',
+  'security',
+  'compliance',
+  'accessibility',
+  // Around the code
+  'design',
   'developer-workflow',
   'documentation',
   'product',
+  'blockchain',
+  // Beyond software
   'research',
   'writing',
   'productivity',
+  'business-operations',
+  'marketing',
+  'sales',
+  'customer-support',
+  'education',
 ] as const
 export type Domain = (typeof DOMAINS)[number]
+
+/** Industries (verticals): domain knowledge and regulation that changes how the work must be done. */
+export const INDUSTRIES = [
+  'finance',
+  'banking',
+  'insurance',
+  'healthcare',
+  'life-sciences',
+  'legal',
+  'government',
+  'education',
+  'e-commerce',
+  'retail',
+  'media',
+  'gaming',
+  'telecommunications',
+  'energy',
+  'manufacturing',
+  'automotive',
+  'aerospace-defense',
+  'logistics',
+  'real-estate',
+  'travel-hospitality',
+  'agriculture',
+  'construction',
+  'human-resources',
+  'marketing-advertising',
+  'saas',
+  'nonprofit',
+  'scientific-research',
+] as const
+export type Industry = (typeof INDUSTRIES)[number]
+
+/** Where in the software lifecycle a capability acts. Lets the Oracle answer "what helps me ship?". */
+export const LIFECYCLE = [
+  'plan',
+  'design',
+  'build',
+  'review',
+  'test',
+  'secure',
+  'ship',
+  'operate',
+  'maintain',
+  'document',
+] as const
+export type LifecycleStage = (typeof LIFECYCLE)[number]
 
 /**
  * Trust ladder. Each step requires everything below it, for one immutable digest.

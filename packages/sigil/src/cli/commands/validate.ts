@@ -1,6 +1,12 @@
 import { resolve } from 'node:path'
 import pc from 'picocolors'
-import { findCapabilities, isDirectory, loadCapability } from '../../core/index.js'
+import {
+  checkTechnologies,
+  findCapabilities,
+  isDirectory,
+  loadCapability,
+  loadTaxonomy,
+} from '../../core/index.js'
 import type { Finding } from '../../core/schema.js'
 import { type Command, fmt } from '../command.js'
 
@@ -36,6 +42,12 @@ export const validate: Command = {
 
     const root = await findRepoRoot(ctx.cwd)
     const results = await Promise.all(dirs.map((d) => loadCapability(d, root ? { root } : {})))
+    const taxonomy = root ? await loadTaxonomy(root) : undefined
+    if (taxonomy) {
+      for (const r of results) {
+        if (r.manifest) r.findings.push(...checkTechnologies(r.manifest.technologies, taxonomy))
+      }
+    }
     const failing = results.filter((r) =>
       r.findings.some((f) => f.severity === 'high' || f.severity === 'critical'),
     )
