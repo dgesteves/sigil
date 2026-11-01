@@ -12,6 +12,8 @@
       "!**/.next",
       "!**/node_modules",
       "!tasks/**/repo",
+      "!tasks/**/verify",
+      "!tasks/**/solution",
       "!test/fixtures",
       "!**/fixtures",
       "!spec/*.schema.json",
