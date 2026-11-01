@@ -10,7 +10,7 @@ import { buildRegistry, digestDir, loadCapability } from '../../src/core/index.j
 
 export const REPO = join(import.meta.dirname, '..', 'fixtures', 'compile', 'repo')
 export const COMMIT = 'a'.repeat(40)
-export const REGISTRY_URL = 'https://raw.githubusercontent.com/dgesteves/sigil/main/registry.json'
+export const REGISTRY_URL = 'https://sigil-lab.vercel.app/registry.json'
 
 export const capDir = (path: string) => join(REPO, 'catalog', path)
 

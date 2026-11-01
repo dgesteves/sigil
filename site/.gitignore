@@ -2,3 +2,5 @@
 .sigil/
 next-env.d.ts
 *.tsbuildinfo
+.vercel
+.env*

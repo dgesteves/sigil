@@ -14,8 +14,8 @@ import type { LockSource } from './lockfile.js'
 import type { CapabilityInput, PayloadFile } from './types.js'
 import { type PathError, safeRelative } from './workspace.js'
 
-export const DEFAULT_REGISTRY =
-  'https://raw.githubusercontent.com/dgesteves/sigil/main/registry.json'
+/** Served by the observatory, rebuilt from the catalog on every deploy of main. */
+export const DEFAULT_REGISTRY = 'https://sigil-lab.vercel.app/registry.json'
 const DEFAULT_RAW_BASE = 'https://raw.githubusercontent.com/dgesteves/sigil'
 const MAX_FILE_BYTES = 1_000_000
 const MAX_REGISTRY_BYTES = 50_000_000
