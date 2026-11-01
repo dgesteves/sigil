@@ -1,0 +1,42 @@
+sigil: 1
+id: demo/fastapi-async-db
+type: skill
+version: 1.0.0
+name: FastAPI Async Database
+summary: Async SQLAlchemy sessions in FastAPI without leaked connections, with
+  dependency-scoped transactions.
+description: "Async SQLAlchemy sessions in FastAPI without leaked connections,
+  with dependency-scoped transactions. DEMO fixture: every number attached to
+  this capability was simulated for site development."
+domains:
+  - backend
+  - databases
+industries: []
+lifecycle:
+  - build
+technologies:
+  - fastapi
+  - python
+  - sqlalchemy
+license: MIT
+authors:
+  - github: sigil-demo
+payload:
+  format: agent-skill
+  entry: SKILL.md
+targets:
+  - claude-code
+  - codex
+  - cursor
+  - github-copilot
+  - gemini-cli
+  - opencode
+permissions:
+  network: []
+  shell: []
+  filesystem: read
+  env: []
+proof:
+  suites: []
+limitations:
+  - "DEMO fixture: not a real capability and never measured."

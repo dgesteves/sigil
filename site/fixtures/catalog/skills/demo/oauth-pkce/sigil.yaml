@@ -1,0 +1,42 @@
+sigil: 1
+id: demo/oauth-pkce
+type: skill
+version: 1.0.0
+name: OAuth PKCE Flows
+summary: Authorization code with PKCE, token storage and refresh rotation done
+  the current way.
+description: "Authorization code with PKCE, token storage and refresh rotation
+  done the current way. DEMO fixture: every number attached to this capability
+  was simulated for site development."
+domains:
+  - security
+  - backend
+industries:
+  - finance
+lifecycle:
+  - build
+  - secure
+technologies:
+  - oauth
+license: MIT
+authors:
+  - github: sigil-demo
+payload:
+  format: agent-skill
+  entry: SKILL.md
+targets:
+  - claude-code
+  - codex
+  - cursor
+  - github-copilot
+  - gemini-cli
+  - opencode
+permissions:
+  network: []
+  shell: []
+  filesystem: read
+  env: []
+proof:
+  suites: []
+limitations:
+  - "DEMO fixture: not a real capability and never measured."

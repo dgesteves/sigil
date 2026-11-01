@@ -1,0 +1,41 @@
+sigil: 1
+id: demo/unity-perf-profiler
+type: skill
+version: 1.0.0
+name: Unity Profiler Guide
+summary: Reads Unity profiler captures and fixes GC spikes and draw-call bloat.
+description: "Reads Unity profiler captures and fixes GC spikes and draw-call
+  bloat. DEMO fixture: every number attached to this capability was simulated
+  for site development."
+domains:
+  - game-development
+  - performance
+industries:
+  - gaming
+lifecycle:
+  - maintain
+technologies:
+  - unity
+  - csharp
+license: MIT
+authors:
+  - github: sigil-demo
+payload:
+  format: agent-skill
+  entry: SKILL.md
+targets:
+  - claude-code
+  - codex
+  - cursor
+  - github-copilot
+  - gemini-cli
+  - opencode
+permissions:
+  network: []
+  shell: []
+  filesystem: read
+  env: []
+proof:
+  suites: []
+limitations:
+  - "DEMO fixture: not a real capability and never measured."

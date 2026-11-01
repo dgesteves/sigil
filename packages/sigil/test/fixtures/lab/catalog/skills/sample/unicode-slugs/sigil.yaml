@@ -1,0 +1,17 @@
+sigil: 1
+id: sample/unicode-slugs
+type: skill
+version: 0.1.0
+name: Unicode-safe slugs
+summary: How to turn arbitrary titles into clean ASCII URL slugs, including accented letters.
+domains: [frontend]
+technologies: [javascript]
+license: MIT
+authors:
+  - github: dgesteves
+payload:
+  format: agent-skill
+  entry: SKILL.md
+targets: [claude-code]
+permissions:
+  filesystem: write

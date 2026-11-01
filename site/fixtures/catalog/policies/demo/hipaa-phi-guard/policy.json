@@ -1,0 +1,5 @@
+{
+  "name": "demo/hipaa-phi-guard",
+  "description": "Sandbox policy that keeps protected health information out of prompts, logs and fixtures.",
+  "demo": true
+}

@@ -1,0 +1,42 @@
+sigil: 1
+id: demo/api-docs-sync
+type: hook
+version: 1.0.0
+name: API Docs Sync
+summary: Regenerates reference docs when the OpenAPI spec changes. Evidence is
+  for an older digest.
+description: "Regenerates reference docs when the OpenAPI spec changes. Evidence
+  is for an older digest. DEMO fixture: every number attached to this capability
+  was simulated for site development."
+domains:
+  - documentation
+  - api-design
+industries: []
+lifecycle:
+  - document
+technologies:
+  - openapi
+license: MIT
+authors:
+  - github: sigil-demo
+payload:
+  format: hook
+  entry: hook.json
+targets:
+  - claude-code
+  - codex
+  - cursor
+  - github-copilot
+  - gemini-cli
+  - opencode
+permissions:
+  network: []
+  shell:
+    - git
+    - pnpm test
+  filesystem: read
+  env: []
+proof:
+  suites: []
+limitations:
+  - "DEMO fixture: not a real capability and never measured."

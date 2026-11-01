@@ -1,0 +1,5 @@
+{
+  "name": "demo/secret-scrub",
+  "description": "Stops the agent before it writes a credential into a file, a commit or a log line.",
+  "demo": true
+}

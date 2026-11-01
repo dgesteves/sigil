@@ -1,0 +1,42 @@
+sigil: 1
+id: demo/k8s-manifest-review
+type: agent
+version: 1.0.0
+name: Kubernetes Manifest Review
+summary: Reviews manifests for missing limits, probes, PodDisruptionBudgets and
+  privilege escalation.
+description: "Reviews manifests for missing limits, probes, PodDisruptionBudgets
+  and privilege escalation. DEMO fixture: every number attached to this
+  capability was simulated for site development."
+domains:
+  - devops
+  - platform-engineering
+industries: []
+lifecycle:
+  - review
+  - ship
+technologies:
+  - kubernetes
+  - helm
+license: MIT
+authors:
+  - github: sigil-demo
+payload:
+  format: subagent
+  entry: agent.md
+targets:
+  - claude-code
+  - codex
+  - cursor
+  - github-copilot
+  - gemini-cli
+  - opencode
+permissions:
+  network: []
+  shell: []
+  filesystem: write
+  env: []
+proof:
+  suites: []
+limitations:
+  - "DEMO fixture: not a real capability and never measured."

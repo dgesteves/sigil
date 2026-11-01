@@ -1,0 +1,38 @@
+sigil: 1
+id: demo/conventional-commits
+type: rule
+version: 1.0.0
+name: Conventional Commits
+summary: Commit messages and changelog entries in the Conventional Commits format.
+description: "Commit messages and changelog entries in the Conventional Commits
+  format. DEMO fixture: every number attached to this capability was simulated
+  for site development."
+domains:
+  - developer-workflow
+industries: []
+lifecycle:
+  - ship
+technologies:
+  - git
+license: MIT
+authors:
+  - github: sigil-demo
+payload:
+  format: rule
+  entry: rule.md
+targets:
+  - claude-code
+  - codex
+  - cursor
+  - github-copilot
+  - gemini-cli
+  - opencode
+permissions:
+  network: []
+  shell: []
+  filesystem: read
+  env: []
+proof:
+  suites: []
+limitations:
+  - "DEMO fixture: not a real capability and never measured."

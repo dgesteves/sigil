@@ -1,0 +1,39 @@
+sigil: 1
+id: demo/flutter-riverpod
+type: skill
+version: 1.0.0
+name: Flutter Riverpod
+summary: Riverpod providers, code generation and testing for Flutter apps.
+description: "Riverpod providers, code generation and testing for Flutter apps.
+  DEMO fixture: every number attached to this capability was simulated for site
+  development."
+domains:
+  - mobile
+industries: []
+lifecycle:
+  - build
+technologies:
+  - flutter
+  - dart
+license: MIT
+authors:
+  - github: sigil-demo
+payload:
+  format: agent-skill
+  entry: SKILL.md
+targets:
+  - claude-code
+  - codex
+  - cursor
+  - github-copilot
+  - gemini-cli
+  - opencode
+permissions:
+  network: []
+  shell: []
+  filesystem: read
+  env: []
+proof:
+  suites: []
+limitations:
+  - "DEMO fixture: not a real capability and never measured."

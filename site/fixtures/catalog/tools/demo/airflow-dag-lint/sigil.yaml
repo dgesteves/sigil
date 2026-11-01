@@ -1,0 +1,41 @@
+sigil: 1
+id: demo/airflow-dag-lint
+type: tool
+version: 1.0.0
+name: Airflow DAG Lint
+summary: "Static checks for Airflow DAGs: top-level code, retries, idempotent tasks."
+description: "Static checks for Airflow DAGs: top-level code, retries,
+  idempotent tasks. DEMO fixture: every number attached to this capability was
+  simulated for site development."
+domains:
+  - data-engineering
+industries: []
+lifecycle:
+  - review
+technologies:
+  - airflow
+  - python
+license: MIT
+authors:
+  - github: sigil-demo
+payload:
+  format: tool
+  entry: tool.md
+targets:
+  - claude-code
+  - codex
+  - cursor
+  - github-copilot
+  - gemini-cli
+  - opencode
+permissions:
+  network: []
+  shell:
+    - git
+    - pnpm test
+  filesystem: read
+  env: []
+proof:
+  suites: []
+limitations:
+  - "DEMO fixture: not a real capability and never measured."

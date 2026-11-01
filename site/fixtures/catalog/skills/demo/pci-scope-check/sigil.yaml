@@ -1,0 +1,40 @@
+sigil: 1
+id: demo/pci-scope-check
+type: skill
+version: 1.0.0
+name: PCI Scope Check
+summary: Flags changes that pull card data into systems outside the PCI DSS scope.
+description: "Flags changes that pull card data into systems outside the PCI DSS
+  scope. DEMO fixture: every number attached to this capability was simulated
+  for site development."
+domains:
+  - compliance
+industries:
+  - finance
+  - e-commerce
+  - banking
+lifecycle:
+  - review
+technologies: []
+license: MIT
+authors:
+  - github: sigil-demo
+payload:
+  format: agent-skill
+  entry: SKILL.md
+targets:
+  - claude-code
+  - codex
+  - cursor
+  - github-copilot
+  - gemini-cli
+  - opencode
+permissions:
+  network: []
+  shell: []
+  filesystem: read
+  env: []
+proof:
+  suites: []
+limitations:
+  - "DEMO fixture: not a real capability and never measured."

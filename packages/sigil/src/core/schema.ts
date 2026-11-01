@@ -217,9 +217,12 @@ export type Check = z.infer<typeof Check>
 export const Tally = z.strictObject({
   passed: z.number().int().nonnegative(),
   runs: z.number().int().positive(),
-  /** Runs where the agent edited or deleted the task's protected tests. Counted as failures. */
+  /**
+   * Runs where the agent deleted a protected file or changed its original lines. Recorded, not
+   * scored: protected files are restored before the verifier runs, so `passed` is the verifier alone.
+   */
   tampered: z.number().int().nonnegative().default(0),
-  /** Runs where the agent claimed success but the verifier failed. */
+  /** Runs where the agent claimed success but the verifier failed. Never derived from tampering. */
   falseDone: z.number().int().nonnegative().default(0),
   medianTokens: z.number().nonnegative().optional(),
   medianSeconds: z.number().nonnegative().optional(),
@@ -318,7 +321,10 @@ export const Task = z.strictObject({
   prompt: z.string().min(20).max(4000),
   /** Starting repository, relative to the task directory. */
   repo: z.string().default('repo'),
-  /** Hidden verifier, copied in only after the agent stops, so it cannot be read or edited. */
+  /**
+   * Hidden verifier: an overlay copied over the repo root (verify/test/x.test.ts lands at
+   * <repo>/test/x.test.ts) only after the agent stops, so it cannot be read or edited.
+   */
   verify: z.strictObject({
     dir: z.string().default('verify'),
     /** Command run in the repo root after the verifier is copied in. Exit code 0 = pass. */

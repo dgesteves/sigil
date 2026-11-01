@@ -1,0 +1,44 @@
+sigil: 1
+id: demo/wcag-audit
+type: agent
+version: 1.0.0
+name: WCAG 2.2 Audit
+summary: A reviewer subagent that audits changed components against WCAG 2.2 AA
+  and fixes what it can prove.
+description: "A reviewer subagent that audits changed components against WCAG
+  2.2 AA and fixes what it can prove. DEMO fixture: every number attached to
+  this capability was simulated for site development."
+domains:
+  - accessibility
+  - testing
+industries:
+  - government
+  - education
+lifecycle:
+  - review
+  - test
+technologies:
+  - wcag
+  - html
+license: MIT
+authors:
+  - github: sigil-demo
+payload:
+  format: subagent
+  entry: agent.md
+targets:
+  - claude-code
+  - codex
+  - cursor
+  - github-copilot
+  - gemini-cli
+  - opencode
+permissions:
+  network: []
+  shell: []
+  filesystem: write
+  env: []
+proof:
+  suites: []
+limitations:
+  - "DEMO fixture: not a real capability and never measured."
