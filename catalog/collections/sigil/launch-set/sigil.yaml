@@ -1,0 +1,62 @@
+sigil: 1
+id: sigil/launch-set
+type: collection
+version: 1.0.0
+name: Sigil Launch Set
+summary: The first seven Sigil skills, each with its own proof suite, for the APIs and safety rules coding agents most often get wrong in late 2026.
+description: >-
+  Seven skills that carry current, precise knowledge a coding agent otherwise gets wrong: GitHub
+  Actions hardening, zero-downtime PostgreSQL migrations, MCP servers on the v2 TypeScript SDK,
+  Vercel AI SDK 7 tools and structured output, Express 5, Zod 4 and accessible React widgets. Every
+  member ships with a three-task suite whose hidden verifier fails on the starting repo and passes on
+  the reference solution, so its effect can be measured rather than assumed. Installing the bundle
+  installs each member in its own native format; each member keeps its own digest and evidence.
+domains: [backend, devops, ai-engineering, frontend]
+lifecycle: [build, secure, ship, maintain]
+technologies: [typescript, nodejs, github-actions, npm, postgresql, mcp, ai-sdk, express, zod, react]
+license: MIT
+authors:
+  - github: dgesteves
+payload:
+  format: bundle
+  entry: BUNDLE.md
+targets: [claude-code, codex, cursor, github-copilot, gemini-cli, opencode]
+# The union of the members' declarations: installing the bundle grants what its members declare.
+permissions:
+  network: [github.com, api.github.com]
+  shell:
+    - node
+    - npm test
+    - npm ls
+    - npm run typecheck
+    - npx tsc
+    - grep
+    - rg
+    - psql
+    - git ls-remote
+    - gh api
+    - zizmor
+    - actionlint
+  filesystem: write
+  env: []
+includes:
+  - github-actions/workflow-hardening
+  - postgres/zero-downtime-migrations
+  - mcp/typescript-server
+  - ai-sdk/tools-and-structured-output
+  - express/express-5
+  - zod/zod-4
+  - react/accessible-widgets
+proof:
+  suites:
+    - github-actions-hardening
+    - postgres-zero-downtime
+    - mcp-typescript-server
+    - ai-sdk-tools
+    - express-5
+    - zod-4
+    - react-accessible-widgets
+limitations:
+  - Results for the bundle measure all seven skills installed together. A member can help on its own suite and still be diluted or crowded out when every skill is loaded; read each member's own result too.
+  - Every member is pinned to the versions it was checked against (November 2026). Projects on older majors (AI SDK 5-6, MCP SDK v1, Express 4, Zod 3, PostgreSQL before 12) get migration notes, not full coverage.
+  - The suites are small (three tasks each), so early results are likely to be inconclusive until more runs and tasks exist.

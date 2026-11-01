@@ -1,0 +1,16 @@
+sigil: 1
+id: demo/guard
+type: hook
+version: 1.0.0
+name: Guard
+summary: A small hook used to test the Sigil compiler end to end.
+domains: [developer-workflow]
+license: MIT
+authors:
+  - github: dgesteves
+payload:
+  format: hook
+  entry: hook.json
+targets: [claude-code, cursor, github-copilot, codex]
+permissions:
+  shell: [node]

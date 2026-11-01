@@ -1,0 +1,40 @@
+name: Triage issues
+on:
+  issues:
+    types: [opened, edited]
+
+# Nothing by default; the job below asks for exactly what it uses.
+permissions: {}
+
+jobs:
+  triage:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write # add labels
+    steps:
+      - name: Label bug reports
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          # Issue text is attacker-controlled: pass it as data, never splice it into the script.
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+        run: |
+          if [[ "$ISSUE_TITLE" == *"[bug]"* ]]; then
+            gh issue edit "$ISSUE_NUMBER" --add-label bug
+          fi
+          printf '### Triaged #%s: %s\n' "$ISSUE_NUMBER" "$ISSUE_TITLE" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Flag crash reports
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        with:
+          script: |
+            const body = context.payload.issue.body ?? ''
+            if (/crash|segfault|panic/i.test(body)) {
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                labels: ['crash'],
+              })
+            }

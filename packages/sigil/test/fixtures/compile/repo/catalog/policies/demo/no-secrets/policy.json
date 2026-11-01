@@ -1,0 +1,4 @@
+{
+  "deny": { "read": [".env", ".env.*"], "shell": ["rm -rf"] },
+  "ask": { "shell": ["git push"] }
+}

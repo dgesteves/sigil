@@ -1,0 +1,26 @@
+sigil: 1
+id: assignee-combobox
+title: Make the people picker an accessible autocomplete
+prompt: |
+  The people picker in src/PersonPicker.tsx is a text input with a suggestion dropdown. The issue
+  sidebar (src/IssueSidebar.tsx) renders two of them, Assignee and Reviewer. It works with a mouse,
+  but an accessibility review found that screen readers don't know a list of suggestions appeared or
+  which suggestion is highlighted, and keyboard users can't pick a suggestion at all.
+
+  Please make it a proper accessible autocomplete following the WAI-ARIA Authoring Practices
+  combobox pattern (list autocomplete). Typing should keep filtering the suggestions, Down/Up Arrow
+  should move the highlight through them, Enter should pick the highlighted person, and Escape should
+  close the list. Users must be able to keep typing to refine the search while a suggestion is
+  highlighted.
+
+  Keep the component's props and the mouse behaviour, make sure both pickers work correctly on the
+  same page, and keep the tests in test/ passing.
+verify:
+  command: ./node_modules/.bin/vitest run --config test/hidden/vitest.config.ts && ./node_modules/.bin/vitest run test/PersonPicker.test.tsx
+  timeoutSeconds: 120
+protected:
+  - test/PersonPicker.test.tsx
+image: node:24-bookworm
+setup: npm ci --ignore-scripts --no-audit --no-fund
+timeoutSeconds: 900
+tags: [react, accessibility, wai-aria, keyboard, combobox]

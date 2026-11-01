@@ -1,0 +1,38 @@
+sigil: 1
+id: postgres/zero-downtime-migrations
+type: skill
+version: 1.0.0
+name: Zero-Downtime Postgres Migrations
+summary: Schema changes on large, busy PostgreSQL tables without blocking reads or writes, for PostgreSQL 18 with notes for 12-17.
+description: >-
+  Teaches an agent to write and review PostgreSQL migrations that are safe on hot production tables:
+  which lock each DDL statement takes and whether it scans or rewrites, CREATE INDEX CONCURRENTLY in
+  non-transactional steps (and cleaning up INVALID indexes), foreign keys and CHECKs added NOT VALID
+  and validated in a later transaction, NOT NULL via PostgreSQL 18's NOT VALID not-null constraints
+  or a validated CHECK on 12-17, unique constraints USING INDEX, metadata-only versus rewriting column
+  changes, batched backfills that COMMIT, lock_timeout and the lock queue, and how common migration
+  runners (node-pg-migrate, drizzle-orm, dbmate, graphile-migrate, Django, Rails) handle transactions.
+  Every lock and rewrite claim was measured on PostgreSQL 18.6.
+domains: [databases, backend, devops]
+lifecycle: [build, ship, operate]
+technologies: [postgresql, sql, django, rails, drizzle]
+license: MIT
+authors:
+  - github: dgesteves
+payload:
+  format: agent-skill
+  entry: SKILL.md
+targets: [claude-code, codex, cursor, github-copilot, gemini-cli, opencode]
+permissions:
+  network: []
+  shell: [psql]
+  filesystem: write
+  env: []
+proof:
+  suites: [postgres-zero-downtime]
+limitations:
+  - Covers single-node PostgreSQL semantics. Citus, Aurora-specific behaviour, logical replication and tools like pg_repack or pg_osc are out of scope.
+  - The proof suite runs against PGlite, a single connection, so it measures locks, scans, rewrites and batching but cannot reproduce lock-queue waits; lock_timeout use is taught, not scored.
+  - Runner notes cover node-pg-migrate, drizzle-orm 0.45, dbmate, graphile-migrate, Django and Rails. Prisma's transaction behaviour for hand-edited SQL is not covered.
+  - Batched backfills inside deploy-time migrations suit tables up to tens of millions of rows; larger backfills belong in a throttled background job.
+  - Partitioned tables are covered for indexes only.

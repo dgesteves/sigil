@@ -1,0 +1,36 @@
+sigil: 1
+id: ai-sdk/tools-and-structured-output
+type: skill
+version: 1.0.0
+name: AI SDK 7 Tools and Structured Output
+summary: Correct Vercel AI SDK 7 tool calling, multi-step loops, agents and structured output, with the v4-v6 habits that silently break and mock-model tests.
+description: >-
+  Teaches an agent the current Vercel AI SDK (the `ai` package, version 7) for tools, tool loops,
+  ToolLoopAgent, conversation persistence and structured output. It centres on the old forms that
+  no longer fail loudly in 7.x: `parameters` sends the model an empty schema, `maxSteps` and a
+  missing `stopWhen` stop after one step, `maxTokens` is ignored, `experimental_context` is gone,
+  system messages inside `messages` now throw, and `result.response.messages` holds only the final
+  step. Each rule was checked by running it against ai@7.0.159. It also covers testing with
+  `MockLanguageModelV4` from `ai/test`, so the agent proves the behaviour without a provider.
+domains: [ai-engineering, backend, testing]
+lifecycle: [build, test, maintain]
+technologies: [ai-sdk, typescript, zod, nodejs]
+license: MIT
+authors:
+  - github: dgesteves
+payload:
+  format: agent-skill
+  entry: SKILL.md
+targets: [claude-code, codex, cursor, github-copilot, gemini-cli, opencode]
+permissions:
+  network: []
+  shell: [npx tsc, node --test, npm test, grep]
+  filesystem: write
+  env: []
+proof:
+  suites: [ai-sdk-tools]
+limitations:
+  - Written for ai 7.x (checked against 7.0.159). Projects on AI SDK 5 or 6 should use the migration table to tell which names apply; v3 and older are not covered.
+  - Covers AI SDK Core (generateText, streamText, ToolLoopAgent, Output). AI SDK UI hooks (useChat), RSC, WorkflowAgent, MCP clients and provider-specific options are out of scope.
+  - Provider behaviour (which models support strict schemas, parallel tool calls or approvals) varies; the skill states SDK behaviour only, verified with the SDK mock model, not with live providers.
+  - The proof suite exercises Node with node:test and the SDK's mock model; it does not test streaming UIs or real network providers.

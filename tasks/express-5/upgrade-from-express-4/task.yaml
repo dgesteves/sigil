@@ -1,0 +1,21 @@
+sigil: 1
+id: upgrade-from-express-4
+title: Finish an Express 4 to 5.3 upgrade without changing API behaviour
+prompt: |
+  We bumped express from 4.21 to 5.3.0 (package.json and the lockfile are already updated) and now the
+  app won't even start. Please get it working on Express 5. Don't downgrade express or add packages.
+
+  The API's behaviour has to stay exactly as it was on Express 4: same routes, status codes, redirects
+  and response bodies, because the mobile app and the website depend on it. The tests in test/ only
+  cover part of the API, so go through the whole app rather than stopping once they pass.
+verify:
+  command: node --test "test/**/*.test.js"
+  timeoutSeconds: 120
+protected:
+  - test/api.test.js
+  - docs/**
+  - src/store.js
+image: node:24-bookworm
+setup: npm ci --ignore-scripts --no-audit --no-fund
+timeoutSeconds: 900
+tags: [express, migration, nodejs]
