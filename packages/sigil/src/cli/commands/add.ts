@@ -72,7 +72,7 @@ export const add: Command = {
       return 2
     }
 
-    let resolved: { r: Resolved; via?: string }[]
+    let resolved: { r: Resolved; spec: string; via?: string }[]
     try {
       resolved = await resolveAll(positionals, ctx, root, values.registry as string | undefined)
     } catch (e) {
@@ -85,7 +85,7 @@ export const add: Command = {
 
     const exists = (p: string) => existsSync(join(root, p))
     const compiled = []
-    for (const { r, via } of resolved) {
+    for (const { r, spec, via } of resolved) {
       let c: ReturnType<typeof compile>
       try {
         c = compile(r.input, agents, { exists })
@@ -98,7 +98,7 @@ export const add: Command = {
       const id = r.input.manifest.id
       const source =
         r.source.kind === 'path'
-          ? `local path ${r.source.path}`
+          ? `local path ${spec}`
           : `${r.source.registry}${r.source.commit ? ` @ ${r.source.commit.slice(0, 12)}` : ''}`
       ctx.out()
       renderHeader(ctx.out, c, {
@@ -180,7 +180,7 @@ async function resolveAll(
   }
   const queue: { spec: string; via?: string }[] = specs.map((spec) => ({ spec }))
   const seen = new Set<string>()
-  const out: { r: Resolved; via?: string }[] = []
+  const out: { r: Resolved; spec: string; via?: string }[] = []
   for (const { spec, via } of queue) {
     const r = isPathSpec(spec)
       ? await resolveLocal(spec, ctx.cwd, root)
@@ -193,7 +193,7 @@ async function resolveAll(
       for (const member of r.input.manifest.includes) queue.push({ spec: member, via: id })
       continue
     }
-    out.push({ r, ...(via ? { via } : {}) })
+    out.push({ r, spec, ...(via ? { via } : {}) })
   }
   return out
 }
