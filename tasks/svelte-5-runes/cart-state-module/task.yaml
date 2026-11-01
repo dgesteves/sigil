@@ -1,0 +1,30 @@
+sigil: 1
+id: cart-state-module
+title: Move a svelte/store cart to a runes-based shared state module
+prompt: |
+  We're moving our shared state off svelte/store and onto runes. Please start with the cart: move it
+  from src/lib/cart.ts to a runes-based module at src/lib/cart.svelte.ts that exports a `Cart` class
+  and `cart`, the shared instance the app uses, and switch the components, checkout.ts and the
+  tests over to it.
+
+  The API we want:
+  - `new Cart(storage?)`: `storage` is where the cart is persisted (anything with getItem/setItem);
+    the shared `cart` uses localStorage. A new cart restores itself from the `cart:v1` key and
+    saves every change back to it, in the same format as today.
+  - `cart.lines` (an array of CartLine), `cart.count` and `cart.subtotalCents`
+  - `cart.add(product, qty = 1)`, `cart.setQty(sku, qty)`, `cart.remove(sku)`, `cart.clear()` and
+    `cart.has(sku)`, with the same rules as the current functions.
+
+  A lot of code outside components reads the cart straight after changing it (click handlers,
+  analytics, checkout), so `lines`, `count` and `subtotalCents` must already be up to date when a
+  method returns. `buildOrder` in checkout.ts should take the cart to read from as its first
+  argument (defaulting to the shared one); its result is posted to the payment iframe with
+  postMessage, so it must stay a plain, structured-cloneable snapshot.
+verify:
+  command: ./node_modules/.bin/vitest run --config test/hidden/vitest.config.ts
+  timeoutSeconds: 120
+protected: []
+image: node:24-bookworm
+setup: npm ci --ignore-scripts --no-audit --no-fund
+timeoutSeconds: 900
+tags: [svelte, runes, state-management, migration, stores]

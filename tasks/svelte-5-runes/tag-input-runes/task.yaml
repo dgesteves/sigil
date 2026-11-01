@@ -1,0 +1,30 @@
+sigil: 1
+id: tag-input-runes
+title: Port a Svelte 4 tag input and its caller to runes
+prompt: |
+  We switched the whole app to runes mode in svelte.config.js, and src/lib/TagInput.svelte is the
+  last component still written in Svelte 4 syntax, so it no longer compiles (and IssueForm.svelte,
+  its only caller, still uses its old API). Please port TagInput to Svelte 5 runes and update
+  IssueForm to match.
+
+  TagInput's new API (test/TagInput.test.ts was already updated for it):
+  - props `tags` (defaults to an empty list), `max` (default 10) and `placeholder` stay; parents
+    must still be able to use `bind:tags`;
+  - instead of the `change` and `reject` events it takes `onchange` and `onreject` callback props:
+    `onchange` receives the new list of tags, `onreject` receives `{ value, reason }`;
+  - instead of the named `chip` slot it takes an optional `chip` snippet that receives the tag and a
+    function that removes it; without it, the default chip and remove button are rendered;
+  - any other attributes are still forwarded to the text input.
+
+  Behaviour (normalising, Enter/comma/Backspace handling, the hint text, rejections) must not
+  change. Keep the tests in test/ passing.
+verify:
+  command: ./node_modules/.bin/vitest run --config test/hidden/vitest.config.ts
+  timeoutSeconds: 120
+protected:
+  - test/TagInput.test.ts
+  - test/dom.ts
+image: node:24-bookworm
+setup: npm ci --ignore-scripts --no-audit --no-fund
+timeoutSeconds: 900
+tags: [svelte, runes, migration, components, snippets]
