@@ -127,6 +127,11 @@ async function ingest(
   inner: FileContext['inner'],
 ): Promise<void> {
   const kind = sniff(buf, rel)
+  // A text-looking extension whose bytes are something else is disguised (a ZIP/exe named .txt/.md).
+  if (/\.(?:txt|md|markdown|json|ya?ml|toml|csv|rst)$/i.test(rel) && kind.type !== 'text') {
+    const format = 'format' in kind ? kind.format : kind.type
+    entries.push({ type: 'disguised', path: rel, format })
+  }
   if (kind.type === 'archive') {
     recordArchive(rel, buf, kind, entries)
     if (!kind.office) return
@@ -181,15 +186,6 @@ async function ingest(
     return
   }
 
-  // Text: a file claiming text whose bytes say otherwise is disguised.
-  if (
-    /\.(?:txt|md|json|ya?ml|toml)$/i.test(rel) &&
-    buf.subarray(0, 4).includes(0x50) &&
-    buf[0] === 0x50 &&
-    buf[1] === 0x4b
-  ) {
-    entries.push({ type: 'disguised', path: rel, format: 'ZIP' })
-  }
   const text = decodeText(buf)
   contexts.push(buildContext(rel, text, buf, unit, inner))
   collectFacts(contexts.at(-1)!.file.lines, rel, facts)

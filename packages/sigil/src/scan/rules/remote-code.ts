@@ -83,7 +83,7 @@ export const powershellExec: LineRule = {
 const DOWNLOAD_TO_FILE =
   /\b(?:curl\b[^\n]{0,300}?\s(?:-[a-zA-Z]*[oO]\b|--output\b|--remote-name\b)|wget\b(?![^\n]*\s-q?O\s*-)|aria2c\b|Invoke-WebRequest\b[^\n]{0,300}?-OutFile\b|iwr\b[^\n]{0,300}?-(?:OutFile|o)\b|Start-BitsTransfer\b|urlretrieve\s*\(|DownloadFile\s*\()/i
 const RUN_FILE =
-  /\bchmod\s+(?:-\w+\s+)*(?:[ugoa]*\+[rw]*x|[0-7]?[0-7]{2}[1357]|[0-7]?[1357][0-7]{2})\b|(?:^|[;&|]\s*|\s)\.\/[\w.-]+|\b(?:ba|z)?sh\s+(?:\/tmp\/|\$TMPDIR|\/var\/tmp\/|\$\{?TMP)|\bopen\s+\S+\.(?:dmg|pkg|app)\b|\binstaller\s+-pkg\b|\bhdiutil\s+attach\b|\bStart-Process\b|\bmsiexec\b/i
+  /\bchmod\s+(?:-\w+\s+)*(?:[ugoa]*\+[rw]*x|[0-7]?[0-7]{2}[1357]|[0-7]?[1357][0-7]{2})\b|(?:^|[;&|]\s*|&&\s*|\b(?:ba|z)?sh\s+|\bexec\s+|\bsource\s+)\.\/[\w.-]+|\b(?:ba|z)?sh\s+(?:\/tmp\/|\$TMPDIR|\/var\/tmp\/|\$\{?TMP)|\bopen\s+\S+\.(?:dmg|pkg|app)\b|\binstaller\s+-pkg\b|\bhdiutil\s+attach\b|\bStart-Process\b|\bmsiexec\b/i
 const DOWNLOAD_PROSE =
   /\b(?:download|get|grab|fetch|install)\b[^\n.]{0,200}?\b(?:and|then|,)\s*(?:then\s+)?(?:run|execute|launch|open|double-click|start)\b/i
 const EXECUTABLE_URL =

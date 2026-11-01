@@ -1,0 +1,20 @@
+sigil: 1
+id: acme/web-deploy
+type: skill
+version: 1.0.0
+name: Web Deploy
+summary: Deploys a web project, used here as a conformance fixture for sigil scan.
+domains: [devops]
+technologies: [bash]
+license: MIT
+authors:
+  - github: dgesteves
+payload:
+  format: agent-skill
+  entry: SKILL.md
+targets: [claude-code]
+permissions:
+  network: [registry.npmjs.org]
+  shell: [npm]
+  filesystem: read
+  env: [DEPLOY_TOKEN]
