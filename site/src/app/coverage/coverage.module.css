@@ -1,0 +1,228 @@
+.wrap {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding-top: 56px;
+  display: grid;
+  gap: 56px;
+}
+.head {
+  display: grid;
+  gap: 16px;
+}
+.head h1 {
+  max-width: 18ch;
+  font-size: clamp(40px, 5.6vw, 84px);
+  line-height: 0.98;
+}
+.lede {
+  max-width: 62ch;
+  font-size: 13px;
+  color: var(--bone-2);
+}
+.key {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  list-style: none;
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--bone-2);
+}
+.key li {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.sw {
+  width: 14px;
+  height: 10px;
+  border-radius: 2px;
+}
+.sw[data-state='proven'] {
+  background: var(--flare);
+  box-shadow: 0 0 10px rgba(255, 170, 69, 0.6);
+}
+.sw[data-state='measured'] {
+  border: 1px solid var(--haze);
+  background: rgba(217, 199, 163, 0.18);
+}
+.sw[data-state='listed'] {
+  border: 1px solid var(--line-3);
+}
+.sw[data-state='open'] {
+  border: 1px dashed var(--line-2);
+}
+.summaries {
+  margin-top: 12px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+.summary {
+  display: grid;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--bone-3);
+}
+.summary b {
+  font-weight: 400;
+  color: var(--bone);
+  font-size: 22px;
+  font-variation-settings: 'wdth' 112.5;
+}
+.summary .lit {
+  color: var(--flare);
+}
+.meter {
+  display: flex;
+  height: 3px;
+  background: var(--void-3);
+}
+.meter span[data-state='proven'] {
+  background: var(--flare);
+  box-shadow: 0 0 8px var(--flare);
+}
+.meter span[data-state='listed'] {
+  background: var(--bone-3);
+}
+.section {
+  display: grid;
+  gap: 18px;
+}
+.group {
+  display: grid;
+  grid-template-columns: 170px 1fr;
+  gap: 16px;
+  align-items: start;
+}
+.group h3 {
+  padding-top: 10px;
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 18px;
+  color: var(--bone-2);
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 6px;
+}
+.dense {
+  grid-template-columns: repeat(auto-fill, minmax(118px, 1fr));
+}
+.cycle {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 6px;
+}
+.tile {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 64px;
+  padding: 9px 10px;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  text-decoration: none;
+  transition: border-color 0.2s, background 0.2s, transform 0.2s var(--ease);
+}
+.tile:hover {
+  transform: translateY(-1px);
+  border-color: var(--line-3);
+}
+.label {
+  font-size: 11.5px;
+  line-height: 1.3;
+  color: var(--bone-2);
+}
+.count {
+  font-size: 10px;
+  color: var(--bone-3);
+}
+.count b {
+  font-weight: 400;
+  font-size: 14px;
+  color: var(--bone);
+}
+.tile[data-state='proven'] {
+  border-color: rgba(255, 170, 69, 0.65);
+  background: radial-gradient(120% 140% at 0% 0%, rgba(255, 170, 69, 0.22), rgba(255, 170, 69, 0.04) 60%);
+  box-shadow: 0 0 22px -10px rgba(255, 170, 69, 0.8);
+}
+.tile[data-state='proven'] .label {
+  color: var(--bone);
+}
+.tile[data-state='proven'] .count span {
+  color: var(--flare);
+}
+.tile[data-state='measured'] {
+  border-color: rgba(217, 199, 163, 0.45);
+  background: rgba(217, 199, 163, 0.05);
+}
+.tile[data-state='listed'] {
+  border-color: var(--line-2);
+}
+.tile[data-state='open'] {
+  border-style: dashed;
+  border-color: var(--line);
+  background: transparent;
+}
+.tile[data-state='open'] .label {
+  color: var(--bone-3);
+}
+.tile[data-state='open']:hover {
+  border-color: var(--flare);
+}
+.tile[data-state='open']:hover .count {
+  color: var(--flare);
+}
+.tile[data-state='open']:hover .count::after {
+  content: ' · contribute';
+}
+.twin {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+}
+.agents {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0 24px;
+  font-size: 12px;
+}
+.agents li {
+  display: flex;
+  justify-content: space-between;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--line);
+  color: var(--bone-3);
+}
+.agents li[data-state='proven'] span:first-child {
+  color: var(--bone);
+}
+.agents li[data-state='listed'] span:first-child {
+  color: var(--bone-2);
+}
+.agents b {
+  font-weight: 400;
+  color: var(--flare);
+}
+@media (max-width: 960px) {
+  .summaries {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .group {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .cycle {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .twin {
+    grid-template-columns: 1fr;
+  }
+}
