@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Report a vulnerability or a malicious capability
+    url: https://github.com/dgesteves/sigil/security/advisories/new
+    about: Please report privately. Never open a public issue for these.
+  - name: Ask a question or share an idea
+    url: https://github.com/dgesteves/sigil/discussions
+    about: Questions, ideas and show-and-tell live in Discussions.

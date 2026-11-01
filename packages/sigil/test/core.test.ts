@@ -6,10 +6,12 @@ import { describe, expect, it } from 'vitest'
 import { main } from '../src/cli/main.js'
 import {
   buildRegistry,
+  checkTechnologies,
   digestDir,
   type Evidence,
   levelOf,
   loadCapability,
+  loadTaxonomy,
   Manifest,
   newcombe,
   pool,
@@ -238,5 +240,20 @@ describe('registry + cli', () => {
     })
     expect(await main(['validate'], ctx(fx('good')))).toBe(0)
     expect(await main(['validate', 'catalog'], ctx(fx('bad-name')))).toBe(1)
+  })
+})
+
+describe('taxonomy', () => {
+  const repoRoot = join(import.meta.dirname, '..', '..', '..')
+
+  it('the shipped taxonomy parses, has unique ids and resolvable parents', async () => {
+    const taxonomy = await loadTaxonomy(repoRoot)
+    expect(taxonomy?.technologies.length).toBeGreaterThan(150)
+  })
+
+  it('flags technologies outside the vocabulary', async () => {
+    const taxonomy = (await loadTaxonomy(repoRoot))!
+    const findings = checkTechnologies(['react', 'not-a-tech'], taxonomy)
+    expect(findings.map((f) => f.message)).toEqual([expect.stringContaining('not-a-tech')])
   })
 })

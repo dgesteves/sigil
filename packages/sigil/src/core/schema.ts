@@ -4,7 +4,9 @@ import {
   CAPABILITY_TYPES,
   CHECK_STATUSES,
   DOMAINS,
+  INDUSTRIES,
   LEVELS,
+  LIFECYCLE,
   PAYLOAD_FORMATS,
   SEVERITIES,
   UPLIFT_VERDICTS,
@@ -52,6 +54,8 @@ export const Person = z.strictObject({
 export const AgentIdSchema = z.enum(AGENTS)
 export const CapabilityTypeSchema = z.enum(CAPABILITY_TYPES)
 export const DomainSchema = z.enum(DOMAINS)
+export const IndustrySchema = z.enum(INDUSTRIES)
+export const LifecycleSchema = z.enum(LIFECYCLE)
 
 /* ------------------------------------------------------------------------------------------------
  * Permissions: what a capability may make an agent do. Declared by the author, enforced by
@@ -110,9 +114,10 @@ const TYPE_FORMATS: Record<
   hook: ['hook'],
   'mcp-server': ['mcp-server'],
   tool: ['tool', 'agent-skill'],
+  policy: ['policy'],
   template: ['template'],
   evaluation: ['task-suite'],
-  collection: ['bundle'],
+  collection: ['bundle', 'plugin'],
 }
 
 export const Manifest = z
@@ -126,6 +131,10 @@ export const Manifest = z
     summary: z.string().min(10).max(160),
     description: z.string().min(20).max(4000).optional(),
     domains: z.array(DomainSchema).min(1).max(4),
+    /** Verticals whose rules or domain knowledge the capability encodes. Empty = industry-agnostic. */
+    industries: z.array(IndustrySchema).max(6).default([]),
+    /** Lifecycle stages where it acts. */
+    lifecycle: z.array(LifecycleSchema).max(4).default([]),
     /** Lowercase technology tags: languages, frameworks, products. */
     technologies: z.array(Slug).max(12).default([]),
     license: z.string().min(2).max(64),
@@ -151,11 +160,11 @@ export const Manifest = z
         message: `type "${m.type}" expects payload.format ${TYPE_FORMATS[m.type].map((f) => `"${f}"`).join(' or ')}`,
       })
     }
-    if (m.type === 'collection' && m.includes.length === 0) {
+    if (m.payload.format === 'bundle' && m.includes.length === 0) {
       ctx.addIssue({
         code: 'custom',
         path: ['includes'],
-        message: 'a collection must include at least one capability',
+        message: 'a bundle must include at least one capability',
       })
     }
     if (m.type !== 'collection' && m.includes.length > 0) {
