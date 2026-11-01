@@ -1,0 +1,21 @@
+sigil: 1
+id: transcoder-least-privilege
+title: Scope the transcoder's IAM role down to what the service does
+prompt: |
+  Security flagged the transcoder's ECS task role in iam.tf: its policy allows every S3 and KMS
+  action on every resource. Please scope it down to exactly what the transcoder does (the README
+  describes it), so the service keeps working but can't do anything more. In particular it must not
+  be able to see or touch anything under contracts/ in the media bucket. Keep the role itself as it
+  is, and keep everything in Terraform.
+verify:
+  command: .tools/venv/bin/python -I -m unittest discover -s test/hidden -t test/hidden
+  timeoutSeconds: 120
+protected:
+  - scripts/**
+  - requirements-dev.txt
+  - .terraform.lock.hcl
+  - README.md
+image: python:3.14-slim
+setup: python3 scripts/bootstrap.py
+timeoutSeconds: 900
+tags: [terraform, aws, iam, s3, kms, least-privilege]

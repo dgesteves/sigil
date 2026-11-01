@@ -1,0 +1,28 @@
+sigil: 1
+id: audit-exports-bucket
+title: Add a locked-down S3 bucket for monthly audit exports
+prompt: |
+  We need a new S3 bucket for the monthly audit exports: `acme-ledger-prod-audit-exports`, using the
+  same `local.name_prefix` naming as the statements bucket. The compliance ticket asks for:
+  - no public access, ever: all four Block Public Access settings on, managed in Terraform;
+  - no ACLs: the bucket owner owns every object and access is granted by policies only;
+  - versioning enabled;
+  - encryption with its own customer managed KMS key (automatic rotation on) rather than the AWS
+    managed aws/s3 key, with S3 Bucket Keys enabled to keep the KMS bill down;
+  - every request that doesn't use TLS is denied.
+
+  The export job's role gets write access in a separate change, and the statements bucket is being
+  migrated separately, so leave it as it is. The pipeline applies this right after merge. Please keep
+  it in line with the AWS provider version we're on and don't add anything that version marks as
+  deprecated.
+verify:
+  command: .tools/venv/bin/python -I -m unittest discover -s test/hidden -t test/hidden
+  timeoutSeconds: 120
+protected:
+  - scripts/**
+  - requirements-dev.txt
+  - .terraform.lock.hcl
+image: python:3.14-slim
+setup: python3 scripts/bootstrap.py
+timeoutSeconds: 900
+tags: [terraform, aws, s3, kms, security]

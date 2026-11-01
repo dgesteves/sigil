@@ -1,0 +1,29 @@
+sigil: 1
+id: orders-db-password
+title: Get the orders database master password out of Terraform state and CI
+prompt: |
+  An audit of our state bucket found the orders database master password in plain text in this
+  stack's terraform.tfstate. CI passes it in as TF_VAR_db_master_password, and it ends up in both the
+  aws_db_instance and the orders/db secret version (`sensitive = true` only hides it from the plan
+  output). Please change the stack so that:
+  - Terraform generates the master password itself and nobody, CI included, has to supply or know
+    it. Remove the db_master_password variable; we'll delete the CI secret afterwards.
+  - RDS gets that password, and the orders/db secret keeps working for the service: same secret,
+    same JSON keys (username, password, host, port, dbname).
+  - Nothing Terraform persists, neither the state nor a saved plan file, contains the password.
+
+  RDS-managed master passwords are not an option for now: their automatic rotation would break the
+  service, which only reads orders/db at startup. CI runs Terraform 1.17 with the provider versions
+  in .terraform.lock.hcl. Rotating the password later should be a small, deliberate change; add a
+  short note on how to do it to the README.
+verify:
+  command: .tools/venv/bin/python -I -m unittest discover -s test/hidden -t test/hidden
+  timeoutSeconds: 120
+protected:
+  - scripts/**
+  - requirements-dev.txt
+  - .terraform.lock.hcl
+image: python:3.14-slim
+setup: python3 scripts/bootstrap.py
+timeoutSeconds: 900
+tags: [terraform, aws, rds, secrets-manager, write-only, ephemeral]
