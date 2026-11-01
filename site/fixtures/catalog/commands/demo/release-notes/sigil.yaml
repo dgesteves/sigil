@@ -1,0 +1,40 @@
+sigil: 1
+id: demo/release-notes
+type: command
+version: 1.0.0
+name: Release Notes
+summary: Turns merged pull requests into release notes grouped by user impact.
+description: "Turns merged pull requests into release notes grouped by user
+  impact. DEMO fixture: every number attached to this capability was simulated
+  for site development."
+domains:
+  - documentation
+  - product
+industries: []
+lifecycle:
+  - ship
+  - document
+technologies:
+  - markdown
+license: MIT
+authors:
+  - github: sigil-demo
+payload:
+  format: command
+  entry: command.md
+targets:
+  - claude-code
+  - codex
+  - cursor
+  - github-copilot
+  - gemini-cli
+  - opencode
+permissions:
+  network: []
+  shell: []
+  filesystem: write
+  env: []
+proof:
+  suites: []
+limitations:
+  - "DEMO fixture: not a real capability and never measured."

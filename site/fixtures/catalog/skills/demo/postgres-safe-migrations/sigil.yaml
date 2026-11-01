@@ -1,0 +1,42 @@
+sigil: 1
+id: demo/postgres-safe-migrations
+type: skill
+version: 1.0.0
+name: Postgres Safe Migrations
+summary: "Writes zero-downtime Postgres migrations: concurrent indexes, batched
+  backfills, no table rewrites under load."
+description: "Writes zero-downtime Postgres migrations: concurrent indexes,
+  batched backfills, no table rewrites under load. DEMO fixture: every number
+  attached to this capability was simulated for site development."
+domains:
+  - databases
+  - migration
+industries: []
+lifecycle:
+  - build
+  - ship
+technologies:
+  - postgresql
+  - sql
+license: MIT
+authors:
+  - github: sigil-demo
+payload:
+  format: agent-skill
+  entry: SKILL.md
+targets:
+  - claude-code
+  - codex
+  - cursor
+  - github-copilot
+  - gemini-cli
+  - opencode
+permissions:
+  network: []
+  shell: []
+  filesystem: read
+  env: []
+proof:
+  suites: []
+limitations:
+  - "DEMO fixture: not a real capability and never measured."

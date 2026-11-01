@@ -1,0 +1,41 @@
+sigil: 1
+id: demo/swiftui-state
+type: rule
+version: 1.0.0
+name: SwiftUI State
+summary: "Observation framework rules: when to use @State, @Bindable and
+  environment objects."
+description: "Observation framework rules: when to use @State, @Bindable and
+  environment objects. DEMO fixture: every number attached to this capability
+  was simulated for site development."
+domains:
+  - mobile
+industries: []
+lifecycle:
+  - build
+technologies:
+  - swiftui
+  - swift
+  - ios
+license: MIT
+authors:
+  - github: sigil-demo
+payload:
+  format: rule
+  entry: rule.md
+targets:
+  - claude-code
+  - codex
+  - cursor
+  - github-copilot
+  - gemini-cli
+  - opencode
+permissions:
+  network: []
+  shell: []
+  filesystem: read
+  env: []
+proof:
+  suites: []
+limitations:
+  - "DEMO fixture: not a real capability and never measured."

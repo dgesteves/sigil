@@ -1,0 +1,41 @@
+sigil: 1
+id: demo/incident-timeline
+type: command
+version: 1.0.0
+name: Incident Timeline
+summary: Builds a timeline and blameless summary from logs, alerts and chat
+  exports after an incident.
+description: "Builds a timeline and blameless summary from logs, alerts and chat
+  exports after an incident. DEMO fixture: every number attached to this
+  capability was simulated for site development."
+domains:
+  - observability
+  - documentation
+industries: []
+lifecycle:
+  - operate
+  - document
+technologies:
+  - incident-response
+license: MIT
+authors:
+  - github: sigil-demo
+payload:
+  format: command
+  entry: command.md
+targets:
+  - claude-code
+  - codex
+  - cursor
+  - github-copilot
+  - gemini-cli
+  - opencode
+permissions:
+  network: []
+  shell: []
+  filesystem: write
+  env: []
+proof:
+  suites: []
+limitations:
+  - "DEMO fixture: not a real capability and never measured."

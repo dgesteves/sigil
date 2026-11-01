@@ -1,0 +1,40 @@
+sigil: 1
+id: demo/pytorch-training-loop
+type: skill
+version: 1.0.0
+name: PyTorch Training Loop
+summary: "Reproducible training loops: seeding, mixed precision, checkpoint and resume."
+description: "Reproducible training loops: seeding, mixed precision, checkpoint
+  and resume. DEMO fixture: every number attached to this capability was
+  simulated for site development."
+domains:
+  - machine-learning
+industries:
+  - scientific-research
+lifecycle:
+  - build
+technologies:
+  - pytorch
+  - python
+license: MIT
+authors:
+  - github: sigil-demo
+payload:
+  format: agent-skill
+  entry: SKILL.md
+targets:
+  - claude-code
+  - codex
+  - cursor
+  - github-copilot
+  - gemini-cli
+  - opencode
+permissions:
+  network: []
+  shell: []
+  filesystem: read
+  env: []
+proof:
+  suites: []
+limitations:
+  - "DEMO fixture: not a real capability and never measured."

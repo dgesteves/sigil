@@ -1,0 +1,42 @@
+sigil: 1
+id: demo/github-actions-hardening
+type: skill
+version: 1.0.0
+name: GitHub Actions Hardening
+summary: Pins actions by SHA, scopes tokens to least privilege and removes
+  script injection from workflows.
+description: "Pins actions by SHA, scopes tokens to least privilege and removes
+  script injection from workflows. DEMO fixture: every number attached to this
+  capability was simulated for site development."
+domains:
+  - security
+  - devops
+industries: []
+lifecycle:
+  - secure
+  - ship
+technologies:
+  - github-actions
+  - ci-cd
+license: MIT
+authors:
+  - github: sigil-demo
+payload:
+  format: agent-skill
+  entry: SKILL.md
+targets:
+  - claude-code
+  - codex
+  - cursor
+  - github-copilot
+  - gemini-cli
+  - opencode
+permissions:
+  network: []
+  shell: []
+  filesystem: read
+  env: []
+proof:
+  suites: []
+limitations:
+  - "DEMO fixture: not a real capability and never measured."

@@ -1,0 +1,42 @@
+sigil: 1
+id: demo/openapi-contract-first
+type: workflow
+version: 1.0.0
+name: OpenAPI Contract First
+summary: Designs the OpenAPI contract first, generates types, then implements
+  handlers against it.
+description: "Designs the OpenAPI contract first, generates types, then
+  implements handlers against it. DEMO fixture: every number attached to this
+  capability was simulated for site development."
+domains:
+  - api-design
+  - backend
+industries: []
+lifecycle:
+  - design
+  - build
+technologies:
+  - openapi
+  - rest
+license: MIT
+authors:
+  - github: sigil-demo
+payload:
+  format: agent-skill
+  entry: SKILL.md
+targets:
+  - claude-code
+  - codex
+  - cursor
+  - github-copilot
+  - gemini-cli
+  - opencode
+permissions:
+  network: []
+  shell: []
+  filesystem: write
+  env: []
+proof:
+  suites: []
+limitations:
+  - "DEMO fixture: not a real capability and never measured."
