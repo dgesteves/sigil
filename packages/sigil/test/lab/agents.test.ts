@@ -158,7 +158,7 @@ describe('Claude Code driver', () => {
 
   it('installs an agent-skill payload under .claude/skills/<slug>/', async () => {
     const cap = await resolveCapability(fx('catalog/skills/sample/unicode-slugs'), process.cwd())
-    const files = await claudeCode.installFiles(cap)
+    const files = await claudeCode.installFiles(cap, mkdtempSync(join(tmpdir(), 'sigil-repo-')))
     expect(files.map((f) => f.path)).toEqual(['.claude/skills/unicode-slugs/SKILL.md'])
     expect(claudeCode.installedNames(cap)).toEqual(['unicode-slugs'])
   })

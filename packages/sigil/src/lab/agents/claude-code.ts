@@ -1,6 +1,6 @@
 import { posix } from 'node:path'
 import type { LabCapability } from '../capability.js'
-import { readPayload } from '../install.js'
+import { compiledInstallFiles } from '../compiled-install.js'
 import { hostSettings } from './claude-host.js'
 import { parseClaudeStream } from './claude-stream.js'
 import type {
@@ -93,9 +93,8 @@ export const claudeCode: AgentDriver = {
   versionArgv: () => ['claude', '--version'],
   parseVersion: (stdout) => /(\d+\.\d+\.\d+)/.exec(stdout)?.[1],
 
-  async installFiles(capability) {
-    return claudeSkillFiles(capability)
-  },
+  // The real install engine, so the lab measures exactly what `sigil add` writes.
+  installFiles: (capability, repoDir) => compiledInstallFiles(capability, 'claude-code', repoDir),
 
   installedNames(capability) {
     return capability.manifest.payload.format === 'agent-skill' ? [capability.slug] : []
@@ -168,24 +167,6 @@ export const claudeCode: AgentDriver = {
     }
     return problems
   },
-}
-
-/**
- * Internal installer for agent-skill payloads: `.claude/skills/<slug>/`. Deliberately tiny.
- * TODO(compile): switch to the compile adapters (packages/sigil/src/compile) once they land, so the
- * lab measures exactly what `sigil add` installs for every payload format.
- */
-export async function claudeSkillFiles(capability: LabCapability): Promise<InstallFile[]> {
-  if (capability.manifest.payload.format !== 'agent-skill') {
-    throw new Error(
-      `the lab can install agent-skill payloads for Claude Code today; ${capability.manifest.payload.format} needs the compile adapters`,
-    )
-  }
-  const payload = await readPayload(capability)
-  return payload.map((f) => ({
-    path: posix.join('.claude/skills', capability.slug, f.path),
-    content: f.content,
-  }))
 }
 
 /** Path comparison that tolerates macOS's /var → /private/var aliasing. */

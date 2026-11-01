@@ -91,7 +91,8 @@ export async function runOne(ctx: RunContext): Promise<RunRecord> {
 
     // 1. Starting state: the task repo, plus the capability for the treatment, as one commit.
     await sb.copyIn(task.repoDir, work)
-    if (item.condition === 'treatment') await install(sb, await driver.installFiles(ctx.capability))
+    if (item.condition === 'treatment')
+      await install(sb, await driver.installFiles(ctx.capability, task.repoDir))
     await sb.sh(GIT_INIT, { timeoutMs: 120_000 })
 
     // 2. Setup, outside the timed window, with registry access only.

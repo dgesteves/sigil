@@ -104,8 +104,8 @@ export interface AgentDriver {
   dockerLayers(version: string): string[]
   versionArgv(): string[]
   parseVersion(stdout: string): string | undefined
-  /** Files that install the capability for the treatment condition. */
-  installFiles(capability: LabCapability): Promise<InstallFile[]>
+  /** Files that install the capability for the treatment condition, given the task's starting repo. */
+  installFiles(capability: LabCapability, repoDir: string): Promise<InstallFile[]>
   /** What the treatment is expected to add to the agent's reported environment. */
   installedNames(capability: LabCapability): string[]
   invocation(spec: InvocationSpec): Invocation
