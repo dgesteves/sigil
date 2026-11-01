@@ -6,10 +6,11 @@ import pkg from '../../package.json' with { type: 'json' }
 import { type Command, type CommandContext, fmt, parse } from './command.js'
 import { digest } from './commands/digest.js'
 import { registry } from './commands/registry.js'
+import { scan } from './commands/scan.js'
 import { validate } from './commands/validate.js'
 
 /** Every command lives in ./commands/<name>.ts and is registered here, in help order. */
-export const COMMANDS: Command[] = [validate, digest, registry]
+export const COMMANDS: Command[] = [validate, scan, digest, registry]
 
 const { version } = pkg
 
