@@ -1,0 +1,5 @@
+{
+  "name": "demo/telemetry-helper",
+  "description": "An MCP server for metrics. Its canary run read a planted cloud key and tried to send it out.",
+  "demo": true
+}

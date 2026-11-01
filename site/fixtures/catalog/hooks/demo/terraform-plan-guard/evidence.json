@@ -1,0 +1,66 @@
+{
+  "sigil": 1,
+  "capability": "demo/terraform-plan-guard",
+  "version": "1.0.0",
+  "digest": "sha256:b4105110182b8b8e31b2f8dec162e42e42ba2b0f71d18276cee28bd5544acc36",
+  "generatedAt": "2026-10-28T09:00:00.000Z",
+  "structure": {
+    "status": "pass",
+    "tool": {
+      "name": "sigil",
+      "version": "0.0.0-demo"
+    },
+    "at": "2026-10-28T09:00:00.000Z",
+    "findings": []
+  },
+  "security": {
+    "status": "pass",
+    "tool": {
+      "name": "sigil",
+      "version": "0.0.0-demo"
+    },
+    "at": "2026-10-28T09:00:00.000Z",
+    "findings": []
+  },
+  "canary": {
+    "status": "not-run",
+    "agent": {
+      "id": "claude-code",
+      "version": "0.0.0-demo"
+    },
+    "model": "demo-model",
+    "at": "2026-10-28T09:00:00.000Z",
+    "runs": 0,
+    "events": []
+  },
+  "compat": {
+    "claude-code": {
+      "compiled": true,
+      "evaluated": false
+    },
+    "codex": {
+      "compiled": false,
+      "evaluated": false,
+      "notes": "this agent has no hook mechanism for this event"
+    },
+    "cursor": {
+      "compiled": true,
+      "evaluated": false
+    },
+    "github-copilot": {
+      "compiled": false,
+      "evaluated": false,
+      "notes": "this agent has no hook mechanism for this event"
+    },
+    "gemini-cli": {
+      "compiled": true,
+      "evaluated": false
+    },
+    "opencode": {
+      "compiled": true,
+      "evaluated": false
+    }
+  },
+  "uplift": [],
+  "reviews": []
+}

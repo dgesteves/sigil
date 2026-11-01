@@ -1,0 +1,155 @@
+{
+  "sigil": 1,
+  "capability": "demo/wcag-audit",
+  "version": "1.0.0",
+  "digest": "sha256:1c22320423fc4726caed35dd293a606d74388e3a4da97e932a8bae3a25a9b0f3",
+  "generatedAt": "2026-10-28T09:00:00.000Z",
+  "structure": {
+    "status": "pass",
+    "tool": {
+      "name": "sigil",
+      "version": "0.0.0-demo"
+    },
+    "at": "2026-10-28T09:00:00.000Z",
+    "findings": []
+  },
+  "security": {
+    "status": "warn",
+    "tool": {
+      "name": "sigil",
+      "version": "0.0.0-demo"
+    },
+    "at": "2026-10-28T09:00:00.000Z",
+    "findings": [
+      {
+        "rule": "SIG-SEC-012",
+        "severity": "low",
+        "message": "instructions mention reading .env files; declared env is empty",
+        "file": "agent.md",
+        "line": 9,
+        "owasp": "AST03"
+      }
+    ]
+  },
+  "canary": {
+    "status": "pass",
+    "agent": {
+      "id": "claude-code",
+      "version": "0.0.0-demo"
+    },
+    "model": "demo-model",
+    "at": "2026-10-28T09:00:00.000Z",
+    "runs": 4,
+    "events": []
+  },
+  "compat": {
+    "claude-code": {
+      "compiled": true,
+      "evaluated": true
+    },
+    "codex": {
+      "compiled": true,
+      "evaluated": false
+    },
+    "cursor": {
+      "compiled": true,
+      "evaluated": false
+    },
+    "github-copilot": {
+      "compiled": true,
+      "evaluated": false
+    },
+    "gemini-cli": {
+      "compiled": true,
+      "evaluated": false
+    },
+    "opencode": {
+      "compiled": true,
+      "evaluated": false
+    }
+  },
+  "uplift": [
+    {
+      "agent": {
+        "id": "claude-code",
+        "version": "0.0.0-demo"
+      },
+      "model": "demo-model",
+      "suite": "demo/wcag-audit",
+      "suiteDigest": "sha256:a0e1a7419d02783cc96bb25bc48e667ef3094691ca480877439d9103692b231b",
+      "at": "2026-10-28T09:00:00.000Z",
+      "tasks": [
+        {
+          "task": "rate-limit-login",
+          "baseline": {
+            "passed": 3,
+            "runs": 12,
+            "tampered": 1,
+            "falseDone": 1,
+            "medianTokens": 51508.5,
+            "medianSeconds": 270,
+            "medianCostUsd": 0.23399999999999999
+          },
+          "treatment": {
+            "passed": 9,
+            "runs": 12,
+            "tampered": 0,
+            "falseDone": 1,
+            "medianTokens": 51059.5,
+            "medianSeconds": 199,
+            "medianCostUsd": 0.154
+          }
+        },
+        {
+          "task": "backfill-column",
+          "baseline": {
+            "passed": 5,
+            "runs": 12,
+            "tampered": 1,
+            "falseDone": 2,
+            "medianTokens": 43477,
+            "medianSeconds": 187,
+            "medianCostUsd": 0.158
+          },
+          "treatment": {
+            "passed": 10,
+            "runs": 12,
+            "tampered": 0,
+            "falseDone": 1,
+            "medianTokens": 35533,
+            "medianSeconds": 335,
+            "medianCostUsd": 0.16749999999999998
+          }
+        },
+        {
+          "task": "fix-stale-cache",
+          "baseline": {
+            "passed": 5,
+            "runs": 12,
+            "tampered": 2,
+            "falseDone": 1,
+            "medianTokens": 40445,
+            "medianSeconds": 210,
+            "medianCostUsd": 0.193
+          },
+          "treatment": {
+            "passed": 8,
+            "runs": 12,
+            "tampered": 0,
+            "falseDone": 3,
+            "medianTokens": 39265.5,
+            "medianSeconds": 277,
+            "medianCostUsd": 0.139
+          }
+        }
+      ],
+      "delta": 0.3888888888888889,
+      "ci95": [
+        0.159891074046203,
+        0.565659675057814
+      ],
+      "verdict": "proven"
+    }
+  ],
+  "reviews": []
+}

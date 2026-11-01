@@ -1,0 +1,84 @@
+{
+  "sigil": 1,
+  "capability": "demo/sql-explain",
+  "version": "1.0.0",
+  "digest": "sha256:7ac96d324859cde0dd54ae112bb6c6955b262075515178dce5c7039a3282e3fd",
+  "generatedAt": "2026-10-28T09:00:00.000Z",
+  "structure": {
+    "status": "pass",
+    "tool": {
+      "name": "sigil",
+      "version": "0.0.0-demo"
+    },
+    "at": "2026-10-28T09:00:00.000Z",
+    "findings": []
+  },
+  "security": {
+    "status": "warn",
+    "tool": {
+      "name": "sigil",
+      "version": "0.0.0-demo"
+    },
+    "at": "2026-10-28T09:00:00.000Z",
+    "findings": [
+      {
+        "rule": "SIG-SEC-012",
+        "severity": "low",
+        "message": "instructions mention reading .env files; declared env is empty",
+        "file": "SKILL.md",
+        "line": 9,
+        "owasp": "AST03"
+      }
+    ]
+  },
+  "canary": {
+    "status": "pass",
+    "agent": {
+      "id": "claude-code",
+      "version": "0.0.0-demo"
+    },
+    "model": "demo-model",
+    "at": "2026-10-28T09:00:00.000Z",
+    "runs": 4,
+    "events": []
+  },
+  "compat": {
+    "claude-code": {
+      "compiled": true,
+      "evaluated": false
+    },
+    "codex": {
+      "compiled": true,
+      "evaluated": false
+    },
+    "cursor": {
+      "compiled": true,
+      "evaluated": false
+    },
+    "github-copilot": {
+      "compiled": true,
+      "evaluated": false
+    },
+    "gemini-cli": {
+      "compiled": true,
+      "evaluated": false
+    },
+    "opencode": {
+      "compiled": true,
+      "evaluated": false
+    }
+  },
+  "uplift": [],
+  "reviews": [
+    {
+      "by": "sigil-demo",
+      "at": "2026-10-29T10:00:00.000Z",
+      "decision": "approved",
+      "notes": "DEMO review."
+    }
+  ],
+  "revoked": {
+    "at": "2026-10-30T16:00:00.000Z",
+    "reason": "DEMO: a later version of the payload was found to suggest dropping indexes in production."
+  }
+}

@@ -1,0 +1,41 @@
+sigil: 1
+id: demo/tailwind-v4-tokens
+type: rule
+version: 1.0.0
+name: Tailwind v4 Design Tokens
+summary: Keeps generated UI on the project tokens with the v4 @theme syntax
+  instead of hard-coded values.
+description: "Keeps generated UI on the project tokens with the v4 @theme syntax
+  instead of hard-coded values. DEMO fixture: every number attached to this
+  capability was simulated for site development."
+domains:
+  - frontend
+  - design
+industries: []
+lifecycle:
+  - build
+technologies:
+  - tailwindcss
+  - css
+license: MIT
+authors:
+  - github: sigil-demo
+payload:
+  format: rule
+  entry: rule.md
+targets:
+  - claude-code
+  - codex
+  - cursor
+  - github-copilot
+  - gemini-cli
+  - opencode
+permissions:
+  network: []
+  shell: []
+  filesystem: read
+  env: []
+proof:
+  suites: []
+limitations:
+  - "DEMO fixture: not a real capability and never measured."
