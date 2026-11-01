@@ -1,0 +1,32 @@
+sigil: 1
+id: product-search-resource
+title: Rebuild a search page's data loading on Angular's resource APIs
+prompt: |
+  Product search (src/app/catalog/product-search.ts) has been unreliable since we went zoneless on
+  Angular 22: it gets stuck on "Loading…" until you click somewhere, and when you change the sort or
+  the page quickly an older response can overwrite the newer one. Please rewrite the component's
+  state and data loading with signals and Angular's resource APIs (rxResource or httpResource).
+  Requests must keep going through our HttpClient so the auth interceptor still applies; ProductApi
+  shows the request format.
+
+  Keep the template markup and CSS classes (the e2e suite relies on them). Behaviour:
+  - no request until a non-empty search term is submitted; submitting a blank term shows the hint
+    again and sends nothing;
+  - submitting a term or changing the sort goes back to page 1; Previous/Next move between pages;
+  - each of those user actions sends exactly one request, for the new term, sort and page, and if
+    an earlier request is still in flight it is cancelled;
+  - "Loading…" while a page loads; if a request fails, show the error message with a Retry button
+    that repeats the same request; an empty result shows the "No products match" message.
+
+  `npm test` and `npm run build` must pass without editing the existing spec.
+verify:
+  command: ./node_modules/.bin/ng build --configuration development && ./node_modules/.bin/ng test --watch=false
+  timeoutSeconds: 180
+protected:
+  - src/app/catalog/product-api.spec.ts
+  - src/app/auth/*.ts
+  - tsconfig*.json
+image: node:24-bookworm
+setup: npm ci --ignore-scripts --no-audit --no-fund
+timeoutSeconds: 900
+tags: [angular, signals, resource, httpclient, zoneless]

@@ -1,0 +1,26 @@
+sigil: 1
+id: dispatch-board-zoneless
+title: Fix a live dashboard that stopped updating after going zoneless on Angular 22
+prompt: |
+  We upgraded the dispatch app to Angular 22 and removed zone.js, so it runs zoneless now. Since
+  then the dispatch board (src/app/board/) is broken:
+  - it stays on "Connecting…" even though the live feed is connected;
+  - new orders from the feed only show up after you click something;
+  - after pressing Reconnect it never leaves "Connecting…";
+  - the order counter in the header shows stale numbers.
+
+  Please fix the board and the counter so they update on their own whenever the feed or a reconnect
+  changes something. Don't bring zone.js back (no zone.js dependency or polyfill, no
+  provideZoneChangeDetection), keep OrderFeed's API as it is, and keep `npm test` and
+  `npm run build` passing without editing the existing spec.
+verify:
+  command: ./node_modules/.bin/ng build --configuration development && ./node_modules/.bin/ng test --watch=false && node tools/hidden/check-zoneless.mjs
+  timeoutSeconds: 180
+protected:
+  - src/app/board/dispatch-board.spec.ts
+  - src/app/feed/order-feed.ts
+  - tsconfig*.json
+image: node:24-bookworm
+setup: npm ci --ignore-scripts --no-audit --no-fund
+timeoutSeconds: 900
+tags: [angular, zoneless, change-detection, signals, onpush]

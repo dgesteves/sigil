@@ -1,0 +1,40 @@
+sigil: 1
+id: angular/angular-22
+type: skill
+version: 1.0.0
+name: Angular 22 Signals, Zoneless and Resources
+summary: Angular 21-22 as it runs now - zoneless and OnPush by default, signal component APIs, resource/httpResource, control flow and Vitest tests.
+description: >-
+  Teaches an agent the Angular that ships today (checked against @angular/core 22.2.4 and the CLI's
+  Vitest runner) instead of the Angular 14-19 most training data describes. It covers what refreshes
+  a view without zone.js and with v22's OnPush default (and why zone.run, in-place array mutation and
+  detectChanges leave screens stale), signal inputs with transforms and aliases, model() and output(),
+  signal queries, computed and linkedSignal instead of effect-driven state, the v20+ resource,
+  rxResource and httpResource API (params and stream, string statuses, value() throwing in the error
+  state, cancellation, chaining), built-in control flow and track keys, inject() and @Service, fetch
+  as the default HttpClient backend, TestBed tests without fakeAsync (Vitest timers, whenStable, HTTP
+  testing without deadlocks), and an upgrade checklist with the official schematics. Every behaviour
+  claim was run on 22.2.4.
+domains: [frontend, migration, testing]
+lifecycle: [build, maintain, test]
+technologies: [angular, typescript, vitest]
+license: MIT
+authors:
+  - github: dgesteves
+payload:
+  format: agent-skill
+  entry: SKILL.md
+targets: [claude-code, codex, cursor, github-copilot, gemini-cli, opencode]
+permissions:
+  network: [registry.npmjs.org]
+  shell: [npm ls, rg, ng update, ng generate, ng test]
+  filesystem: write
+  env: []
+proof:
+  suites: [angular-22]
+limitations:
+  - Written and verified against @angular/core 22.2.4 and @angular/cli 22.2.5. Angular ships a major every six months; check the CHANGELOG when the installed version is newer.
+  - The proof suite runs TestBed in jsdom through ng test, so it measures change detection, signals, resources and HttpClient behaviour, not real-browser rendering, SSR or hydration.
+  - Signal forms (stable in 22), @defer, SSR and hydration, animations, the router and Angular Material are only mentioned; they are not taught in depth or measured.
+  - debounced() and resourceFromSnapshots are experimental in 22; their guidance may change in later minors.
+  - Apps that still load zone.js (provideZoneChangeDetection) behave differently; the skill only covers how to leave that mode.

@@ -1,0 +1,33 @@
+<div class="ticket-list" [ngClass]="{ compact: compact }">
+  <header>
+    <input
+      #search
+      type="search"
+      class="search"
+      placeholder="Search tickets"
+      aria-label="Search tickets"
+      [value]="query"
+      (input)="onSearch(search.value)"
+    />
+    <span class="open-count">{{ openCount }} open</span>
+  </header>
+
+  <p class="empty" *ngIf="visible.length === 0">No tickets match.</p>
+
+  <ul *ngIf="visible.length > 0">
+    <li
+      *ngFor="let ticket of visible; trackBy: trackById"
+      class="ticket"
+      [class.selected]="ticket.id === selectedId"
+      [attr.data-id]="ticket.id"
+    >
+      <button type="button" class="subject" (click)="select(ticket)">{{ ticket.subject }}</button>
+      <span class="requester" *ngIf="!compact">{{ ticket.requester }}</span>
+      <time class="updated" *ngIf="!compact">{{ ticket.updatedAt | date: 'MMM d, HH:mm' : 'UTC' }}</time>
+      <span class="status" [ngClass]="'status-' + ticket.status">{{ ticket.status }}</span>
+      <button type="button" class="archive" *ngIf="ticket.status === 'solved'" (click)="archive.emit(ticket)">
+        Archive
+      </button>
+    </li>
+  </ul>
+</div>

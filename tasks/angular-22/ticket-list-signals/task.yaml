@@ -1,0 +1,31 @@
+sigil: 1
+id: ticket-list-signals
+title: Convert an Angular component to signal inputs, model, output() and built-in control flow
+prompt: |
+  We're modernising the support desk for Angular 22. TicketList (src/app/tickets/ticket-list.ts and
+  its template) is one of the last components still written the old way. Please convert it to the
+  signal-based APIs: signal inputs, `output()`, a `model()` for the two-way `selectedId` binding, a
+  signal `viewChild` query, and `computed` state instead of `ngOnChanges`. Move the template to the
+  built-in control flow (`@if`/`@for`) so it no longer needs NgIf/NgFor, and drop the
+  `ChangeDetectionStrategy.Eager` line that `ng update` added: the component should work with the
+  default OnPush change detection.
+
+  Nothing outside the component should have to change. Keep the selector, the input and output
+  names (including the `statusFilter` alias), the `[(selectedId)]` binding, the bare `compact` and
+  `autofocus` attributes the inbox page uses, and the public `focusSearch()` method. Behaviour must
+  stay the same too, including rows being tracked by ticket id: the inbox refreshes the list from
+  the server and rows must not be re-created. `npm test` and `npm run build` must pass; don't edit
+  the existing spec, the inbox page or the TypeScript/Angular config.
+verify:
+  command: ./node_modules/.bin/ng build --configuration development && ./node_modules/.bin/ng test --watch=false && node tools/hidden/check-ticket-list.mjs
+  timeoutSeconds: 180
+protected:
+  - src/app/tickets/ticket-list.spec.ts
+  - src/app/tickets/ticket.ts
+  - src/app/inbox/inbox-page.ts
+  - tsconfig*.json
+  - angular.json
+image: node:24-bookworm
+setup: npm ci --ignore-scripts --no-audit --no-fund
+timeoutSeconds: 900
+tags: [angular, signals, migration, control-flow, typescript]

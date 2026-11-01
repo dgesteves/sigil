@@ -1,0 +1,34 @@
+<div class="ticket-list" [class.compact]="compact()">
+  <header>
+    <input
+      #search
+      type="search"
+      class="search"
+      placeholder="Search tickets"
+      aria-label="Search tickets"
+      [value]="query()"
+      (input)="query.set(search.value)"
+    />
+    <span class="open-count">{{ openCount() }} open</span>
+  </header>
+
+  @if (visible().length === 0) {
+    <p class="empty">No tickets match.</p>
+  } @else {
+    <ul>
+      @for (ticket of visible(); track ticket.id) {
+        <li class="ticket" [class.selected]="ticket.id === selectedId()" [attr.data-id]="ticket.id">
+          <button type="button" class="subject" (click)="select(ticket)">{{ ticket.subject }}</button>
+          @if (!compact()) {
+            <span class="requester">{{ ticket.requester }}</span>
+            <time class="updated">{{ ticket.updatedAt | date: 'MMM d, HH:mm' : 'UTC' }}</time>
+          }
+          <span class="status" [class]="'status status-' + ticket.status">{{ ticket.status }}</span>
+          @if (ticket.status === 'solved') {
+            <button type="button" class="archive" (click)="archive.emit(ticket)">Archive</button>
+          }
+        </li>
+      }
+    </ul>
+  }
+</div>
