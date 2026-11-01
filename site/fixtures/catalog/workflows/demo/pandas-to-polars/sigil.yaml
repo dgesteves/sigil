@@ -1,0 +1,42 @@
+sigil: 1
+id: demo/pandas-to-polars
+type: workflow
+version: 1.0.0
+name: Pandas to Polars
+summary: Ports pandas pipelines to Polars lazy frames and checks results match
+  row for row.
+description: "Ports pandas pipelines to Polars lazy frames and checks results
+  match row for row. DEMO fixture: every number attached to this capability was
+  simulated for site development."
+domains:
+  - data-science
+  - migration
+industries: []
+lifecycle:
+  - maintain
+technologies:
+  - pandas
+  - polars
+  - python
+license: MIT
+authors:
+  - github: sigil-demo
+payload:
+  format: agent-skill
+  entry: SKILL.md
+targets:
+  - claude-code
+  - codex
+  - cursor
+  - github-copilot
+  - gemini-cli
+  - opencode
+permissions:
+  network: []
+  shell: []
+  filesystem: write
+  env: []
+proof:
+  suites: []
+limitations:
+  - "DEMO fixture: not a real capability and never measured."

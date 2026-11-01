@@ -1,0 +1,42 @@
+sigil: 1
+id: demo/django-n-plus-one
+type: command
+version: 1.0.0
+name: Django N+1 Hunter
+summary: Finds N+1 queries in changed views and rewrites them with
+  select_related and prefetch_related.
+description: "Finds N+1 queries in changed views and rewrites them with
+  select_related and prefetch_related. DEMO fixture: every number attached to
+  this capability was simulated for site development."
+domains:
+  - backend
+  - performance
+industries: []
+lifecycle:
+  - review
+  - maintain
+technologies:
+  - django
+  - python
+license: MIT
+authors:
+  - github: sigil-demo
+payload:
+  format: command
+  entry: command.md
+targets:
+  - claude-code
+  - codex
+  - cursor
+  - github-copilot
+  - gemini-cli
+  - opencode
+permissions:
+  network: []
+  shell: []
+  filesystem: write
+  env: []
+proof:
+  suites: []
+limitations:
+  - "DEMO fixture: not a real capability and never measured."

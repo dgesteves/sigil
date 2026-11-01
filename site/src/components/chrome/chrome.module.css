@@ -1,0 +1,275 @@
+/* DEMO marker: hazard tape, impossible to mistake for evidence. */
+.demo {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  z-index: 150;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 4px;
+  border: 1px solid var(--flare);
+  border-top: 0;
+  border-radius: 0 0 4px 4px;
+  background: var(--void);
+  color: var(--flare);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  font-variation-settings: "wdth" 100;
+}
+.demo strong {
+  font-weight: 700;
+}
+.demo span:not(.demoStripe) {
+  color: var(--bone-2);
+}
+.demoStripe {
+  width: 26px;
+  height: 12px;
+  background: repeating-linear-gradient(-45deg, var(--flare) 0 4px, transparent 4px 8px);
+}
+@media (max-width: 560px) {
+  .demo {
+    padding: 3px 4px;
+    font-size: 9px;
+  }
+  .demo span:not(.demoStripe) {
+    display: none;
+  }
+  .demoStripe {
+    width: 18px;
+    height: 9px;
+  }
+}
+
+.wordmark {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: var(--bone);
+}
+.wordmarkText {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.42em;
+  font-variation-settings: "wdth" 112.5;
+}
+
+/* Human / Machine */
+.toggleWrap {
+  position: fixed;
+  right: var(--gutter);
+  bottom: var(--gutter);
+  z-index: 120;
+}
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 7px 10px 7px 12px;
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  background: rgba(5, 5, 5, 0.72);
+  backdrop-filter: blur(6px);
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--bone-3);
+  font-variation-settings: "wdth" 100;
+  transition: border-color 0.2s var(--ease);
+}
+.toggle:hover {
+  border-color: var(--line-3);
+}
+.toggle .on {
+  color: var(--bone);
+}
+.toggle kbd {
+  font-size: 9px;
+  border-color: var(--line);
+}
+.toggleTrack {
+  position: relative;
+  width: 26px;
+  height: 14px;
+  border: 1px solid var(--line-3);
+  border-radius: 999px;
+}
+.toggleKnob {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--bone);
+  transition:
+    transform 0.35s var(--ease),
+    background 0.35s;
+}
+.toggleKnob[data-machine="true"] {
+  transform: translateX(12px);
+  background: var(--flare);
+  box-shadow: 0 0 10px var(--flare);
+}
+
+/* Machine view */
+.machine {
+  position: fixed;
+  inset: 0;
+  z-index: 110;
+  display: flex;
+  flex-direction: column;
+  background: #030303;
+  animation: reveal 0.72s var(--ease) both;
+  outline: none;
+}
+@keyframes reveal {
+  from {
+    clip-path: inset(0 0 100% 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+.scan {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 2px;
+  z-index: 2;
+  background: var(--flare);
+  box-shadow:
+    0 0 18px 3px rgba(255, 170, 69, 0.7),
+    0 0 80px 18px rgba(255, 170, 69, 0.16);
+  animation: scan 0.72s var(--ease) both;
+  pointer-events: none;
+}
+@keyframes scan {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  92% {
+    opacity: 1;
+  }
+  to {
+    transform: translateY(100vh);
+    opacity: 0;
+  }
+}
+.machineBar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  padding: 14px var(--gutter);
+  padding-top: calc(14px + var(--demo-offset));
+  border-bottom: 1px solid var(--line);
+  font-size: 12px;
+}
+.machineTitle {
+  color: var(--bone);
+}
+.machineHref {
+  color: var(--flare);
+  text-decoration: none;
+  font-variant-numeric: tabular-nums;
+}
+.machineSpacer {
+  flex: 1;
+}
+.tabs {
+  display: inline-flex;
+  border: 1px solid var(--line-2);
+  border-radius: 3px;
+}
+.tabs button {
+  padding: 3px 10px;
+  font-size: 11px;
+  color: var(--bone-3);
+}
+.tabs button[aria-selected="true"] {
+  background: var(--void-3);
+  color: var(--bone);
+}
+.machineBtn {
+  padding: 3px 10px;
+  border: 1px solid var(--line-2);
+  border-radius: 3px;
+  font-size: 11px;
+  color: var(--bone-2);
+}
+.machineBtn:hover {
+  border-color: var(--flare);
+  color: var(--bone);
+}
+.machinePre {
+  flex: 1;
+  overflow: auto;
+  padding: 22px var(--gutter) 120px;
+  font-size: 12.5px;
+  line-height: 1.7;
+  color: #d9d2c4;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-variation-settings: "wdth" 87.5;
+}
+.machinePre span {
+  display: block;
+}
+
+/* ⌘K */
+.kOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 140;
+  display: grid;
+  place-items: start center;
+  padding-top: 18vh;
+}
+.kScrim {
+  position: absolute;
+  inset: 0;
+  background: rgba(3, 3, 3, 0.82);
+  backdrop-filter: blur(3px);
+  cursor: default;
+}
+.kForm {
+  position: relative;
+  width: min(760px, calc(100vw - 32px));
+  display: grid;
+  gap: 12px;
+}
+.kInput {
+  width: 100%;
+  padding: 10px 0 14px;
+  border: 0;
+  border-bottom: 1px solid var(--line-3);
+  background: none;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: clamp(26px, 4.4vw, 44px);
+  line-height: 1.2;
+  caret-color: var(--flare);
+  outline: none;
+}
+.kInput:focus {
+  border-bottom-color: var(--flare);
+}
+/* The underline is this field's focus indicator; the global ring would double it. */
+.kInput:focus-visible {
+  outline: none;
+}
+.kInput::placeholder {
+  color: var(--bone-3);
+}
+.kHint {
+  font-size: 11px;
+  color: var(--bone-3);
+}

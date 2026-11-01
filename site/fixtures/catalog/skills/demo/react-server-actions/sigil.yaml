@@ -1,0 +1,41 @@
+sigil: 1
+id: demo/react-server-actions
+type: skill
+version: 1.0.0
+name: React Server Actions
+summary: "Current Server Actions patterns: validation, revalidation, optimistic
+  UI and the security rules agents usually miss."
+description: "Current Server Actions patterns: validation, revalidation,
+  optimistic UI and the security rules agents usually miss. DEMO fixture: every
+  number attached to this capability was simulated for site development."
+domains:
+  - frontend
+industries: []
+lifecycle:
+  - build
+technologies:
+  - react
+  - nextjs
+  - typescript
+license: MIT
+authors:
+  - github: sigil-demo
+payload:
+  format: agent-skill
+  entry: SKILL.md
+targets:
+  - claude-code
+  - codex
+  - cursor
+  - github-copilot
+  - gemini-cli
+  - opencode
+permissions:
+  network: []
+  shell: []
+  filesystem: read
+  env: []
+proof:
+  suites: []
+limitations:
+  - "DEMO fixture: not a real capability and never measured."

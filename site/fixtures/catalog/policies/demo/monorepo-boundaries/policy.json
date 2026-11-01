@@ -1,0 +1,5 @@
+{
+  "name": "demo/monorepo-boundaries",
+  "description": "Enforces package boundaries so agents stop importing across workspace internals.",
+  "demo": true
+}

@@ -1,0 +1,40 @@
+sigil: 1
+id: demo/prompt-cache-tuner
+type: skill
+version: 1.0.0
+name: Prompt Cache Tuner
+summary: "Restructures LLM calls so stable prefixes cache: frozen system
+  prompts, deterministic tool lists."
+description: "Restructures LLM calls so stable prefixes cache: frozen system
+  prompts, deterministic tool lists. DEMO fixture: every number attached to this
+  capability was simulated for site development."
+domains:
+  - ai-engineering
+  - performance
+industries: []
+lifecycle:
+  - maintain
+technologies:
+  - anthropic
+license: MIT
+authors:
+  - github: sigil-demo
+payload:
+  format: agent-skill
+  entry: SKILL.md
+targets:
+  - claude-code
+  - codex
+  - cursor
+  - github-copilot
+  - gemini-cli
+  - opencode
+permissions:
+  network: []
+  shell: []
+  filesystem: read
+  env: []
+proof:
+  suites: []
+limitations:
+  - "DEMO fixture: not a real capability and never measured."

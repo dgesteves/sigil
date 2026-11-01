@@ -1,0 +1,43 @@
+sigil: 1
+id: demo/legacy-strangler
+type: workflow
+version: 1.0.0
+name: Strangler Fig Migration
+summary: Plans and executes a strangler-fig migration route by route, with
+  parity checks.
+description: "Plans and executes a strangler-fig migration route by route, with
+  parity checks. DEMO fixture: every number attached to this capability was
+  simulated for site development."
+domains:
+  - architecture
+  - migration
+industries:
+  - banking
+  - insurance
+lifecycle:
+  - maintain
+technologies:
+  - legacy-modernization
+  - refactoring
+license: MIT
+authors:
+  - github: sigil-demo
+payload:
+  format: agent-skill
+  entry: SKILL.md
+targets:
+  - claude-code
+  - codex
+  - cursor
+  - github-copilot
+  - gemini-cli
+  - opencode
+permissions:
+  network: []
+  shell: []
+  filesystem: write
+  env: []
+proof:
+  suites: []
+limitations:
+  - "DEMO fixture: not a real capability and never measured."

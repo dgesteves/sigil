@@ -1,0 +1,146 @@
+{
+  "sigil": 1,
+  "capability": "demo/vitest-from-jest",
+  "version": "1.0.0",
+  "digest": "sha256:7d6deb78112e08753731ba20adb942462831b9950796a65fa674df3a971212a7",
+  "generatedAt": "2026-10-28T09:00:00.000Z",
+  "structure": {
+    "status": "pass",
+    "tool": {
+      "name": "sigil",
+      "version": "0.0.0-demo"
+    },
+    "at": "2026-10-28T09:00:00.000Z",
+    "findings": []
+  },
+  "security": {
+    "status": "pass",
+    "tool": {
+      "name": "sigil",
+      "version": "0.0.0-demo"
+    },
+    "at": "2026-10-28T09:00:00.000Z",
+    "findings": []
+  },
+  "canary": {
+    "status": "pass",
+    "agent": {
+      "id": "claude-code",
+      "version": "0.0.0-demo"
+    },
+    "model": "demo-model",
+    "at": "2026-10-28T09:00:00.000Z",
+    "runs": 4,
+    "events": []
+  },
+  "compat": {
+    "claude-code": {
+      "compiled": true,
+      "evaluated": true
+    },
+    "codex": {
+      "compiled": true,
+      "evaluated": false
+    },
+    "cursor": {
+      "compiled": true,
+      "evaluated": false
+    },
+    "github-copilot": {
+      "compiled": true,
+      "evaluated": false
+    },
+    "gemini-cli": {
+      "compiled": true,
+      "evaluated": false
+    },
+    "opencode": {
+      "compiled": true,
+      "evaluated": false
+    }
+  },
+  "uplift": [
+    {
+      "agent": {
+        "id": "claude-code",
+        "version": "0.0.0-demo"
+      },
+      "model": "demo-model",
+      "suite": "demo/vitest-from-jest",
+      "suiteDigest": "sha256:57e4a1f76a6f123a35490d6aac2938ca383b543fd37bab494de7fa249f605bb7",
+      "at": "2026-10-28T09:00:00.000Z",
+      "tasks": [
+        {
+          "task": "rate-limit-login",
+          "baseline": {
+            "passed": 3,
+            "runs": 12,
+            "tampered": 1,
+            "falseDone": 1,
+            "medianTokens": 49171.5,
+            "medianSeconds": 293,
+            "medianCostUsd": 0.189
+          },
+          "treatment": {
+            "passed": 8,
+            "runs": 12,
+            "tampered": 0,
+            "falseDone": 0,
+            "medianTokens": 54915,
+            "medianSeconds": 276.5,
+            "medianCostUsd": 0.16899999999999998
+          }
+        },
+        {
+          "task": "backfill-column",
+          "baseline": {
+            "passed": 5,
+            "runs": 12,
+            "tampered": 1,
+            "falseDone": 3,
+            "medianTokens": 44073.5,
+            "medianSeconds": 280,
+            "medianCostUsd": 0.2495
+          },
+          "treatment": {
+            "passed": 6,
+            "runs": 12,
+            "tampered": 0,
+            "falseDone": 1,
+            "medianTokens": 37524,
+            "medianSeconds": 235.5,
+            "medianCostUsd": 0.201
+          }
+        },
+        {
+          "task": "fix-stale-cache",
+          "baseline": {
+            "passed": 4,
+            "runs": 12,
+            "tampered": 0,
+            "falseDone": 3,
+            "medianTokens": 57609.5,
+            "medianSeconds": 376.5,
+            "medianCostUsd": 0.20400000000000001
+          },
+          "treatment": {
+            "passed": 9,
+            "runs": 12,
+            "tampered": 0,
+            "falseDone": 2,
+            "medianTokens": 43159,
+            "medianSeconds": 329.5,
+            "medianCostUsd": 0.249
+          }
+        }
+      ],
+      "delta": 0.3055555555555555,
+      "ci95": [
+        0.07471002760612175,
+        0.4947718407918963
+      ],
+      "verdict": "proven"
+    }
+  ],
+  "reviews": []
+}

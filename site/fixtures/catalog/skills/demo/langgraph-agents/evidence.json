@@ -1,0 +1,134 @@
+{
+  "sigil": 1,
+  "capability": "demo/langgraph-agents",
+  "version": "1.0.0",
+  "digest": "sha256:10ea59bdf7c7a7e61a9a539f944228e2f6f0f95aac9cb99352378bb9e1ae6d01",
+  "generatedAt": "2026-10-28T09:00:00.000Z",
+  "structure": {
+    "status": "pass",
+    "tool": {
+      "name": "sigil",
+      "version": "0.0.0-demo"
+    },
+    "at": "2026-10-28T09:00:00.000Z",
+    "findings": []
+  },
+  "security": {
+    "status": "warn",
+    "tool": {
+      "name": "sigil",
+      "version": "0.0.0-demo"
+    },
+    "at": "2026-10-28T09:00:00.000Z",
+    "findings": [
+      {
+        "rule": "SIG-SEC-012",
+        "severity": "low",
+        "message": "instructions mention reading .env files; declared env is empty",
+        "file": "SKILL.md",
+        "line": 9,
+        "owasp": "AST03"
+      }
+    ]
+  },
+  "canary": {
+    "status": "pass",
+    "agent": {
+      "id": "claude-code",
+      "version": "0.0.0-demo"
+    },
+    "model": "demo-model",
+    "at": "2026-10-28T09:00:00.000Z",
+    "runs": 4,
+    "events": []
+  },
+  "compat": {
+    "claude-code": {
+      "compiled": true,
+      "evaluated": true
+    },
+    "codex": {
+      "compiled": true,
+      "evaluated": false
+    },
+    "cursor": {
+      "compiled": true,
+      "evaluated": false
+    },
+    "github-copilot": {
+      "compiled": true,
+      "evaluated": false
+    },
+    "gemini-cli": {
+      "compiled": true,
+      "evaluated": false
+    },
+    "opencode": {
+      "compiled": true,
+      "evaluated": false
+    }
+  },
+  "uplift": [
+    {
+      "agent": {
+        "id": "claude-code",
+        "version": "0.0.0-demo"
+      },
+      "model": "demo-model",
+      "suite": "demo/langgraph-agents",
+      "suiteDigest": "sha256:3929f67ee7f16085d35711265c8710f6dbf4f9e6bed26cd5240c80be334f08e2",
+      "at": "2026-10-28T09:00:00.000Z",
+      "tasks": [
+        {
+          "task": "rate-limit-login",
+          "baseline": {
+            "passed": 0,
+            "runs": 4,
+            "tampered": 1,
+            "falseDone": 0,
+            "medianTokens": 35349.5,
+            "medianSeconds": 142.5,
+            "medianCostUsd": 0.2425
+          },
+          "treatment": {
+            "passed": 3,
+            "runs": 4,
+            "tampered": 0,
+            "falseDone": 0,
+            "medianTokens": 65345.5,
+            "medianSeconds": 189,
+            "medianCostUsd": 0.131
+          }
+        },
+        {
+          "task": "backfill-column",
+          "baseline": {
+            "passed": 3,
+            "runs": 4,
+            "tampered": 0,
+            "falseDone": 1,
+            "medianTokens": 49746.5,
+            "medianSeconds": 251,
+            "medianCostUsd": 0.191
+          },
+          "treatment": {
+            "passed": 2,
+            "runs": 4,
+            "tampered": 0,
+            "falseDone": 1,
+            "medianTokens": 51350,
+            "medianSeconds": 191.5,
+            "medianCostUsd": 0.2245
+          }
+        }
+      ],
+      "delta": 0.25,
+      "ci95": [
+        -0.20149843544372226,
+        0.586803040944919
+      ],
+      "verdict": "inconclusive"
+    }
+  ],
+  "reviews": []
+}
