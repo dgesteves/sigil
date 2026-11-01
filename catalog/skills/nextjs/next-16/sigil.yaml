@@ -1,0 +1,39 @@
+sigil: 1
+id: nextjs/next-16
+type: skill
+version: 1.0.0
+name: Next.js 16 App Router
+summary: Next.js 16 as it behaves today - Cache Components, the right invalidation call, proxy.ts, safe server actions and 15 to 16 upgrades.
+description: >-
+  Teaches an agent the Next.js 16 App Router as measured on next 16.4.3 with next build and next
+  start. It concentrates on what agents trained on Next 13-15 get wrong: the Cache Components model
+  (cacheComponents with partialPrefetching, 'use cache', cacheLife, cacheTag, Suspense and the
+  prerender build errors, removed segment configs), choosing updateTag, revalidateTag with a profile,
+  revalidatePath or refresh by what the next request must show (revalidateTag 'max' serves one stale
+  response, updateTag throws outside Server Actions), the 15 to 16 changes that build but misbehave
+  (sync params, sitemap ids as Promises, images.qualities defaulting to 75, revalidateTag semantics),
+  middleware renamed to a Node-only proxy.ts, and server actions as public endpoints whose .bind()
+  arguments are client-controlled.
+domains: [frontend, backend, security, migration]
+lifecycle: [build, maintain, secure]
+technologies: [nextjs, react, typescript, javascript, nodejs]
+license: MIT
+authors:
+  - github: dgesteves
+payload:
+  format: agent-skill
+  entry: SKILL.md
+targets: [claude-code, codex, cursor, github-copilot, gemini-cli, opencode]
+permissions:
+  network: []
+  shell: [npm ls, npm run, npm start, rg]
+  filesystem: write
+  env: []
+proof:
+  suites: [nextjs-16]
+limitations:
+  - Written and verified against next 16.4.3 with React 19.3. A security release was announced for 2026-11-03 and later 16.x minors may change defaults; the docs in node_modules/next/dist/docs win when they disagree.
+  - App Router only. The Pages Router, custom servers, static export and the Edge runtime are not covered beyond noting that middleware.ts is the way to keep Edge.
+  - Cache behaviour was measured with the default in-memory cache handler on a single next start process. Serverless platforms, 'use cache remote' handlers and multi-instance deployments behave differently for runtime caching.
+  - The proof suite drives pages and server actions over HTTP without a browser, so client-side router cache behaviour (stale times, prefetching, Activity state) is taught but not scored.
+  - Partial Prefetching, Instant Navigations, ensureStatic and adapters are summarised, not taught in depth.

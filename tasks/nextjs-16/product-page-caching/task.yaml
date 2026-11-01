@@ -1,0 +1,30 @@
+sigil: 1
+id: product-page-caching
+title: Cache product pages on Next.js 16 without serving editors or shoppers stale data
+prompt: |
+  Product pages (app/products/[id]) are slow under load because every view queries the catalog
+  database: nothing is cached yet (you can watch data/reads.log grow). We're on Next.js 16 with
+  Cache Components turned on. Please cache the product data so repeat views of a product don't hit
+  the database.
+
+  What the business needs:
+  - Shoppers may see product details (name, price, stock) that are up to an hour old.
+  - When an editor saves a new price in the admin (app/admin/products/[id]), they land on the product
+    page and must see the new price there right away, and still see it when they reload.
+  - The warehouse calls POST /api/inventory with the ids of products whose stock changed, after it
+    has updated the database. Shoppers can get the old stock for a moment while it refreshes, but
+    product pages must show the new stock within a few seconds, without a redeploy.
+  - The cart badge in the header comes from each visitor's `cart` cookie and must stay per-visitor.
+
+  Don't change lib/db.ts or the tests in test/. `npm run build` and `npm test` must pass.
+verify:
+  command: node test/hidden/build.ts && node --test test/shop.test.ts && node --test test/hidden/caching.test.ts
+  timeoutSeconds: 240
+protected:
+  - lib/db.ts
+  - test/harness.ts
+  - test/shop.test.ts
+image: node:24-bookworm
+setup: npm ci --ignore-scripts --no-audit --no-fund
+timeoutSeconds: 1200
+tags: [nextjs, react, caching, cache-components, server-actions]

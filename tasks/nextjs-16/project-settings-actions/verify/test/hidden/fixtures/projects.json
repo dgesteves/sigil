@@ -1,0 +1,7 @@
+{
+  "prj_atlas": { "id": "prj_atlas", "name": "Atlas", "ownerId": "usr_alice", "memberIds": ["usr_bob"] },
+  "prj_beacon": { "id": "prj_beacon", "name": "Beacon", "ownerId": "usr_bob", "memberIds": ["usr_alice"] },
+  "prj_cobalt": { "id": "prj_cobalt", "name": "Cobalt", "ownerId": "usr_cara", "memberIds": [] },
+  "prj_delta": { "id": "prj_delta", "name": "Delta", "ownerId": "usr_alice", "memberIds": ["usr_cara"] },
+  "prj_echo": { "id": "prj_echo", "name": "Echo", "ownerId": "usr_bob", "memberIds": [] }
+}

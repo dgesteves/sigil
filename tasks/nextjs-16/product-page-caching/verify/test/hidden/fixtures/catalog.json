@@ -1,0 +1,30 @@
+{
+  "p-100": {
+    "id": "p-100",
+    "name": "Gooseneck Kettle",
+    "description": "1 litre stovetop kettle with a thermometer in the lid.",
+    "priceCents": 4999,
+    "stock": 12
+  },
+  "p-200": {
+    "id": "p-200",
+    "name": "Burr Grinder",
+    "description": "Conical steel burrs, 40 grind settings.",
+    "priceCents": 12900,
+    "stock": 4
+  },
+  "p-300": {
+    "id": "p-300",
+    "name": "French Press",
+    "description": "Double-walled, keeps coffee hot for an hour.",
+    "priceCents": 3450,
+    "stock": 0
+  },
+  "p-400": {
+    "id": "p-400",
+    "name": "Pour-over Dripper",
+    "description": "Ceramic cone, fits most mugs.",
+    "priceCents": 2200,
+    "stock": 31
+  }
+}
