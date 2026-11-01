@@ -322,7 +322,7 @@ export const commandGaps: KnownGap[] = [
     format: 'command',
     agent: 'aider',
     reason: 'Aider has no user-defined commands.',
-    sources: ['https://aider.chat/docs/usage/commands.html'],
+    sources: ['https://aider.chat/docs/config/options.html'],
   },
   {
     format: 'command',
