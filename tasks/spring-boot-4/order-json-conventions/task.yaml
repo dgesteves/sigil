@@ -1,0 +1,23 @@
+sigil: 1
+id: order-json-conventions
+title: Make the orders API follow the public JSON guidelines, including the vendored Money type
+prompt: |
+  The mobile team says the orders API doesn't follow our public JSON guidelines
+  (docs/json-guidelines.md): property names come out in camelCase, null fields are sent as
+  `null`, and money shows up as `{}`. Please make every endpoint follow the guidelines, for
+  responses and for request bodies (POST /orders has to accept the same format, and reject bad
+  money values with a 400).
+
+  Money comes from the vendored platform library in com.acme.shared.money; don't modify it. The
+  build runs offline (see the README), so use what's already in the pom.
+verify:
+  command: mvn -o -B -q clean test
+  timeoutSeconds: 180
+protected:
+  - src/main/java/com/acme/shared/**
+  - src/test/java/com/acme/orders/OrderControllerTest.java
+  - docs/**
+image: maven:3.9.16-eclipse-temurin-25
+setup: mvn -B -q clean test && mvn -B -q dependency:go-offline
+timeoutSeconds: 900
+tags: [spring-boot, java, jackson, json, api-design]
