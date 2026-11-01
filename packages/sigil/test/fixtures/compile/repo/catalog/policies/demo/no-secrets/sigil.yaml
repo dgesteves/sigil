@@ -1,0 +1,15 @@
+sigil: 1
+id: demo/no-secrets
+type: policy
+version: 1.0.0
+name: No secrets
+summary: A small policy used to test the Sigil compiler end to end.
+domains: [developer-workflow]
+license: MIT
+authors:
+  - github: dgesteves
+payload:
+  format: policy
+  entry: policy.json
+targets: [claude-code, codex, opencode]
+
