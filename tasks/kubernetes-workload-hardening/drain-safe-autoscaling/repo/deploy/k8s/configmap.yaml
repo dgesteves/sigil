@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: search-api
+  labels:
+    app.kubernetes.io/part-of: tideway-search
+data:
+  INDEX_URL: http://opensearch.search.svc.cluster.local:9200
+  LOG_LEVEL: info

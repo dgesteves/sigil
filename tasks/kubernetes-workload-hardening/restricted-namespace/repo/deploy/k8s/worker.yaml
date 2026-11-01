@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: worker
+  labels:
+    app.kubernetes.io/name: worker
+    app.kubernetes.io/part-of: parcelhub
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: worker
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: worker
+        app.kubernetes.io/part-of: parcelhub
+    spec:
+      serviceAccountName: parcelhub
+      containers:
+        - name: worker
+          image: ghcr.io/parcelhub/parcelhub:4.2.0
+          command: ["node", "src/worker.js"]
+          envFrom:
+            - configMapRef:
+                name: parcelhub-config
+            - secretRef:
+                name: parcelhub-db
+          env:
+            - name: NODE_EXTRA_CA_CERTS
+              value: /etc/parcelhub/ca/ca.crt
+          resources:
+            requests:
+              cpu: 500m
+              memory: 512Mi
+            limits:
+              memory: 1Gi
+          volumeMounts:
+            - name: corp-ca
+              mountPath: /etc/parcelhub/ca
+              readOnly: true
+      volumes:
+        - name: corp-ca
+          hostPath:
+            path: /etc/pki/parcelhub
+            type: Directory
