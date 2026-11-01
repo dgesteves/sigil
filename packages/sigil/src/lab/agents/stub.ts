@@ -1,5 +1,5 @@
 import type { LabCapability } from '../capability.js'
-import { claudeSkillFiles } from './claude-code.js'
+import { compiledInstallFiles } from '../compiled-install.js'
 import type { AgentDriver, AgentOutcome, RawEvent, StampedLine } from './types.js'
 
 /**
@@ -170,7 +170,8 @@ export function stubDriver(plan: StubPlan, egress: readonly string[] = []): Agen
       const v = /v?(\d+\.\d+\.\d+)/.exec(stdout)?.[1]
       return v ? `stub+node${v}` : undefined
     },
-    installFiles: (capability: LabCapability) => claudeSkillFiles(capability),
+    installFiles: (capability: LabCapability, repoDir: string) =>
+      compiledInstallFiles(capability, 'claude-code', repoDir),
     installedNames: () => [],
     invocation: () => ({
       argv: ['node', '-e', stubSource()],
