@@ -347,7 +347,7 @@ export const hookGaps: KnownGap[] = [
   ),
   DIFFERENT(
     'windsurf',
-    'Cascade hooks (.windsurf/hooks.json) use a different event model and Cascade was removed on 2026-09-08.',
+    'Cascade hooks (.windsurf/hooks.json) use a different event model, and Devin Local replaced Cascade in Devin Desktop (Cascade stayed available through July 2026).',
     ['https://docs.devin.ai/desktop/cascade/hooks'],
   ),
   DIFFERENT('cline', 'Cline documents its hooks directory but not the hook file format.', [
@@ -379,7 +379,7 @@ export const hookGaps: KnownGap[] = [
   ]),
   DIFFERENT(
     'continue',
-    'Continue CLI loads Claude-style hooks but does not fire them yet, and the project is no longer maintained.',
+    'Continue CLI loads Claude-style hooks but does not fire them yet, and the project has had no release since 2.0.0 (2026-06-19).',
     ['https://github.com/continuedev/continue/pull/13440'],
   ),
   DIFFERENT(

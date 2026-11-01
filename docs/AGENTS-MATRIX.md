@@ -10,12 +10,12 @@ open an issue with the link. Paths are relative to the project root unless they 
 
 **Product changes in 2026 that this matrix reflects**
 
-- **Windsurf** became **Devin Desktop** on 2026-06-02, and its Cascade agent was removed on 2026-09-08.
+- **Windsurf** became **Devin Desktop** on 2026-06-02. Devin Local replaced the Cascade agent as the default, and the [official FAQ](https://docs.devin.ai/desktop/devin-desktop-faq) said Cascade would stay available through July 2026.
   Devin Desktop still imports `.windsurf/rules/` and `.windsurf/skills/`.
   ([changelog](https://docs.devin.ai/desktop/changelog))
 - **Roo Code** was shut down on 2026-05-15 and its repository is archived.
   ([docs](https://roocodeinc.github.io/Roo-Code/))
-- **Continue** is no longer maintained: the repository is read-only after a final 2.0.0 release.
+- **Continue** has had no release since 2.0.0 (2026-06-19), and its main branch has had only documentation commits since July 2026. The repository is not archived.
   ([repo](https://github.com/continuedev/continue))
 - **Gemini CLI** was replaced by Antigravity CLI for unpaid and Google One users on 2026-06-18.
   ([docs](https://geminicli.com/docs/cli/skills/))
@@ -99,7 +99,7 @@ Goose, Augment and Warp also read. A multi-agent install therefore writes at mos
 | JetBrains Junie | `.junie/skills/`; `.agents/skills/` in trusted projects | `~/.junie/skills/`, `~/.agents/skills/` | `.claude/skills` and `.cursor/skills` are only offered for import. `description` is optional. | [skills](https://junie.jetbrains.com/docs/agent-skills.html) | 2026-11-01 |
 | Kiro | `.kiro/skills/` | `~/.kiro/skills/` | Custom agents need `skill://` resources to load skills. | [skills](https://kiro.dev/docs/skills/) | 2026-11-01 |
 | Goose | `.agents/skills/` (recommended), `.goose/skills/`, `.claude/skills/` | `~/.agents/skills/`, `~/.claude/skills/` | Built-in Skills extension, on by default. | [skills](https://goose-docs.ai/docs/guides/context-engineering/using-skills) | 2026-11-01 |
-| Continue | Not documented (source code reads `.continue/skills/` and `.claude/skills/`) | Not documented | No longer maintained. | [PR #9353](https://github.com/continuedev/continue/pull/9353) | 2026-11-01 |
+| Continue | Not documented (source code reads `.continue/skills/` and `.claude/skills/`) | Not documented | No release since 2.0.0 (2026-06-19). | [PR #9353](https://github.com/continuedev/continue/pull/9353) | 2026-11-01 |
 | Augment Code | `.augment/skills/`, `.claude/skills/`, `.agents/skills/`, from cwd up to the git root | `~/.augment/skills/`, `~/.claude/skills/`, `~/.agents/skills/` | User skills beat workspace skills. CLI invocation `/skill:<name>`. | [skills](https://docs.augmentcode.com/cli/skills.md) | 2026-11-01 |
 | Qwen Code | `.qwen/skills/`, `.agents/skills/` | `~/.qwen/skills/`, `~/.agents/skills/` | `.claude/skills` only when added to `skills.directories`. | [skills](https://qwenlm.github.io/qwen-code-docs/en/users/features/skills/) | 2026-11-01 |
 | Factory Droid | `.factory/skills/`, `.agents/skills/`, `.agent/skills/` | `~/.factory/skills/`, `~/.agents/skills/`, `~/.agent/skills/` | `.claude/skills` is not read. | [skills](https://docs.factory.com/harness/skills.md) | 2026-11-01 |

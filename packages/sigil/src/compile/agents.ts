@@ -43,7 +43,7 @@ export const AGENT_INFO: Record<AgentId, AgentInfo> = {
     name: 'Windsurf (Devin Desktop)',
     markers: ['.windsurf', '.windsurfrules', '.devin'],
     status:
-      'Windsurf became Devin Desktop on 2026-06-02 and its Cascade agent was removed on 2026-09-08; Devin Desktop still imports .windsurf/ rules and skills.',
+      'Windsurf became Devin Desktop on 2026-06-02, with Devin Local replacing the Cascade agent (Cascade stayed available through July 2026); Devin Desktop still reads .windsurf/ rules and skills as a fallback.',
   },
   cline: { name: 'Cline', markers: ['.cline', '.clinerules'] },
   'roo-code': {
@@ -68,7 +68,7 @@ export const AGENT_INFO: Record<AgentId, AgentInfo> = {
     name: 'Continue',
     markers: ['.continue', '.continuerc.json'],
     status:
-      'Continue is no longer maintained: its repository is read-only after a final 2.0.0 release.',
+      'Continue has had no release since 2.0.0 (2026-06-19) and only documentation commits since July 2026; check the project status before relying on it.',
   },
   augment: { name: 'Augment Code', markers: ['.augment', '.augment-guidelines'] },
   'qwen-code': { name: 'Qwen Code', markers: ['.qwen', 'QWEN.md'] },

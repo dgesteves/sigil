@@ -302,7 +302,7 @@ export const commandGaps: KnownGap[] = [
     format: 'command',
     agent: 'windsurf',
     reason:
-      'Windsurf workflows ran only in Cascade, which Devin Desktop removed on 2026-09-08; Devin Local does not support them.',
+      'Windsurf workflows ran only in Cascade, which Devin Local replaced in Devin Desktop (Cascade stayed available through July 2026); Devin Local does not support them.',
     sources: ['https://docs.devin.ai/desktop/cascade/workflows'],
   },
   {

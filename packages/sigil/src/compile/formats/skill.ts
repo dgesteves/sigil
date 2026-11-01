@@ -132,7 +132,7 @@ export const skillGaps: KnownGap[] = [
     format: 'agent-skill',
     agent: 'continue',
     reason:
-      'Continue does not document Agent Skills (support exists only in source code) and the project is no longer maintained.',
+      'Continue does not document Agent Skills (support exists only in source code), and the project has had no release since 2.0.0 (2026-06-19).',
     sources: ['https://github.com/continuedev/continue'],
   },
 ]
