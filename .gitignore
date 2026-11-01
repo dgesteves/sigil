@@ -1,0 +1,14 @@
+node_modules/
+dist/
+.next/
+.vercel/
+.turbo/
+coverage/
+*.log
+.DS_Store
+.env
+.env.*
+!.env.example
+# lab output: raw runs stay local, curated evidence is committed under evidence/
+.sigil/
+lab-runs/

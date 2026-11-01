@@ -1,0 +1,5 @@
+# Digests hash raw bytes, so every checkout must see the same line endings.
+* text=auto eol=lf
+*.png binary
+*.jpg binary
+*.gz binary

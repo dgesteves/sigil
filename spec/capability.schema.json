@@ -1,0 +1,301 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "sigil": {
+      "type": "number",
+      "const": 1
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*\\/[a-z0-9]+(-[a-z0-9]+)*$"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "skill",
+        "agent",
+        "rule",
+        "command",
+        "workflow",
+        "hook",
+        "mcp-server",
+        "tool",
+        "template",
+        "evaluation",
+        "collection"
+      ]
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z.-]+)?$"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 80
+    },
+    "summary": {
+      "type": "string",
+      "minLength": 10,
+      "maxLength": 160
+    },
+    "description": {
+      "type": "string",
+      "minLength": 20,
+      "maxLength": 4000
+    },
+    "domains": {
+      "minItems": 1,
+      "maxItems": 4,
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "frontend",
+          "backend",
+          "mobile",
+          "databases",
+          "devops",
+          "cloud",
+          "ai-engineering",
+          "security",
+          "testing",
+          "architecture",
+          "data",
+          "developer-workflow",
+          "documentation",
+          "product",
+          "research",
+          "writing",
+          "productivity"
+        ]
+      }
+    },
+    "technologies": {
+      "default": [],
+      "maxItems": 12,
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 64,
+        "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+      }
+    },
+    "license": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 64
+    },
+    "authors": {
+      "minItems": 1,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "github": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9](?:[A-Za-z0-9]|-(?=[A-Za-z0-9])){0,38}$"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          }
+        },
+        "required": [
+          "github"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "maintainers": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "github": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9](?:[A-Za-z0-9]|-(?=[A-Za-z0-9])){0,38}$"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          }
+        },
+        "required": [
+          "github"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "source": {
+      "type": "object",
+      "properties": {
+        "repo": {
+          "type": "string",
+          "pattern": "^https:\\/\\/github\\.com\\/[^/]+\\/[^/]+$"
+        },
+        "ref": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{40}$"
+        },
+        "path": {
+          "default": ".",
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "repo",
+        "ref"
+      ],
+      "additionalProperties": false
+    },
+    "payload": {
+      "type": "object",
+      "properties": {
+        "format": {
+          "type": "string",
+          "enum": [
+            "agent-skill",
+            "subagent",
+            "rule",
+            "command",
+            "hook",
+            "mcp-server",
+            "tool",
+            "template",
+            "task-suite",
+            "bundle"
+          ]
+        },
+        "entry": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "format",
+        "entry"
+      ],
+      "additionalProperties": false
+    },
+    "targets": {
+      "minItems": 1,
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "claude-code",
+          "codex",
+          "cursor",
+          "github-copilot",
+          "gemini-cli",
+          "opencode",
+          "windsurf",
+          "generic"
+        ]
+      }
+    },
+    "permissions": {
+      "default": {
+        "network": [],
+        "shell": [],
+        "filesystem": "read",
+        "env": []
+      },
+      "type": "object",
+      "properties": {
+        "network": {
+          "default": [],
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9.-]+(:\\d+)?$"
+          }
+        },
+        "shell": {
+          "default": [],
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80
+          }
+        },
+        "filesystem": {
+          "default": "read",
+          "type": "string",
+          "enum": [
+            "none",
+            "read",
+            "write"
+          ]
+        },
+        "env": {
+          "default": [],
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Z][A-Z0-9_]*$"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "proof": {
+      "default": {
+        "suites": []
+      },
+      "type": "object",
+      "properties": {
+        "suites": {
+          "default": [],
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9-]+(\\/[a-z0-9-]+)*$"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "includes": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9]+(-[a-z0-9]+)*\\/[a-z0-9]+(-[a-z0-9]+)*$"
+      }
+    },
+    "limitations": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 5,
+        "maxLength": 300
+      }
+    }
+  },
+  "required": [
+    "sigil",
+    "id",
+    "type",
+    "version",
+    "name",
+    "summary",
+    "domains",
+    "license",
+    "authors",
+    "payload",
+    "targets"
+  ],
+  "additionalProperties": false,
+  "$id": "https://raw.githubusercontent.com/dgesteves/sigil/main/spec/capability.schema.json",
+  "title": "Sigil capability (spec 1.0)"
+}

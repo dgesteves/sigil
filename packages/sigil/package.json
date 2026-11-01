@@ -1,0 +1,62 @@
+{
+  "name": "sigil",
+  "version": "0.0.0",
+  "description": "The open proving ground for AI agent capabilities: measure, scan, seal and install skills, rules, hooks, agents and MCP servers across every coding agent.",
+  "type": "module",
+  "license": "MIT",
+  "author": "Diogo Esteves",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dgesteves/sigil.git",
+    "directory": "packages/sigil"
+  },
+  "keywords": [
+    "agent-skills",
+    "skills",
+    "claude-code",
+    "codex",
+    "cursor",
+    "copilot",
+    "gemini-cli",
+    "mcp",
+    "evals",
+    "ai-agents",
+    "security"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "bin": {
+    "sigil": "./dist/cli.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./core": {
+      "types": "./dist/core/index.d.ts",
+      "default": "./dist/core/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsdown",
+    "dev": "tsdown --watch",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "schemas": "node scripts/write-schemas.mjs"
+  },
+  "dependencies": {
+    "picocolors": "^1.1.1",
+    "yaml": "^2.9.1",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "tsdown": "^0.23.4",
+    "vitest": "^5.0.5"
+  }
+}

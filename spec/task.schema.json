@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "sigil": {
+      "type": "number",
+      "const": 1
+    },
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64,
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 5,
+      "maxLength": 120
+    },
+    "prompt": {
+      "type": "string",
+      "minLength": 20,
+      "maxLength": 4000
+    },
+    "repo": {
+      "default": "repo",
+      "type": "string"
+    },
+    "verify": {
+      "type": "object",
+      "properties": {
+        "dir": {
+          "default": "verify",
+          "type": "string"
+        },
+        "command": {
+          "type": "string",
+          "minLength": 1
+        },
+        "timeoutSeconds": {
+          "default": 300,
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "maximum": 1800
+        }
+      },
+      "required": [
+        "command"
+      ],
+      "additionalProperties": false
+    },
+    "protected": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "image": {
+      "default": "node:24-bookworm",
+      "type": "string"
+    },
+    "setup": {
+      "type": "string"
+    },
+    "timeoutSeconds": {
+      "default": 900,
+      "type": "integer",
+      "exclusiveMinimum": 0,
+      "maximum": 3600
+    },
+    "tags": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 64,
+        "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+      }
+    }
+  },
+  "required": [
+    "sigil",
+    "id",
+    "title",
+    "prompt",
+    "verify"
+  ],
+  "additionalProperties": false,
+  "$id": "https://raw.githubusercontent.com/dgesteves/sigil/main/spec/task.schema.json",
+  "title": "Sigil task (spec 1.0)"
+}

@@ -1,0 +1,155 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "sigil": {
+      "type": "number",
+      "const": 1
+    },
+    "capability": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*\\/[a-z0-9]+(-[a-z0-9]+)*$"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z.-]+)?$"
+    },
+    "suite": {
+      "type": "string"
+    },
+    "task": {
+      "type": "string"
+    },
+    "condition": {
+      "type": "string",
+      "enum": [
+        "baseline",
+        "treatment"
+      ]
+    },
+    "run": {
+      "type": "integer",
+      "exclusiveMinimum": 0,
+      "maximum": 9007199254740991
+    },
+    "agent": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "enum": [
+            "claude-code",
+            "codex",
+            "cursor",
+            "github-copilot",
+            "gemini-cli",
+            "opencode",
+            "windsurf",
+            "generic"
+          ]
+        },
+        "version": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "version"
+      ],
+      "additionalProperties": false
+    },
+    "model": {
+      "type": "string"
+    },
+    "at": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+    },
+    "passed": {
+      "type": "boolean"
+    },
+    "tampered": {
+      "type": "boolean"
+    },
+    "falseDone": {
+      "type": "boolean"
+    },
+    "tokens": {
+      "type": "number",
+      "minimum": 0
+    },
+    "seconds": {
+      "type": "number",
+      "minimum": 0
+    },
+    "costUsd": {
+      "type": "number",
+      "minimum": 0
+    },
+    "verifyOutput": {
+      "type": "string",
+      "maxLength": 4000
+    },
+    "events": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "t": {
+            "type": "number",
+            "minimum": 0
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "assistant",
+              "tool-call",
+              "tool-result",
+              "system",
+              "verify",
+              "canary"
+            ]
+          },
+          "tool": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string",
+            "maxLength": 2000
+          },
+          "ok": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "t",
+          "kind",
+          "text"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "sigil",
+    "capability",
+    "version",
+    "suite",
+    "task",
+    "condition",
+    "run",
+    "agent",
+    "model",
+    "at",
+    "passed",
+    "tampered",
+    "falseDone",
+    "tokens",
+    "seconds",
+    "events"
+  ],
+  "additionalProperties": false,
+  "$id": "https://raw.githubusercontent.com/dgesteves/sigil/main/spec/trace.schema.json",
+  "title": "Sigil trace (spec 1.0)"
+}

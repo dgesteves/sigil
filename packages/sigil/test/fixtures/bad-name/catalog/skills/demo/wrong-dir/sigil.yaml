@@ -1,0 +1,17 @@
+sigil: 1
+id: demo/hello-skill
+type: skill
+version: 1.0.0
+name: Hello Skill
+summary: A minimal, valid skill used to test the Sigil toolchain end to end.
+domains: [developer-workflow]
+technologies: [markdown]
+license: MIT
+authors:
+  - github: dgesteves
+payload:
+  format: agent-skill
+  entry: SKILL.md
+targets: [claude-code, codex, cursor]
+permissions:
+  filesystem: read
