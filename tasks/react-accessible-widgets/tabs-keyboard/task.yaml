@@ -1,0 +1,24 @@
+sigil: 1
+id: tabs-keyboard
+title: Make the invoice Tabs component keyboard and screen reader accessible
+prompt: |
+  Our accessibility audit flagged the Tabs component in src/Tabs.tsx (used by the invoice page):
+  screen readers don't announce it as tabs or say which one is selected, and keyboard users can't
+  reach or switch tabs at all because the tabs are clickable divs.
+
+  Please make it a proper accessible tabs widget following the WAI-ARIA Authoring Practices tabs
+  pattern: the whole tab list should be a single Tab stop, Left/Right Arrow should move between
+  tabs (wrapping at the ends), Home/End should jump to the first/last tab, and the selected tab's
+  panel should be properly associated with its tab. Activating a tab when it receives focus is fine.
+
+  Keep the existing props (label, tabs, defaultSelectedId, onChange) working, and keep the tests in
+  test/ passing.
+verify:
+  command: ./node_modules/.bin/vitest run --config test/hidden/vitest.config.ts && ./node_modules/.bin/vitest run test/Tabs.test.tsx
+  timeoutSeconds: 120
+protected:
+  - test/Tabs.test.tsx
+image: node:24-bookworm
+setup: npm ci --ignore-scripts --no-audit --no-fund
+timeoutSeconds: 900
+tags: [react, accessibility, wai-aria, keyboard, tabs]
