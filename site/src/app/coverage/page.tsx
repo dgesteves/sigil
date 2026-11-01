@@ -19,7 +19,8 @@ import styles from './coverage.module.css'
 
 export const metadata = {
   title: 'Coverage',
-  description: 'Which areas of software have proven capabilities, which are being measured, and which are open.',
+  description:
+    'Which areas of software have proven capabilities, which are being measured, and which are open.',
 }
 
 interface Cell {
@@ -37,7 +38,12 @@ const STATE_LABEL: Record<Coverage, string> = {
   open: 'open',
 }
 
-function cells(keys: readonly string[], caps: CapView[], pick: (c: CapView) => readonly string[], label = humanize): Cell[] {
+function cells(
+  keys: readonly string[],
+  caps: CapView[],
+  pick: (c: CapView) => readonly string[],
+  label = humanize,
+): Cell[] {
   return keys.map((k) => {
     const members = caps.filter((c) => pick(c).includes(k))
     return { key: k, label: label(k), caps: members, state: coverageOf(members), q: label(k) }
@@ -63,11 +69,21 @@ function Tile({ c }: { c: Cell }) {
     </>
   )
   return c.state === 'open' ? (
-    <a className={styles.tile} data-state="open" href={CONTRIBUTE_URL} title="Nothing here yet. Submit a capability.">
+    <a
+      className={styles.tile}
+      data-state="open"
+      href={CONTRIBUTE_URL}
+      title="Nothing here yet. Submit a capability."
+    >
       {inner}
     </a>
   ) : (
-    <Link className={styles.tile} data-state={c.state} href={`/?q=${encodeURIComponent(c.q)}`} title={`${c.caps.length} capabilities · ${STATE_LABEL[c.state]}`}>
+    <Link
+      className={styles.tile}
+      data-state={c.state}
+      href={`/?q=${encodeURIComponent(c.q)}`}
+      title={`${c.caps.length} capabilities · ${STATE_LABEL[c.state]}`}
+    >
       {inner}
     </Link>
   )
@@ -84,7 +100,10 @@ function Summary({ title, list }: { title: string; list: Cell[] }) {
       </span>
       <span className={styles.meter} aria-hidden="true">
         <span style={{ width: `${(proven / list.length) * 100}%` }} data-state="proven" />
-        <span style={{ width: `${((covered - proven) / list.length) * 100}%` }} data-state="listed" />
+        <span
+          style={{ width: `${((covered - proven) / list.length) * 100}%` }}
+          data-state="listed"
+        />
       </span>
     </div>
   )
@@ -94,14 +113,27 @@ export default async function CoveragePage() {
   const data = await getData()
   const taxonomy = await getTaxonomy()
   const caps = data.views
-  const groups = DOMAIN_GROUPS.map((g) => ({ ...g, cells: cells(g.domains, caps, (c) => c.domains) }))
+  const groups = DOMAIN_GROUPS.map((g) => ({
+    ...g,
+    cells: cells(g.domains, caps, (c) => c.domains),
+  }))
   const domains = groups.flatMap((g) => g.cells)
   const industries = cells(INDUSTRIES, caps, (c) => c.industries)
   const lifecycle = cells(LIFECYCLE, caps, (c) => c.lifecycle)
-  const types = cells(CAPABILITY_TYPES, caps, (c) => [c.type], (k) => TYPE_LABEL[k as keyof typeof TYPE_LABEL])
+  const types = cells(
+    CAPABILITY_TYPES,
+    caps,
+    (c) => [c.type],
+    (k) => TYPE_LABEL[k as keyof typeof TYPE_LABEL],
+  )
   const techs = taxonomy?.technologies ?? []
   const techName = new Map(techs.map((t) => [t.id, t.name]))
-  const techCells = cells(techs.map((t) => t.id), caps, (c) => c.technologies, (k) => techName.get(k) ?? k)
+  const techCells = cells(
+    techs.map((t) => t.id),
+    caps,
+    (c) => c.technologies,
+    (k) => techName.get(k) ?? k,
+  )
   const kinds = [...new Set(techs.map((t) => t.kind))]
   const agentRows = AGENTS.map((a) => ({
     a,
@@ -116,9 +148,18 @@ export default async function CoveragePage() {
     data.demo ? '> DEMO DATA: simulated, not measured.\n' : '',
     'State per area: proven (a capability with a whole interval above zero), measured (runs exist, none proven), listed (in the catalog, untested), open (nothing yet).',
     '',
-    ...[['Disciplines', domains], ['Industries', industries], ['Lifecycle', lifecycle], ['Types', types], ['Technologies', techCells]].flatMap(
-      ([title, list]) => [`## ${title as string}`, '', ...(list as Cell[]).map((c) => `- ${c.label}: ${c.state} (${c.caps.length})`), ''],
-    ),
+    ...[
+      ['Disciplines', domains],
+      ['Industries', industries],
+      ['Lifecycle', lifecycle],
+      ['Types', types],
+      ['Technologies', techCells],
+    ].flatMap(([title, list]) => [
+      `## ${title as string}`,
+      '',
+      ...(list as Cell[]).map((c) => `- ${c.label}: ${c.state} (${c.caps.length})`),
+      '',
+    ]),
   ].join('\n')
 
   return (
@@ -126,11 +167,15 @@ export default async function CoveragePage() {
       <MachineSource title="Coverage" markdown={md} />
       <div className={styles.wrap}>
         <header className={styles.head}>
-          <p className="micro">coverage · {data.registry.generatedAt.slice(0, 10)}{data.demo ? ' · demo data' : ''}</p>
+          <p className="micro">
+            coverage · {data.registry.generatedAt.slice(0, 10)}
+            {data.demo ? ' · demo data' : ''}
+          </p>
           <h1 className="display">The whole of software, and how much of it is proven.</h1>
           <p className={styles.lede}>
-            Every discipline, industry, lifecycle stage, capability type, agent and technology in the spec. Light means a
-            measured, proven capability exists. Dark cells are open: the next contribution there is a first.
+            Every discipline, industry, lifecycle stage, capability type, agent and technology in
+            the spec. Light means a measured, proven capability exists. Dark cells are open: the
+            next contribution there is a first.
           </p>
           <ul className={styles.key} aria-label="Legend">
             {(['proven', 'measured', 'listed', 'open'] as const).map((s) => (
