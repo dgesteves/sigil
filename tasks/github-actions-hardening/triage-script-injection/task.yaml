@@ -1,0 +1,19 @@
+sigil: 1
+id: triage-script-injection
+title: Stop issue titles from running code in the triage workflow
+prompt: |
+  Our security reviewer flagged .github/workflows/triage.yml: they showed that opening an issue with a
+  crafted title (or body) runs arbitrary commands in our Actions runner. Please fix the workflow so issue
+  content can't execute anything, without changing what it does: issues with [bug] in the title still get
+  the `bug` label, reports that mention a crash, segfault or panic still get `crash`, and the job summary
+  still shows the issue number and title. It runs on opened and edited issues and should keep doing that.
+  While you're in there, make sure its token can't do more than this job actually needs.
+verify:
+  command: node --test "test/hidden/*.test.mjs"
+  timeoutSeconds: 120
+protected:
+  - test/config.test.js
+image: node:24-bookworm
+setup: npm ci --ignore-scripts --no-audit --no-fund
+timeoutSeconds: 900
+tags: [github-actions, security, script-injection]

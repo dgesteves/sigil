@@ -1,0 +1,19 @@
+# factor = how many base units one unit is worth. Base units: metre, kilogram, second.
+length:
+  m: 1
+  km: 1000
+  cm: 0.01
+  mm: 0.001
+  in: 0.0254
+  ft: 0.3048
+  mi: 1609.344
+mass:
+  kg: 1
+  g: 0.001
+  lb: 0.45359237
+  oz: 0.028349523125
+time:
+  s: 1
+  min: 60
+  h: 3600
+  d: 86400

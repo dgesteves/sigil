@@ -187,6 +187,7 @@ technologies:
   - { id: sentry, name: Sentry, kind: platform, detect: { npm: ['@sentry/node', '@sentry/nextjs', '@sentry/react'], pypi: [sentry-sdk] } }
   - { id: git, name: Git, kind: tool, detect: { files: ['.gitignore'] } }
   - { id: monorepo, name: Monorepos, kind: practice, detect: { npm: [turbo, nx, lerna], files: [pnpm-workspace.yaml, turbo.json, nx.json] } }
+  - { id: npm, name: npm, kind: tool, detect: { files: [package-lock.json, npm-shrinkwrap.json] } }
   - { id: pnpm, name: pnpm, kind: tool, detect: { files: [pnpm-lock.yaml] } }
   - { id: uv, name: uv, kind: tool, detect: { files: [uv.lock] } }
 

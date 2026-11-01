@@ -1,0 +1,38 @@
+sigil: 1
+id: github-actions/workflow-hardening
+type: skill
+version: 1.0.0
+name: GitHub Actions Workflow Hardening
+summary: Secure GitHub Actions workflows as they work in late 2026, from script injection and pwn requests to SHA pins and tokenless npm publishing.
+description: >-
+  Teaches an agent to write and fix GitHub Actions workflows that hold credentials safely: no untrusted
+  text expanded into shell or github-script code, no pull request code in pull_request_target or
+  workflow_run jobs (including the right fix when actions/checkout v7 refuses fork checkouts),
+  least-privilege GITHUB_TOKEN permissions, actions pinned to real commit SHAs on current majors, and
+  OIDC instead of stored secrets, including npm trusted publishing with its npm 11.5.1, runner and
+  repository.url requirements. Includes the platform changes of 2025-2026 that models trained earlier
+  get wrong.
+domains: [devops, security]
+lifecycle: [secure, ship, review]
+technologies: [github-actions, npm, oauth, ci-cd]
+license: MIT
+authors:
+  - github: dgesteves
+payload:
+  format: agent-skill
+  entry: SKILL.md
+targets: [claude-code, codex, cursor, github-copilot, gemini-cli, opencode]
+permissions:
+  # Resolving a tag to its commit SHA contacts GitHub; everything else works offline.
+  network: [github.com, api.github.com]
+  shell: [git ls-remote, gh api, zizmor, actionlint]
+  filesystem: write
+  env: []
+proof:
+  suites: [github-actions-hardening]
+limitations:
+  - Written for github.com as of November 2026. GitHub Enterprise Server lags behind (artifact actions v4+, checkout v7 and workflow lockfiles may be missing).
+  - Commit SHAs in the references were resolved on 2026-11-01. Pinning newer releases needs network access to github.com, or an existing pin in the repo.
+  - It does not audit the code inside third-party or composite actions; a pinned malicious action is still malicious.
+  - Cloud OIDC guidance covers the AWS, Google Cloud and Azure login actions, not the design of the cloud-side IAM policies.
+  - The proof suite measures script injection, fork pull request checkouts and npm trusted publishing. Cloud OIDC, caching and reusable workflows are not measured.
