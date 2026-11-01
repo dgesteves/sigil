@@ -1,0 +1,38 @@
+name: PR triage
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  triage:
+    runs-on: ubuntu-latest
+    steps:
+      # Run the PR's own copy of the scripts so changes to them can be tried out in the PR itself.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+
+      - name: Label by size
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          ADDITIONS: ${{ github.event.pull_request.additions }}
+          DELETIONS: ${{ github.event.pull_request.deletions }}
+        run: node scripts/pr-size-label.mjs
+
+      - name: Welcome first-time contributors
+        if: github.event.action == 'opened' && github.event.pull_request.author_association == 'FIRST_TIME_CONTRIBUTOR'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr comment ${{ github.event.pull_request.number }} --repo ${{ github.repository }} \
+            --body "Thanks for opening \"${{ github.event.pull_request.title }}\", @${{ github.event.pull_request.user.login }}! A maintainer will review it soon; CONTRIBUTING.md explains what happens next."

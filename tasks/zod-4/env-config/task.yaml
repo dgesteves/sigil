@@ -1,0 +1,32 @@
+sigil: 1
+id: env-config
+title: Validate service configuration from environment variables with zod
+prompt: |
+  Our config loader in src/config.ts is a pile of `||` fallbacks and parseInt, and last week
+  ENABLE_METRICS=false turned metrics *on* in production. Please rewrite loadConfig to validate the
+  environment with zod (already a dependency) and fail fast on bad config. Keep the
+  `loadConfig(env)` signature and the returned Config shape.
+
+  Rules:
+  - PORT: integer from 1 to 65535, default 3000
+  - DATABASE_URL: required, must be a postgres:// or postgresql:// URL
+  - LOG_LEVEL: one of debug, info, warn, error; default info
+  - ENABLE_METRICS: boolean flag that accepts true/false, 1/0 and yes/no in any letter case;
+    anything else is an error; default false
+  - ALLOWED_ORIGINS: comma-separated list of https origins (spaces around the commas are fine);
+    default is an empty list
+  - REQUEST_TIMEOUT_MS: positive integer, default 5000
+
+  Our deploy tooling sets unset variables to an empty string, so treat empty values as unset.
+  Unrelated environment variables must be ignored. If anything is invalid, throw a single Error
+  whose message names every invalid variable, so ops can fix them all in one go. Don't echo the
+  values themselves in that message: DATABASE_URL carries credentials.
+verify:
+  command: node --test "test/**/*.test.ts"
+  timeoutSeconds: 120
+protected:
+  - test/config.test.ts
+image: node:24-bookworm
+setup: npm ci --ignore-scripts --no-audit --no-fund
+timeoutSeconds: 900
+tags: [zod, typescript, configuration, validation]

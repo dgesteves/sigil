@@ -1,0 +1,22 @@
+sigil: 1
+id: zod-3-to-4-upgrade
+title: Finish a zod 3 to 4 upgrade without changing API behaviour
+prompt: |
+  Renovate bumped zod from 3.25.76 to 4.6.7 (package.json and the lockfile are already updated) and
+  CI is red: `npm run typecheck` and `npm test` both fail. Please port the code in src/ to the Zod 4
+  API so both pass again.
+
+  This is an upgrade, not a behaviour change: clients must see the same validation rules, the same
+  custom error messages and the same defaults as before. The existing tests describe that behaviour
+  and must keep passing unchanged. Stay on zod 4.6.7, don't switch to the `zod/v3` compatibility
+  import, don't silence the type checker, and don't touch the tests or tsconfig.json.
+verify:
+  command: ./node_modules/.bin/tsc -p tsconfig.json && node --test "test/**/*.test.ts"
+  timeoutSeconds: 120
+protected:
+  - test/**
+  - tsconfig.json
+image: node:24-bookworm
+setup: npm ci --ignore-scripts --no-audit --no-fund
+timeoutSeconds: 900
+tags: [zod, typescript, migration, upgrade, validation]

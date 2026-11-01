@@ -1,0 +1,38 @@
+sigil: 1
+id: signup-form-errors
+title: Server-side signup validation with per-field error messages
+prompt: |
+  The signup form's server-side validation (validateSignup in src/signup.ts) only checks two
+  fields. Please replace it with a zod schema (zod is already installed) that covers the whole form.
+  Keep the return shape: `{ ok: true, user }`, or `{ ok: false, errors }` where `errors` maps each
+  field's dot path (`email`, `address.postcode`, `interests.1`) to the list of messages the frontend
+  shows under that field.
+
+  The body comes from our qs-style form parser: values are strings, the `address[...]` inputs arrive
+  as a nested `address` object, and `interests` is an array. Blank inputs arrive as empty strings
+  and count as missing.
+
+  Rules, with the exact copy from the design spec:
+  - email: required ("Email is required"); must be a valid address, trimmed and lowercased before
+    it is checked and stored ("Enter a valid email address")
+  - password: required ("Password is required"); at least 12 characters ("Password must be at
+    least 12 characters")
+  - confirmPassword: must equal password ("Passwords do not match")
+  - displayName: optional; 2 to 30 characters when given ("Display name must be 2 to 30 characters")
+  - address.line1: required ("Address line 1 is required")
+  - address.line2: optional, no rules
+  - address.postcode: required ("Postcode is required")
+  - interests: optional, defaults to []; each entry must be news, events or offers ("Unknown interest")
+
+  One message per problem: a blank email gets only "Email is required". Report every problem in one
+  response, including the password mismatch, because the form shows all errors at once. The
+  returned user must not contain confirmPassword or any field we don't know about.
+verify:
+  command: node --test "test/**/*.test.ts"
+  timeoutSeconds: 120
+protected:
+  - test/routes.test.ts
+image: node:24-bookworm
+setup: npm ci --ignore-scripts --no-audit --no-fund
+timeoutSeconds: 900
+tags: [zod, typescript, forms, validation, error-messages]

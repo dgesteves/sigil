@@ -1,0 +1,46 @@
+name: PR triage
+on:
+  # Runs in the base repository's context with a write token, even for fork PRs. Never check out,
+  # build or run the PR's code here, and treat every PR field as untrusted text.
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+
+permissions: {}
+
+jobs:
+  triage:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read # check out the trusted default branch
+      pull-requests: write # labels and the welcome comment
+    steps:
+      # No `ref:`: this checks out the default branch, so the scripts that run are ones we reviewed.
+      # Changes to scripts/ in a PR take effect once merged; test them with `npm test` in CI.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+          package-manager-cache: false
+
+      - name: Label by size
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          ADDITIONS: ${{ github.event.pull_request.additions }}
+          DELETIONS: ${{ github.event.pull_request.deletions }}
+        run: node scripts/pr-size-label.mjs
+
+      - name: Welcome first-time contributors
+        if: github.event.action == 'opened' && github.event.pull_request.author_association == 'FIRST_TIME_CONTRIBUTOR'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
+        run: |
+          gh pr comment "$PR_NUMBER" --body "Thanks for opening \"$PR_TITLE\", @$PR_AUTHOR! A maintainer will review it soon; CONTRIBUTING.md explains what happens next."

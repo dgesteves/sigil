@@ -1,0 +1,25 @@
+sigil: 1
+id: nested-routes
+title: Add nested category and CSV product routes to an Express 5 API
+prompt: |
+  Please add two read endpoints to the shop API in src/app.mjs:
+
+  1. `GET /api/categories/<category path>` for category paths of any depth, for example
+     `/api/categories/electronics/audio`. Respond with `{ "path": "electronics/audio", "products": [...] }`
+     listing every product in that category or in any category below it. A category that isn't in the
+     catalog (src/catalog.mjs) returns 404 with `{ "error": "not_found" }`.
+  2. `GET /api/products/:sku` returns that product as JSON, and the same URL with a `.csv` suffix (for
+     example `/api/products/HP-200.csv`) returns it as CSV instead: content type `text/csv`, a
+     `sku,name,price` header line, then the product's row. An unknown SKU returns 404 with
+     `{ "error": "not_found" }` in both forms.
+
+  The existing endpoints and tests must keep working.
+verify:
+  command: node --test "test/**/*.test.mjs"
+  timeoutSeconds: 120
+protected:
+  - test/app.test.mjs
+image: node:24-bookworm
+setup: npm ci --ignore-scripts --no-audit --no-fund
+timeoutSeconds: 900
+tags: [express, routing, nodejs]

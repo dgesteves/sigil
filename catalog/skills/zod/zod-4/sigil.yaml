@@ -1,0 +1,37 @@
+sigil: 1
+id: zod/zod-4
+type: skill
+version: 1.0.0
+name: Zod 4 Validation and Migration
+summary: Correct Zod 4 schemas at trust boundaries, and Zod 3 upgrades that keep messages, defaults and rules intact.
+description: >-
+  Teaches an agent the current Zod 4 API (checked against zod 4.6.7) for validating HTTP bodies,
+  query strings, form posts, env config, webhooks and model output, and how to port Zod 3 code
+  without silent behaviour changes. It concentrates on what agents trained on Zod 3 get wrong:
+  ignored required_error/invalid_type_error/errorMap, the removed ZodError.errors, .default() vs
+  .prefault(), exhaustive enum records, the stricter z.uuid(), required z.unknown() keys,
+  schema-level messages that override check messages, coercion of "false" and "", permissive
+  z.url(), check order with z.email().trim(), and cross-field refinements that are skipped next to
+  field errors.
+domains: [backend, frontend, security, migration]
+lifecycle: [build, maintain, secure]
+technologies: [zod, typescript, javascript, nodejs]
+license: MIT
+authors:
+  - github: dgesteves
+payload:
+  format: agent-skill
+  entry: SKILL.md
+targets: [claude-code, codex, cursor, github-copilot, gemini-cli, opencode]
+permissions:
+  network: []
+  shell: [node, npm ls, npm test, npx tsc, rg]
+  filesystem: write
+  env: []
+proof:
+  suites: [zod-4]
+limitations:
+  - Written and verified against zod 4.6.7. Later 4.x releases may add APIs or tighten validators; check the release notes when the installed version is newer.
+  - Covers classic Zod. Zod Mini (zod/mini, @zod/mini) is mentioned but its functional API is not taught in depth.
+  - Default error message wording is not reproduced; upgrades that snapshot Zod 3 default messages will still need test updates.
+  - Does not cover framework integrations (tRPC, react-hook-form resolvers, Fastify type providers) beyond the z.input/z.output guidance.

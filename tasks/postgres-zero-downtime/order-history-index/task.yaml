@@ -1,0 +1,25 @@
+sigil: 1
+id: order-history-index
+title: Index the customer order-history query on a hot orders table
+prompt: |
+  The customer order-history endpoint (`orderHistory` in src/orders.ts) has become slow in
+  production: for each request Postgres filters orders by customer_id and then sorts everything that
+  customer ever bought before taking 20 rows. Add a migration with an index so the query can walk the
+  index in order and stop after the rows it needs, without sorting.
+
+  Careful: orders is our busiest table (about 80M rows, writes all day from checkout and payments).
+  This ships with the next deploy, which runs `npm run migrate` against production, and it must not
+  block those writes while the index builds. See the README for how migrations run here.
+verify:
+  command: node --test test/migrate.test.ts test/schema.test.ts test/hidden/order-history-index.test.ts
+  timeoutSeconds: 120
+protected:
+  - test/*.test.ts
+  - src/migrate.ts
+  - migrations/0001_create_customers.sql
+  - migrations/0002_create_orders.sql
+  - migrations/0003_orders_notes.sql
+image: node:24-bookworm
+setup: npm ci --ignore-scripts --no-audit --no-fund
+timeoutSeconds: 900
+tags: [postgres, migrations, indexes, zero-downtime]

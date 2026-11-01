@@ -1,0 +1,7 @@
+[
+  { "sku": "SKU-1001", "name": "Travel mug", "priceCents": 1850, "stock": { "LIS": 4, "NYC": 7, "BER": 2 } },
+  { "sku": "SKU-1002", "name": "Pour-over kettle", "priceCents": 4900, "stock": { "LIS": 1 } },
+  { "sku": "SKU-1003", "name": "Burr grinder", "priceCents": 12900, "stock": { "NYC": 3, "BER": 5 } },
+  { "sku": "SKU-1004", "name": "Paper filters (100)", "priceCents": 650, "stock": { "LIS": 40, "NYC": 25, "BER": 31 } },
+  { "sku": "SKU-1005", "name": "Cupping spoon", "priceCents": 1200, "stock": { "BER": 9 } }
+]

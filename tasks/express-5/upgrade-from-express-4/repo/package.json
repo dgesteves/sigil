@@ -1,0 +1,16 @@
+{
+  "name": "library-api",
+  "version": "3.8.2",
+  "private": true,
+  "main": "src/server.js",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "start": "node src/server.js",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "express": "5.3.0"
+  }
+}

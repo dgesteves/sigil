@@ -1,0 +1,17 @@
+{
+  "name": "tidepool",
+  "version": "2.3.0",
+  "description": "Split markdown files into YAML front matter and body.",
+  "type": "module",
+  "license": "MIT",
+  "exports": "./src/index.js",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "test": "node --test"
+  },
+  "dependencies": {
+    "yaml": "2.9.1"
+  }
+}
