@@ -1,0 +1,15 @@
+sigil: 1
+id: demo/starter
+type: collection
+version: 1.0.0
+name: Starter
+summary: A small collection used to test the Sigil compiler end to end.
+domains: [developer-workflow]
+license: MIT
+authors:
+  - github: dgesteves
+payload:
+  format: bundle
+  entry: README.md
+targets: [claude-code, codex, cursor, github-copilot, gemini-cli, opencode]
+includes: [demo/hello-skill, demo/ts-style]
