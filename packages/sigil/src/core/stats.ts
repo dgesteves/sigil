@@ -44,8 +44,8 @@ export const EQUIVALENCE_MARGIN = 0.1
 export const MIN_RUNS = 6
 
 /**
- * Pools a suite's tasks into one comparison. Tampered runs and false "done" claims already count
- * as failures in `passed`; they are tracked separately for display.
+ * Pools a suite's tasks into one comparison of verifier pass rates. Tampering and false "done"
+ * claims are tracked alongside for display; they do not change `passed`.
  */
 export function pool(tasks: readonly { baseline: Tally; treatment: Tally }[]): Pooled {
   const sum = (pick: (t: { baseline: Tally; treatment: Tally }) => Tally) =>

@@ -1,0 +1,39 @@
+sigil: 1
+id: demo/playwright-flake-doctor
+type: agent
+version: 1.0.0
+name: Playwright Flake Doctor
+summary: Reproduces flaky end-to-end tests, then replaces sleeps with web-first
+  assertions.
+description: "Reproduces flaky end-to-end tests, then replaces sleeps with
+  web-first assertions. DEMO fixture: every number attached to this capability
+  was simulated for site development."
+domains:
+  - testing
+industries: []
+lifecycle:
+  - test
+technologies:
+  - playwright
+license: MIT
+authors:
+  - github: sigil-demo
+payload:
+  format: subagent
+  entry: agent.md
+targets:
+  - claude-code
+  - codex
+  - cursor
+  - github-copilot
+  - gemini-cli
+  - opencode
+permissions:
+  network: []
+  shell: []
+  filesystem: write
+  env: []
+proof:
+  suites: []
+limitations:
+  - "DEMO fixture: not a real capability and never measured."

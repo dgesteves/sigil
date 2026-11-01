@@ -1,0 +1,62 @@
+{
+  "sigil": 1,
+  "capability": "demo/curl-pipe-installer",
+  "version": "1.0.0",
+  "digest": "sha256:5bcbd648cf650ebc7c6519b01f65d7226ab55fd7a98f6f81778df4f2eadcb476",
+  "generatedAt": "2026-10-28T09:00:00.000Z",
+  "structure": {
+    "status": "pass",
+    "tool": {
+      "name": "sigil",
+      "version": "0.0.0-demo"
+    },
+    "at": "2026-10-28T09:00:00.000Z",
+    "findings": []
+  },
+  "security": {
+    "status": "fail",
+    "tool": {
+      "name": "sigil",
+      "version": "0.0.0-demo"
+    },
+    "at": "2026-10-28T09:00:00.000Z",
+    "findings": [
+      {
+        "rule": "SIG-SEC-001",
+        "severity": "critical",
+        "message": "downloads a remote script and pipes it into a shell",
+        "file": "install.sh",
+        "line": 3,
+        "owasp": "AST01"
+      }
+    ]
+  },
+  "compat": {
+    "claude-code": {
+      "compiled": true,
+      "evaluated": false
+    },
+    "codex": {
+      "compiled": true,
+      "evaluated": false
+    },
+    "cursor": {
+      "compiled": true,
+      "evaluated": false
+    },
+    "github-copilot": {
+      "compiled": true,
+      "evaluated": false
+    },
+    "gemini-cli": {
+      "compiled": true,
+      "evaluated": false
+    },
+    "opencode": {
+      "compiled": true,
+      "evaluated": false
+    }
+  },
+  "uplift": [],
+  "reviews": []
+}

@@ -1,0 +1,164 @@
+{
+  "sigil": 1,
+  "capability": "demo/secret-scrub",
+  "version": "1.0.0",
+  "digest": "sha256:7a3881e3ccf8d23c750378fbc67138e26a2f6af0fc47d96b65b4dab14944e02b",
+  "generatedAt": "2026-10-28T09:00:00.000Z",
+  "structure": {
+    "status": "pass",
+    "tool": {
+      "name": "sigil",
+      "version": "0.0.0-demo"
+    },
+    "at": "2026-10-28T09:00:00.000Z",
+    "findings": []
+  },
+  "security": {
+    "status": "warn",
+    "tool": {
+      "name": "sigil",
+      "version": "0.0.0-demo"
+    },
+    "at": "2026-10-28T09:00:00.000Z",
+    "findings": [
+      {
+        "rule": "SIG-SEC-012",
+        "severity": "low",
+        "message": "instructions mention reading .env files; declared env is empty",
+        "file": "hook.json",
+        "line": 9,
+        "owasp": "AST03"
+      }
+    ]
+  },
+  "canary": {
+    "status": "pass",
+    "agent": {
+      "id": "claude-code",
+      "version": "0.0.0-demo"
+    },
+    "model": "demo-model",
+    "at": "2026-10-28T09:00:00.000Z",
+    "runs": 4,
+    "events": []
+  },
+  "compat": {
+    "claude-code": {
+      "compiled": true,
+      "evaluated": true
+    },
+    "codex": {
+      "compiled": false,
+      "evaluated": false,
+      "notes": "this agent has no hook mechanism for this event"
+    },
+    "cursor": {
+      "compiled": true,
+      "evaluated": false
+    },
+    "github-copilot": {
+      "compiled": false,
+      "evaluated": false,
+      "notes": "this agent has no hook mechanism for this event"
+    },
+    "gemini-cli": {
+      "compiled": true,
+      "evaluated": false
+    },
+    "opencode": {
+      "compiled": true,
+      "evaluated": false
+    }
+  },
+  "uplift": [
+    {
+      "agent": {
+        "id": "claude-code",
+        "version": "0.0.0-demo"
+      },
+      "model": "demo-model",
+      "suite": "demo/secret-scrub",
+      "suiteDigest": "sha256:c44eff4f1278b998c36c4d21c31a2fffa432fbc67156ca258767608f153f33c4",
+      "at": "2026-10-28T09:00:00.000Z",
+      "tasks": [
+        {
+          "task": "rate-limit-login",
+          "baseline": {
+            "passed": 4,
+            "runs": 12,
+            "tampered": 3,
+            "falseDone": 2,
+            "medianTokens": 61295,
+            "medianSeconds": 272.5,
+            "medianCostUsd": 0.2165
+          },
+          "treatment": {
+            "passed": 7,
+            "runs": 12,
+            "tampered": 0,
+            "falseDone": 2,
+            "medianTokens": 57479,
+            "medianSeconds": 205,
+            "medianCostUsd": 0.2285
+          }
+        },
+        {
+          "task": "backfill-column",
+          "baseline": {
+            "passed": 7,
+            "runs": 12,
+            "tampered": 0,
+            "falseDone": 3,
+            "medianTokens": 56142.5,
+            "medianSeconds": 345.5,
+            "medianCostUsd": 0.27
+          },
+          "treatment": {
+            "passed": 9,
+            "runs": 12,
+            "tampered": 0,
+            "falseDone": 1,
+            "medianTokens": 45221.5,
+            "medianSeconds": 277,
+            "medianCostUsd": 0.153
+          }
+        },
+        {
+          "task": "fix-stale-cache",
+          "baseline": {
+            "passed": 6,
+            "runs": 12,
+            "tampered": 0,
+            "falseDone": 2,
+            "medianTokens": 52017.5,
+            "medianSeconds": 287,
+            "medianCostUsd": 0.1265
+          },
+          "treatment": {
+            "passed": 7,
+            "runs": 12,
+            "tampered": 0,
+            "falseDone": 2,
+            "medianTokens": 49472,
+            "medianSeconds": 239.5,
+            "medianCostUsd": 0.218
+          }
+        }
+      ],
+      "delta": 0.16666666666666663,
+      "ci95": [
+        -0.06024552714615544,
+        0.37113391542663177
+      ],
+      "verdict": "inconclusive"
+    }
+  ],
+  "reviews": [
+    {
+      "by": "sigil-demo",
+      "at": "2026-10-29T10:00:00.000Z",
+      "decision": "approved",
+      "notes": "DEMO review."
+    }
+  ]
+}

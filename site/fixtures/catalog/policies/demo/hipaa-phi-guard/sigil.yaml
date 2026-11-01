@@ -1,0 +1,41 @@
+sigil: 1
+id: demo/hipaa-phi-guard
+type: policy
+version: 1.0.0
+name: HIPAA PHI Guard
+summary: Sandbox policy that keeps protected health information out of prompts,
+  logs and fixtures.
+description: "Sandbox policy that keeps protected health information out of
+  prompts, logs and fixtures. DEMO fixture: every number attached to this
+  capability was simulated for site development."
+domains:
+  - compliance
+  - security
+industries:
+  - healthcare
+  - insurance
+lifecycle:
+  - secure
+technologies: []
+license: MIT
+authors:
+  - github: sigil-demo
+payload:
+  format: policy
+  entry: policy.json
+targets:
+  - claude-code
+  - codex
+  - cursor
+  - github-copilot
+  - gemini-cli
+  - opencode
+permissions:
+  network: []
+  shell: []
+  filesystem: read
+  env: []
+proof:
+  suites: []
+limitations:
+  - "DEMO fixture: not a real capability and never measured."

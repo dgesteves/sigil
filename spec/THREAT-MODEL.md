@@ -31,7 +31,7 @@ privileges. This document lists what we defend against, how, and where the defen
 | Tampered download | Per-file sha256 and digest recomputed before writing anything | — |
 | Install-time code execution | `sigil add` never runs scripts, hooks or package installs | Hooks run later by design; their exact commands are shown before install. |
 | Overfit or unfair tasks | Public tasks with fairness rules, validity checks, hidden verifiers, community challenges | Small suites; results are scoped to the suite and say so. |
-| Test tampering by the agent | Protected files hashed before and after; tampered runs count as failures | — |
+| Test tampering by the agent | Protected files hashed before and after and restored to their original bytes before the verifier runs, so edits cannot produce a pass; tampering is published per condition | — |
 | Cherry-picked runs | All runs for a digest are kept; verdicts come from intervals with a minimum run count | An operator could discard raw runs locally; CI-produced evidence is attested. |
 | Sandbox escape or token theft during runs | Non-root containers, no host mounts beyond the work dir, internal network, logging proxy, token passed as env and redacted from traces | Container runtime vulnerabilities. Third-party capabilities never run on the host. |
 | Forged evidence | Evidence produced in CI carries GitHub artifact attestations | Locally produced evidence is labelled as such. |
