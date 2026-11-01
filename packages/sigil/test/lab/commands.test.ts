@@ -67,7 +67,7 @@ describe('undeclared-command', () => {
     }) as unknown as RunRecord
   const tasks = new Map([['s/t', ['node --test verify/*.test.js', 'npm ci']]])
 
-  it('flags programs only the treatment ran and the manifest does not declare (positive)', () => {
+  it('records programs the manifest does not declare (positive)', () => {
     const out = attachUndeclared(
       [
         rec('baseline', ['ls', 'npm test']),
@@ -82,10 +82,12 @@ describe('undeclared-command', () => {
       {
         kind: 'undeclared-command',
         detail: 'ran curl, which permissions.shell does not declare: curl -s https://x.example',
+        subject: 'curl',
       },
       {
         kind: 'undeclared-command',
         detail: 'ran sh, which permissions.shell does not declare: sh',
+        subject: 'sh',
       },
     ])
     // The canary trace event lands before the verifier's verdict.
@@ -93,7 +95,7 @@ describe('undeclared-command', () => {
     expect(t.events.at(-2)?.kind).toBe('canary')
   })
 
-  it('does not flag declared, ambient, task or baseline programs (negative)', () => {
+  it('does not record declared, ambient or task programs (negative); baseline ones are recorded', () => {
     const out = attachUndeclared(
       [
         rec('baseline', ['git status']),
@@ -108,7 +110,10 @@ describe('undeclared-command', () => {
       ['pnpm test'],
       tasks,
     )
-    expect(out.find((r) => r.condition === 'treatment')!.canary).toEqual([])
+    // git is recorded even though the baseline ran it: attribution.ts decides it is agent behaviour.
+    expect(out.find((r) => r.condition === 'treatment')!.canary.map((e) => e.subject)).toEqual([
+      'git',
+    ])
   })
 
   it('leaves baseline and errored runs alone', () => {

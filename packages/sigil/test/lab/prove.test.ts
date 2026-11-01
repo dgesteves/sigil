@@ -214,9 +214,11 @@ describe('sigil prove (host runner, stub agent)', () => {
 
     const broken = await prove({ ...(await setup(plan(breakTest))).base, runs: 1 })
     const b = broken.records.find((r) => r.condition === 'treatment')!
+    // Tampering is recorded, not scored: the restored original tests pass, so the run passes.
     expect(b).toMatchObject({
       verifyExit: 0,
-      passed: false,
+      passed: true,
+      falseDone: false,
       tampered: true,
       tamperedFiles: ['modified test/slugify.test.js'],
     })

@@ -1,6 +1,7 @@
 import { posix, relative, sep } from 'node:path'
 import { SPEC_VERSION } from '../core/ids.js'
 import type { UpliftRun } from '../core/schema.js'
+import { AgentIdSchema } from '../core/schema.js'
 import type { AgentDriver } from './agents/types.js'
 import type { Auth } from './auth.js'
 import type { LabCapability } from './capability.js'
@@ -18,6 +19,7 @@ import { buildPlan, parallel } from './plan.js'
 import { newSeed } from './rng.js'
 import { runOne, SETUP_EGRESS } from './run.js'
 import type { PreparedImage, SandboxFactory } from './sandbox/types.js'
+import { rescoreRecord } from './scoring.js'
 import { type ReproManifest, RunStore } from './store.js'
 import type { LoadedTask } from './task.js'
 import {
@@ -194,79 +196,233 @@ export async function prove(opts: ProveOptions): Promise<ProveResult> {
   })
 
   // Derived from the stored runs every time, so a resumed session scores exactly like a fresh one.
-  const records = attachUndeclared(
-    await store.readRecords(),
-    opts.capability.manifest.permissions.shell,
-    new Map(
-      [...tasks].map(([key, t]) => [
-        key,
-        [t.task.verify.command, ...(t.task.setup ? [t.task.setup] : [])],
-      ]),
-    ),
-  )
-  const model = reportedModel(records, opts.model)
   const at = now().toISOString()
+  const scored = scoreSession({
+    root: opts.root,
+    capability: opts.capability,
+    suites: manifest.suites,
+    records: await store.readRecords(),
+    tasks,
+    installed: opts.driver.installedNames(opts.capability),
+    agent,
+    requestedModel: opts.model,
+    runner: opts.factory.runner,
+    canaryOnly: opts.canaryOnly === true,
+    at,
+    log: opts.log,
+  })
   manifest = {
     ...manifest,
     finishedAt: at,
     model: {
       requested: manifest.model.requested,
-      reported: [...new Set(records.flatMap((r) => (r.model ? [r.model] : [])))],
+      reported: [...new Set(scored.records.flatMap((r) => (r.model ? [r.model] : [])))],
     },
   }
   await store.writeManifest(manifest)
+  return publish(scored, {
+    root: opts.root,
+    capability: opts.capability,
+    manifest,
+    dir: store.dir,
+    agent,
+    writeEvidence: opts.writeEvidence,
+    sigilVersion: opts.sigilVersion,
+    now: now(),
+  })
+}
 
-  const withheldReasons: string[] = []
-  if (abort) withheldReasons.push(abort)
-  const crossCheck = crossConditionIsolation(records, opts.driver.installedNames(opts.capability))
-  if (crossCheck.length) withheldReasons.push(...crossCheck)
+interface ScoreInput {
+  root: string
+  capability: LabCapability
+  suites: readonly { suite: string; digest: string; tasks: readonly string[] }[]
+  /** As stored. Scoring is re-applied, so old runs are judged by the current method. */
+  records: readonly RunRecord[]
+  tasks: ReadonlyMap<string, LoadedTask>
+  installed: readonly string[]
+  agent: AgentStamp
+  requestedModel: string
+  runner: 'docker' | 'host'
+  canaryOnly: boolean
+  at: string
+  log: (line: string) => void
+}
+
+interface Scored {
+  records: RunRecord[]
+  model: string
+  uplift: UpliftRun[]
+  canary: CanaryRun | undefined
+  /** Reasons not to publish: isolation problems found in the runs. */
+  withheld: string[]
+}
+
+/** Everything published about a session, from its stored runs alone. No agent runs here. */
+export function scoreSession(input: ScoreInput): Scored {
+  const records = attachUndeclared(
+    input.records.map(rescoreRecord),
+    input.capability.manifest.permissions.shell,
+    new Map(
+      [...input.tasks].map(([key, t]) => [
+        key,
+        [t.task.verify.command, ...(t.task.setup ? [t.task.setup] : [])],
+      ]),
+    ),
+  )
+  const model = reportedModel(records, input.requestedModel)
+  const withheld = crossConditionIsolation(records, input.installed)
+  const leaky = records.find((r) => r.isolation.length)
+  if (leaky) withheld.unshift(`isolation failed in ${leaky.key}: ${leaky.isolation.join('; ')}`)
 
   const uplift: UpliftRun[] = []
-  if (!opts.canaryOnly) {
-    const traceBase = relative(opts.root, tracesDir(opts.root, opts.capability))
+  if (!input.canaryOnly) {
+    const traceBase = relative(input.root, tracesDir(input.root, input.capability))
       .split(sep)
       .join(posix.sep)
-    for (const s of manifest.suites) {
-      const u = upliftFor(records, s, { agent, model, at, traces: `${traceBase}/${s.suite}` })
+    for (const s of input.suites) {
+      const u = upliftFor(records, s, {
+        agent: input.agent,
+        model,
+        at: input.at,
+        traces: `${traceBase}/${s.suite}`,
+      })
       if (u.skipped.length)
-        opts.log(`  ${s.suite}: no completed runs in one condition for ${u.skipped.join(', ')}`)
+        input.log(`  ${s.suite}: no completed runs in one condition for ${u.skipped.join(', ')}`)
       if (u.run) uplift.push(u.run)
     }
   }
-  const canary = canaryFor(records, { agent, model, at, runner: opts.factory.runner })
+  const canary = canaryFor(records, {
+    agent: input.agent,
+    model,
+    at: input.at,
+    runner: input.runner,
+  })
+  return { records, model, uplift, canary, withheld }
+}
+
+async function publish(
+  scored: Scored,
+  ctx: {
+    root: string
+    capability: LabCapability
+    manifest: ReproManifest
+    dir: string
+    agent: AgentStamp
+    writeEvidence: boolean
+    sigilVersion: string
+    now: Date
+  },
+): Promise<ProveResult> {
+  const { records, uplift, canary, model } = scored
   const result: ProveResult = {
-    runId: manifest.runId,
-    dir: store.dir,
-    manifest,
+    runId: ctx.manifest.runId,
+    dir: ctx.dir,
+    manifest: ctx.manifest,
     records,
     uplift,
     traces: 0,
   }
   if (canary) result.canary = canary
-
-  if (!opts.writeEvidence) {
+  if (!ctx.writeEvidence) {
     result.withheld = 'evidence writing is off for this session'
-  } else if (withheldReasons.length) {
-    result.withheld = withheldReasons.join('; ')
+  } else if (scored.withheld.length) {
+    result.withheld = scored.withheld.join('; ')
   } else if (uplift.length === 0 && !canary) {
     result.withheld = 'no completed runs'
   } else {
     const written = await writeEvidence({
-      root: opts.root,
-      capability: opts.capability,
+      root: ctx.root,
+      capability: ctx.capability,
       records,
       uplift,
       ...(canary ? { canary } : {}),
-      manifest,
-      agent,
+      manifest: ctx.manifest,
+      agent: ctx.agent,
       model,
-      tool: { name: 'sigil prove', version: opts.sigilVersion },
-      now: now(),
+      tool: { name: 'sigil prove', version: ctx.sigilVersion },
+      now: ctx.now,
     })
     result.evidencePath = written.path
     result.traces = written.traces
   }
   return result
+}
+
+export interface RescoreOptions {
+  root: string
+  runId: string
+  capability: LabCapability
+  /** The suites as they are now; each must still have the digest the runs were made against. */
+  suites: SuiteInput[]
+  driver: AgentDriver
+  writeEvidence: boolean
+  sigilVersion: string
+  log: (line: string) => void
+  now?: () => Date
+}
+
+/**
+ * Recomputes uplift, canary, evidence and traces for a stored session with the current scoring code,
+ * without running any agent. Never writes to lab-runs/. Refuses when the capability or a suite
+ * changed since the runs: evidence stays bound to the digests that were measured.
+ */
+export async function rescore(opts: RescoreOptions): Promise<ProveResult> {
+  const now = opts.now ?? (() => new Date())
+  const store = RunStore.at(opts.root, opts.runId)
+  const stored = await store.readManifest()
+  const why = rescoreConflict(stored, opts)
+  if (why) throw new ProveError(`cannot rescore ${opts.runId}: ${why}`)
+  const agentId = AgentIdSchema.safeParse(stored.agent.id)
+  if (!agentId.success)
+    throw new ProveError(`cannot rescore ${opts.runId}: unknown agent ${stored.agent.id}`)
+  const agent: AgentStamp = { id: agentId.data, version: stored.agent.version }
+  const tasks = new Map<string, LoadedTask>()
+  for (const s of opts.suites) for (const t of s.tasks) tasks.set(`${s.suite}/${t.task.id}`, t)
+  const records = await store.readRecords()
+  if (records.length === 0)
+    throw new ProveError(`cannot rescore ${opts.runId}: it has no stored runs`)
+  const scored = scoreSession({
+    root: opts.root,
+    capability: opts.capability,
+    suites: stored.suites,
+    records,
+    tasks,
+    installed: opts.driver.installedNames(opts.capability),
+    agent,
+    requestedModel: stored.model.requested,
+    runner: stored.runner,
+    canaryOnly: !stored.conditions.includes('baseline'),
+    // When the runs happened, not when they were re-scored.
+    at: stored.finishedAt ?? stored.createdAt,
+    log: opts.log,
+  })
+  const manifest: ReproManifest = {
+    ...stored,
+    rescored: { at: now().toISOString(), sigilVersion: opts.sigilVersion, method: SPEC_VERSION },
+  }
+  return publish(scored, {
+    root: opts.root,
+    capability: opts.capability,
+    manifest,
+    dir: store.dir,
+    agent,
+    writeEvidence: opts.writeEvidence,
+    sigilVersion: opts.sigilVersion,
+    now: now(),
+  })
+}
+
+function rescoreConflict(m: ReproManifest, opts: RescoreOptions): string | undefined {
+  if (m.capability.id !== opts.capability.manifest.id) return `it measured ${m.capability.id}`
+  if (m.capability.digest !== opts.capability.digest)
+    return 'the capability changed since the runs (different digest)'
+  if (m.agent.id !== opts.driver.id) return `it ran ${m.agent.id}`
+  for (const s of m.suites) {
+    const now = opts.suites.find((x) => x.suite === s.suite)
+    if (!now) return `suite ${s.suite} was not found`
+    if (now.digest !== s.digest) return `suite ${s.suite} changed since the runs (different digest)`
+  }
+  return undefined
 }
 
 /**
