@@ -1,0 +1,209 @@
+{
+  "sigil": 1,
+  "capability": "demo/tailwind-v4-tokens",
+  "version": "1.0.0",
+  "digest": "sha256:6d3af6764f9f2dccfc8f67fd815d4b520b011039356fe1cabde4d44d9b124210",
+  "generatedAt": "2026-10-28T09:00:00.000Z",
+  "structure": {
+    "status": "pass",
+    "tool": {
+      "name": "sigil",
+      "version": "0.0.0-demo"
+    },
+    "at": "2026-10-28T09:00:00.000Z",
+    "findings": []
+  },
+  "security": {
+    "status": "pass",
+    "tool": {
+      "name": "sigil",
+      "version": "0.0.0-demo"
+    },
+    "at": "2026-10-28T09:00:00.000Z",
+    "findings": []
+  },
+  "canary": {
+    "status": "pass",
+    "agent": {
+      "id": "claude-code",
+      "version": "0.0.0-demo"
+    },
+    "model": "demo-model",
+    "at": "2026-10-28T09:00:00.000Z",
+    "runs": 4,
+    "events": []
+  },
+  "compat": {
+    "claude-code": {
+      "compiled": true,
+      "evaluated": true
+    },
+    "codex": {
+      "compiled": true,
+      "evaluated": false
+    },
+    "cursor": {
+      "compiled": true,
+      "evaluated": false
+    },
+    "github-copilot": {
+      "compiled": true,
+      "evaluated": false
+    },
+    "gemini-cli": {
+      "compiled": true,
+      "evaluated": false
+    },
+    "opencode": {
+      "compiled": true,
+      "evaluated": false
+    }
+  },
+  "uplift": [
+    {
+      "agent": {
+        "id": "claude-code",
+        "version": "0.0.0-demo"
+      },
+      "model": "demo-model",
+      "suite": "demo/tailwind-v4-tokens",
+      "suiteDigest": "sha256:fb34e50b8376dc1c6951eff20fc616c11bbf6d45738ccc9617048bb0f037b924",
+      "at": "2026-10-28T09:00:00.000Z",
+      "tasks": [
+        {
+          "task": "rate-limit-login-1",
+          "baseline": {
+            "passed": 27,
+            "runs": 30,
+            "tampered": 2,
+            "falseDone": 0,
+            "medianTokens": 45025.5,
+            "medianSeconds": 232.5,
+            "medianCostUsd": 0.1805
+          },
+          "treatment": {
+            "passed": 25,
+            "runs": 30,
+            "tampered": 0,
+            "falseDone": 1,
+            "medianTokens": 47657.5,
+            "medianSeconds": 256.5,
+            "medianCostUsd": 0.1885
+          }
+        },
+        {
+          "task": "backfill-column-1",
+          "baseline": {
+            "passed": 26,
+            "runs": 30,
+            "tampered": 1,
+            "falseDone": 0,
+            "medianTokens": 53429,
+            "medianSeconds": 210,
+            "medianCostUsd": 0.185
+          },
+          "treatment": {
+            "passed": 30,
+            "runs": 30,
+            "tampered": 0,
+            "falseDone": 0,
+            "medianTokens": 54677.5,
+            "medianSeconds": 315.5,
+            "medianCostUsd": 0.226
+          }
+        },
+        {
+          "task": "fix-stale-cache-1",
+          "baseline": {
+            "passed": 29,
+            "runs": 30,
+            "tampered": 1,
+            "falseDone": 0,
+            "medianTokens": 41173.5,
+            "medianSeconds": 223.5,
+            "medianCostUsd": 0.214
+          },
+          "treatment": {
+            "passed": 29,
+            "runs": 30,
+            "tampered": 0,
+            "falseDone": 0,
+            "medianTokens": 49468.5,
+            "medianSeconds": 296.5,
+            "medianCostUsd": 0.2065
+          }
+        },
+        {
+          "task": "rate-limit-login-2",
+          "baseline": {
+            "passed": 23,
+            "runs": 30,
+            "tampered": 1,
+            "falseDone": 1,
+            "medianTokens": 47425,
+            "medianSeconds": 300,
+            "medianCostUsd": 0.149
+          },
+          "treatment": {
+            "passed": 29,
+            "runs": 30,
+            "tampered": 0,
+            "falseDone": 1,
+            "medianTokens": 50877.5,
+            "medianSeconds": 324.5,
+            "medianCostUsd": 0.213
+          }
+        },
+        {
+          "task": "backfill-column-2",
+          "baseline": {
+            "passed": 28,
+            "runs": 30,
+            "tampered": 0,
+            "falseDone": 0,
+            "medianTokens": 41863,
+            "medianSeconds": 239,
+            "medianCostUsd": 0.173
+          },
+          "treatment": {
+            "passed": 29,
+            "runs": 30,
+            "tampered": 0,
+            "falseDone": 1,
+            "medianTokens": 44140.5,
+            "medianSeconds": 264,
+            "medianCostUsd": 0.177
+          }
+        },
+        {
+          "task": "fix-stale-cache-2",
+          "baseline": {
+            "passed": 27,
+            "runs": 30,
+            "tampered": 1,
+            "falseDone": 0,
+            "medianTokens": 34834.5,
+            "medianSeconds": 208.5,
+            "medianCostUsd": 0.179
+          },
+          "treatment": {
+            "passed": 26,
+            "runs": 30,
+            "tampered": 0,
+            "falseDone": 1,
+            "medianTokens": 40787.5,
+            "medianSeconds": 234.5,
+            "medianCostUsd": 0.16799999999999998
+          }
+        }
+      ],
+      "delta": 0.04444444444444451,
+      "ci95": [
+        -0.015415323046189103,
+        0.10557318887910602
+      ],
+      "verdict": "inconclusive"
+    }
+  ],
+  "reviews": []
+}

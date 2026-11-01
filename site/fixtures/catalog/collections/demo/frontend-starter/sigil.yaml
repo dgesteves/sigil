@@ -1,0 +1,45 @@
+sigil: 1
+id: demo/frontend-starter
+type: collection
+version: 1.0.0
+name: Frontend Quality Pack
+summary: "A curated set for React teams: Server Actions, accessibility review
+  and Vitest migration."
+description: "A curated set for React teams: Server Actions, accessibility
+  review and Vitest migration. DEMO fixture: every number attached to this
+  capability was simulated for site development."
+domains:
+  - frontend
+  - testing
+industries: []
+lifecycle:
+  - build
+  - test
+technologies:
+  - react
+license: MIT
+authors:
+  - github: sigil-demo
+payload:
+  format: bundle
+  entry: collection.md
+targets:
+  - claude-code
+  - codex
+  - cursor
+  - github-copilot
+  - gemini-cli
+  - opencode
+permissions:
+  network: []
+  shell: []
+  filesystem: read
+  env: []
+proof:
+  suites: []
+includes:
+  - demo/react-server-actions
+  - demo/wcag-audit
+  - demo/vitest-from-jest
+limitations:
+  - "DEMO fixture: not a real capability and never measured."

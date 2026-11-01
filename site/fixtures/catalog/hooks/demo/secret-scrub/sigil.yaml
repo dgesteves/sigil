@@ -1,0 +1,41 @@
+sigil: 1
+id: demo/secret-scrub
+type: hook
+version: 1.0.0
+name: Secret Scrub
+summary: Stops the agent before it writes a credential into a file, a commit or
+  a log line.
+description: "Stops the agent before it writes a credential into a file, a
+  commit or a log line. DEMO fixture: every number attached to this capability
+  was simulated for site development."
+domains:
+  - security
+industries: []
+lifecycle:
+  - secure
+technologies:
+  - git
+license: MIT
+authors:
+  - github: sigil-demo
+payload:
+  format: hook
+  entry: hook.json
+targets:
+  - claude-code
+  - codex
+  - cursor
+  - github-copilot
+  - gemini-cli
+  - opencode
+permissions:
+  network: []
+  shell:
+    - git
+    - pnpm test
+  filesystem: read
+  env: []
+proof:
+  suites: []
+limitations:
+  - "DEMO fixture: not a real capability and never measured."

@@ -1,0 +1,24 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "target": "ES2023",
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "jsx": "react-jsx",
+    "allowJs": false,
+    "noEmit": true,
+    "declaration": false,
+    "sourceMap": false,
+    "incremental": true,
+    "allowImportingTsExtensions": true,
+    "plugins": [{ "name": "next" }],
+    "paths": {
+      "@/*": ["./src/*"],
+      "@core/glyph": ["../packages/sigil/src/core/glyph.ts"],
+      "@core/ids": ["../packages/sigil/src/core/ids.ts"]
+    }
+  },
+  "include": ["next-env.d.ts", "src", "scripts", ".next/types/**/*.ts", "next.config.ts"],
+  "exclude": ["node_modules", "fixtures"]
+}

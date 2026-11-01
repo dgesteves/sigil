@@ -1,0 +1,44 @@
+sigil: 1
+id: demo/embedded-rtos-safety
+type: rule
+version: 1.0.0
+name: RTOS Safety Rules
+summary: Interrupt-safe patterns, stack budgets and no dynamic allocation for
+  Zephyr firmware.
+description: "Interrupt-safe patterns, stack budgets and no dynamic allocation
+  for Zephyr firmware. DEMO fixture: every number attached to this capability
+  was simulated for site development."
+domains:
+  - embedded
+  - systems
+industries:
+  - automotive
+  - aerospace-defense
+lifecycle:
+  - build
+  - review
+technologies:
+  - zephyr
+  - c
+license: MIT
+authors:
+  - github: sigil-demo
+payload:
+  format: rule
+  entry: rule.md
+targets:
+  - claude-code
+  - codex
+  - cursor
+  - github-copilot
+  - gemini-cli
+  - opencode
+permissions:
+  network: []
+  shell: []
+  filesystem: read
+  env: []
+proof:
+  suites: []
+limitations:
+  - "DEMO fixture: not a real capability and never measured."

@@ -1,0 +1,134 @@
+.wrap {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding-top: 56px;
+  display: grid;
+  gap: 48px;
+}
+.head {
+  display: grid;
+  gap: 14px;
+}
+.head h1 {
+  font-size: clamp(48px, 7vw, 104px);
+  line-height: 0.95;
+}
+.lede {
+  max-width: 54ch;
+  font-family: var(--serif);
+  font-size: 22px;
+  line-height: 1.35;
+  color: var(--bone-2);
+}
+.empty {
+  display: grid;
+  gap: 14px;
+  max-width: 680px;
+  padding: 28px;
+  border: 1px dashed var(--line-2);
+  font-size: 13px;
+  color: var(--bone-2);
+}
+.empty .display {
+  font-size: 34px;
+  color: var(--bone);
+}
+.empty pre {
+  color: var(--flare);
+  font-size: 12px;
+  white-space: pre-wrap;
+}
+.figures {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+}
+.figures div {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 6px;
+  padding: 16px;
+  background: var(--void);
+}
+.figures dt {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--bone-3);
+  font-variation-settings: "wdth" 100;
+}
+.figures dd {
+  font-size: 44px;
+  line-height: 1;
+  font-weight: 200;
+  font-variation-settings: "wdth" 112.5;
+}
+.figures dd small {
+  font-size: 16px;
+  color: var(--bone-3);
+}
+.figures [data-verdict="proven"] dd {
+  color: var(--flare);
+  text-shadow: 0 0 24px rgba(255, 170, 69, 0.4);
+}
+.figures [data-verdict="harmful"] dd {
+  color: var(--harm);
+}
+.read {
+  margin-top: -24px;
+  max-width: 80ch;
+  font-size: 13px;
+  color: var(--bone-2);
+}
+.section {
+  display: grid;
+  gap: 16px;
+}
+.twin {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+}
+.twin > div {
+  display: grid;
+  gap: 12px;
+  align-content: start;
+}
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+.table th,
+.table td {
+  padding: 8px 10px 8px 0;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+}
+.table thead th {
+  font-weight: 400;
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--bone-3);
+}
+.table tbody th {
+  font-weight: 400;
+  color: var(--bone-2);
+}
+.table td {
+  color: var(--bone);
+}
+@media (max-width: 860px) {
+  .figures {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .twin {
+    grid-template-columns: 1fr;
+  }
+}

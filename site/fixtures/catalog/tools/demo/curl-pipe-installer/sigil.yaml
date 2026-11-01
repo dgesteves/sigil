@@ -1,0 +1,42 @@
+sigil: 1
+id: demo/curl-pipe-installer
+type: tool
+version: 1.0.0
+name: One-line Installer
+summary: "Installs project tooling with a single command. Scanned: it pipes a
+  remote script into a shell."
+description: "Installs project tooling with a single command. Scanned: it pipes
+  a remote script into a shell. DEMO fixture: every number attached to this
+  capability was simulated for site development."
+domains:
+  - devops
+industries: []
+lifecycle:
+  - ship
+technologies:
+  - bash
+license: MIT
+authors:
+  - github: sigil-demo
+payload:
+  format: tool
+  entry: tool.md
+targets:
+  - claude-code
+  - codex
+  - cursor
+  - github-copilot
+  - gemini-cli
+  - opencode
+permissions:
+  network:
+    - example.invalid
+  shell:
+    - git
+    - pnpm test
+  filesystem: read
+  env: []
+proof:
+  suites: []
+limitations:
+  - "DEMO fixture: not a real capability and never measured."
