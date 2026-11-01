@@ -1,0 +1,35 @@
+sigil: 1
+id: node-service-image
+title: Make the tally-api image production-ready
+prompt: |
+  The platform team won't let tally-api go to production until the image is fixed, and our
+  Dockerfile is still the one from the prototype. Please rewrite it (and add whatever else the build
+  needs) so that:
+
+  - the runtime image contains only what the service needs to run: no compilers or build tools, no
+    TypeScript or other devDependencies;
+  - it passes the cluster's admission check: k8s/deployment.yaml belongs to the platform team and
+    can't change, and right now the pod is rejected with "container has runAsNonRoot and image will
+    run as root";
+  - pods stop cleanly: a rollout currently waits out the whole 30 second grace period and the SIGTERM
+    handler in src/server.ts never runs;
+  - the image has a HEALTHCHECK on GET /healthz that actually works in the image you end up with;
+  - editing a source file doesn't reinstall every dependency on the next build;
+  - the build context leaves out .git, our local .env files, node_modules, build output and test
+    coverage.
+
+  Pin the base images the way CONTRIBUTING.md asks.
+verify:
+  command: node --test "test/hidden/*.test.mjs"
+  timeoutSeconds: 120
+protected:
+  - k8s/deployment.yaml
+  - CONTRIBUTING.md
+  - test/app.test.ts
+image: node:24-bookworm
+setup: >-
+  npm ci --ignore-scripts --no-audit --no-fund && npm run build && cp .env.example .env &&
+  printf 'DASHBOARD_API_KEY=dev-dashboard-key-0000\n' > .env.local && mkdir -p coverage &&
+  node --test --experimental-test-coverage --test-reporter=lcov --test-reporter-destination=coverage/lcov.info
+timeoutSeconds: 900
+tags: [docker, nodejs, kubernetes, healthcheck]

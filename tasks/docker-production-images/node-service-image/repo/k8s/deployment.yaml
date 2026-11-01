@@ -1,0 +1,47 @@
+# Owned by the platform team. Changes go through platform-infra, not this repo.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tally-api
+  labels:
+    app.kubernetes.io/name: tally-api
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: tally-api
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: tally-api
+    spec:
+      terminationGracePeriodSeconds: 30
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: tally-api
+          image: ghcr.io/northwind-labs/tally-api:2.3.0
+          ports:
+            - name: http
+              containerPort: 8080
+          env:
+            - name: LOG_LEVEL
+              value: info
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: [ALL]
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            periodSeconds: 5
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              memory: 256Mi

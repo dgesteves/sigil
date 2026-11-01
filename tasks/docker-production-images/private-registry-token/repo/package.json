@@ -1,0 +1,19 @@
+{
+  "name": "@northwind/ledger-worker",
+  "version": "3.8.0",
+  "private": true,
+  "description": "Posts balanced journal entries to the Northwind ledger.",
+  "type": "module",
+  "license": "UNLICENSED",
+  "engines": {
+    "node": ">=24.11 <25"
+  },
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "@northwind/money": "^1.4.2",
+    "pino": "^10.4.0"
+  }
+}

@@ -1,0 +1,23 @@
+sigil: 1
+id: private-registry-token
+title: Keep the GitHub Packages token out of the published image
+prompt: |
+  Security found our GitHub Packages read token in the public ledger-worker image on GHCR: anyone can
+  see it with `docker history`. The token is revoked and CI has a new one in the same NPM_READ_TOKEN
+  secret. Please fix how we build the image so the token can't be recovered by anyone who pulls the
+  image or the build cache we push next to it: not from any layer of any build stage, the image
+  config or history, or the provenance and SBOM attestations we attach.
+
+  Keep publishing the same things (both platforms, max-mode provenance, the SBOM and the registry
+  build cache), and the @northwind/* packages still have to install from GitHub Packages, both in CI
+  and when developers run scripts/build-image.sh locally with NPM_TOKEN exported.
+verify:
+  command: node --test "test/hidden/*.test.mjs"
+  timeoutSeconds: 120
+protected:
+  - test/postings.test.js
+  - src/**
+  - package-lock.json
+image: node:24-bookworm
+timeoutSeconds: 900
+tags: [docker, secrets, npm, buildkit]
