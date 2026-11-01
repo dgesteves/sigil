@@ -3,7 +3,7 @@ import { createServer as createHttp, request } from 'node:http'
 import { connect, createServer, type Server } from 'node:net'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { afterAll, beforeAll, describe, expect, it } from 'vitest'
+import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest'
 import { type HostProxy, startHostProxy } from '../../src/lab/proxy/host.js'
 import { parseProxyLog, proxySource } from '../../src/lab/proxy/program.js'
 
@@ -115,11 +115,14 @@ describe('egress proxy', () => {
   it('switches policy on reload, failing closed', async () => {
     await proxy.setPolicy('verify', [])
     expect(await tunnel(`127.0.0.1:${echoPort}`)).toMatch(/^HTTP\/1\.1 403/)
-    const last = proxy
-      .records()
-      .filter((r) => r.event === 'connect')
-      .at(-1)
-    expect(last?.phase).toBe('verify')
+    // The proxy logs asynchronously; slow CI runners can read the log before the line lands.
+    await vi.waitFor(() => {
+      const last = proxy
+        .records()
+        .filter((r) => r.event === 'connect')
+        .at(-1)
+      expect(last?.phase).toBe('verify')
+    })
     await proxy.setPolicy('agent', [`127.0.0.1:${echoPort}`, `127.0.0.1:${webPort}`])
   })
 

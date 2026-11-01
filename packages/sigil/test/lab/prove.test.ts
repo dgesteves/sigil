@@ -135,7 +135,8 @@ describe('sigil prove (host runner, stub agent)', () => {
       method: '1.0',
       producedBy: expect.any(String),
     })
-    expect(manifest.label).toBe('host/local')
+    // CI sets GITHUB_ACTIONS, so the same run is labelled host/ci there.
+    expect(manifest.label).toBe(process.env.GITHUB_ACTIONS === 'true' ? 'host/ci' : 'host/local')
     expect(manifest.canaryNote).toMatch(/never as a canary pass/)
     expect(await scanForSecrets(result.dir)).toEqual([])
   })
