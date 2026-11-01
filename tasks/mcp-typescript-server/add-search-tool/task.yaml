@@ -1,0 +1,20 @@
+sigil: 1
+id: add-search-tool
+title: Add a search tool to an MCP server on the v2 TypeScript SDK
+prompt: |
+  Add a `search_notes` tool to the notes MCP server. It takes a required `query` string and an
+  optional `limit` (an integer from 1 to 50, default 10), and returns the notes whose title or body
+  contains the query, ignoring case, most recently updated first, in the same shape `list_notes`
+  returns. A blank query or a limit outside 1-50 should come back to the model as a tool error it can
+  read, not as a crash. The tool doesn't change anything, so mark it read-only in its tool
+  annotations. Keep `npm test` and `npm run typecheck` passing.
+verify:
+  command: node --test "test/hidden/*.test.mjs"
+  timeoutSeconds: 120
+protected:
+  - test/server.test.ts
+  - data/**
+image: node:24-bookworm
+setup: npm ci --ignore-scripts --no-audit --no-fund
+timeoutSeconds: 900
+tags: [mcp, typescript, tools, stdio]

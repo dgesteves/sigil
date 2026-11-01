@@ -1,0 +1,37 @@
+sigil: 1
+id: mcp/typescript-server
+type: skill
+version: 1.0.0
+name: MCP Servers in TypeScript (SDK v2)
+summary: Build, test and port MCP servers on the v2 TypeScript SDK and the 2026-07-28 protocol, without the v1-era mistakes agents usually make.
+description: >-
+  Current, verified guidance for Model Context Protocol servers written with the official TypeScript
+  SDK v2 (@modelcontextprotocol/server 2.x, zod 4). It covers tool registration and schemas,
+  structured output that passes the SDK's own validation, choosing between isError results and
+  protocol errors, resource templates that actually list, prompts, progress and cancellation through
+  ctx.mcpReq, serving both protocol eras with serveStdio or createMcpHandler, stdout hygiene on
+  stdio, and a symptom-driven map for porting @modelcontextprotocol/sdk 1.x code. Each claim was
+  checked against the installed 2.4.0 packages and the 2026-07-28 specification.
+domains: [ai-engineering, backend]
+lifecycle: [build, test]
+technologies: [mcp, typescript, nodejs, zod]
+license: MIT
+authors:
+  - github: dgesteves
+payload:
+  format: agent-skill
+  entry: SKILL.md
+targets: [claude-code, codex, cursor, github-copilot, gemini-cli, opencode]
+permissions:
+  network: []
+  shell: [node, npm test, npm run typecheck, npx tsc]
+  filesystem: write
+  env: []
+proof:
+  suites: [mcp-typescript-server]
+limitations:
+  - Written for @modelcontextprotocol/server 2.4.x and protocol revision 2026-07-28; later 2.x releases may rename or add APIs.
+  - Covers TypeScript servers. Client and host development, OAuth authorization servers and the Python SDK are only touched where a server needs them.
+  - Streamable HTTP guidance is lighter than stdio and was checked with node:http only, not every framework adapter.
+  - Multi-round-trip input (inputRequired), subscriptions and tasks are named but not taught in depth.
+  - The proof suite exercises stdio servers only; HTTP deployment advice is not measured by it.

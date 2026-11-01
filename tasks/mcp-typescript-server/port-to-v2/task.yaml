@@ -1,0 +1,22 @@
+sigil: 1
+id: port-to-v2
+title: Port a v1 MCP server to the v2 TypeScript SDK and the 2026-07-28 protocol
+prompt: |
+  We bumped the MCP TypeScript SDK to v2 in package.json (the old `@modelcontextprotocol/sdk`
+  package is gone, see the lockfile) but never ported the server, so it doesn't start any more.
+  Port `src/` to the v2 SDK. Every tool, the docs resource and the prompt must keep working exactly
+  as before, including the progress updates `index_stats` sends.
+
+  Also: our support desktop app now connects with the 2026-07-28 protocol revision, so the server
+  has to work for those clients as well as for the existing 2025-era ones.
+  `npm test` and `npm run typecheck` should pass when you're done.
+verify:
+  command: node --test "test/hidden/*.test.mjs"
+  timeoutSeconds: 120
+protected:
+  - test/server.test.ts
+  - docs/**
+image: node:24-bookworm
+setup: npm ci --ignore-scripts --no-audit --no-fund
+timeoutSeconds: 900
+tags: [mcp, typescript, migration, protocol-version]

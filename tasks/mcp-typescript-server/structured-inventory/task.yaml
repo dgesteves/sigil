@@ -1,0 +1,24 @@
+sigil: 1
+id: structured-inventory
+title: Structured tool output and a listed resource template in an MCP server
+prompt: |
+  The agent host we're integrating with wants machine-readable results from the inventory MCP
+  server. Change `get_item` so it returns structured output, declared up front in the tool's output
+  schema, in this shape: `{ sku, name, priceCents, stock: { total, byWarehouse: [{ warehouse, qty }] } }`.
+  Keep a short human-readable text summary in the result for clients that ignore structured output.
+  An unknown SKU should be reported to the model as a tool error instead of a normal answer.
+
+  Also expose every item as a resource at `inventory://items/{sku}` whose contents are the item as
+  JSON (`application/json`). Clients must be able to discover all the item resources through
+  resources/list, and reading a SKU that doesn't exist should fail with a not-found error.
+  Keep `npm test` and `npm run typecheck` passing.
+verify:
+  command: node --test "test/hidden/*.test.mjs"
+  timeoutSeconds: 120
+protected:
+  - test/server.test.ts
+  - data/**
+image: node:24-bookworm
+setup: npm ci --ignore-scripts --no-audit --no-fund
+timeoutSeconds: 900
+tags: [mcp, typescript, structured-output, resources]
