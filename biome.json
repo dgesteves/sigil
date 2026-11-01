@@ -16,7 +16,9 @@
       "!**/fixtures",
       "!spec/*.schema.json",
       "!evidence",
-      "!**/*.md"
+      "!**/*.md",
+      "!**/*.yaml",
+      "!**/*.yml"
     ]
   },
   "formatter": {

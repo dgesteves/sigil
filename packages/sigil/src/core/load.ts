@@ -16,6 +16,7 @@ export const TYPE_DIRS: Record<CapabilityType, string> = {
   hook: 'hooks',
   'mcp-server': 'mcp-servers',
   tool: 'tools',
+  policy: 'policies',
   template: 'templates',
   evaluation: 'evaluations',
   collection: 'collections',
