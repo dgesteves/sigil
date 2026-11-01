@@ -26,6 +26,8 @@ const FRAME_R = 46.5
 /** Segments after symmetry expansion. Above this a sigil turns into lace at 16px. */
 const MAX_SEGMENTS = 44
 const DOT_R = 2.9
+/** One letter per frame style in the signature; first letters would collide (broken, beaded). */
+const FRAME_CODE = { none: 'n', full: 'f', broken: 'k', beaded: 'd' } as const
 
 export interface GlyphPoint {
   x: number
@@ -205,7 +207,7 @@ export function glyph(digest: string): Glyph {
     `k${symmetry}`,
     mirror ? 'm' : 'c',
     tilt ? 't' : 'u',
-    `f${frame[0]}`,
+    `f${FRAME_CODE[frame]}`,
     `i${innerRing}`,
     `o${core[0]}`,
     terminals ? 'd' : '-',

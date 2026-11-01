@@ -137,12 +137,13 @@ export const BANDS: Record<UpliftVerdict, [number, number]> = {
   inconclusive: [0.57, 0.7],
   'no-effect': [0.62, 0.72],
   untested: [0.73, 0.9],
-  harmful: [0.95, 1.04],
+  harmful: [0.92, 0.99],
 }
 
 export function bandOf(verdict: UpliftVerdict, level: Level, placed: boolean): [number, number] {
-  if (level === 'revoked') return [1.0, 1.08]
-  if (!placed) return [1.1, 1.2]
+  if (level === 'revoked') return [0.95, 1.01]
+  // No value on this axis (say, industry-agnostic): a faint halo just outside the rim.
+  if (!placed) return [1.07, 1.14]
   return BANDS[verdict]
 }
 

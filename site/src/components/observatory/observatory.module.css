@@ -348,7 +348,7 @@
   border-radius: 999px;
   font-size: 11px;
   color: var(--bone-2);
-  background: rgba(5, 5, 5, 0.55);
+  background: rgba(5, 5, 5, 0.86);
   transition:
     border-color 0.2s,
     color 0.2s;

@@ -371,8 +371,8 @@ export function Observatory({ caps, meta }: { caps: CapView[]; meta: Observatory
     if (!renderer) return
     let raf = 0
     const update = () => {
-      const r = lensRef.current?.getBoundingClientRect()
-      field.current?.setClear(r ?? null)
+      const els = lensRef.current?.querySelectorAll<HTMLElement>('[data-lens]') ?? []
+      field.current?.setClear(Array.from(els, (el) => el.getBoundingClientRect()))
     }
     const loop = () => {
       update()
@@ -455,7 +455,7 @@ export function Observatory({ caps, meta }: { caps: CapView[]; meta: Observatory
               <span className={styles.pulse} aria-hidden="true" /> the oracle
             </label>
             <div ref={lensRef} className={styles.lens}>
-              <div className={styles.line}>
+              <div className={styles.line} data-lens>
                 <input
                   ref={input}
                   id="intent"
@@ -496,7 +496,7 @@ export function Observatory({ caps, meta }: { caps: CapView[]; meta: Observatory
                   <kbd>↵</kbd>
                 </button>
               </div>
-              <p id="intent-hint" className={styles.hint}>
+              <p id="intent-hint" className={styles.hint} data-lens>
                 describe the task, or paste a GitHub repo URL
                 <span className={styles.kHint}>
                   {' '}
@@ -505,7 +505,7 @@ export function Observatory({ caps, meta }: { caps: CapView[]; meta: Observatory
                 </span>
               </p>
               {!active && caps.length > 0 ? (
-                <div className={styles.examples}>
+                <div className={styles.examples} data-lens>
                   <span className="micro">try</span>
                   {EXAMPLES.map((ex) => (
                     <button
@@ -523,7 +523,7 @@ export function Observatory({ caps, meta }: { caps: CapView[]; meta: Observatory
               ) : null}
               {!active && caps.length === 0 ? <EmptyRegistry /> : null}
               {!active && caps.length > 0 && stats.proven === 0 ? (
-                <p className={styles.nothing}>
+                <p className={styles.nothing} data-lens>
                   {caps.length} in the registry, none proven yet. Proof is produced by runs, not
                   claims: <code>npx sigil prove</code> · <Link href="/method">how proof works</Link>
                 </p>
@@ -966,7 +966,7 @@ function Legend() {
 
 function EmptyRegistry() {
   return (
-    <div className={styles.empty}>
+    <div className={styles.empty} data-lens>
       <p className="display">The proving ground is open. Nothing has been proven yet.</p>
       <p>Every light in this field will be the result of a recorded run on sealed content.</p>
       <code>{'npx sigil prove catalog/<type>/<ns>/<slug> --suite <suite> --runs 6'}</code>

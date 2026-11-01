@@ -38,6 +38,9 @@ export interface FieldNode {
   near: number
   hover: number
   slot: Slot | null
+  /** 1 when the node has a value on the current axis; it recedes to the halo otherwise. */
+  placed: number
+  placedTarget: number
   style: NodeStyle
   phase: number
 }
@@ -123,6 +126,8 @@ export class FieldEngine {
       near: 0,
       hover: 0,
       slot: null,
+      placed: 1,
+      placedTarget: 1,
       style: styleOf(cap),
       phase: jitter(cap.digest, 5) * Math.PI * 2,
     }))
@@ -144,7 +149,7 @@ export class FieldEngine {
     let y0 = Infinity
     let y1 = -Infinity
     for (let i = 0; i < 72; i++) {
-      const p = this.polar((i / 72) * Math.PI * 2, 1.2)
+      const p = this.polar((i / 72) * Math.PI * 2, 1.27)
       x0 = Math.min(x0, p.x)
       x1 = Math.max(x1, p.x)
       y0 = Math.min(y0, p.y)
@@ -159,22 +164,19 @@ export class FieldEngine {
     cam.rot = rot
   }
 
-  /** Screen-space ellipse the field bends around: the intent line. */
-  clear: { x: number; y: number; rx: number; ry: number } | null = null
+  /** Screen-space shapes the field bends around: the intent line, its examples, notes. */
+  clear: { x: number; y: number; rx: number; ry: number }[] = []
 
   /**
    * Gravitational lensing, honestly labelled: a node whose home would sit under the intent is moved
    * outward along its own radius until it is visible. Radial order (evidence) is preserved.
    */
   lens(theta: number, r: number): number {
-    const c = this.clear
-    if (!c) return r
+    if (this.clear.length === 0) return r
     const inside = (rr: number) => {
       const p = this.polar(theta, rr)
-      // A superellipse hugs the text block's rounded rectangle better than an ellipse.
-      const dx = (p.x - c.x) / c.rx
-      const dy = (p.y - c.y) / c.ry
-      return dx ** 4 + dy ** 4 < 1
+      // Superellipses hug the text blocks' rounded rectangles better than ellipses.
+      return this.clear.some((c) => ((p.x - c.x) / c.rx) ** 4 + ((p.y - c.y) / c.ry) ** 4 < 1)
     }
     if (!inside(r)) return r
     let lo = r
@@ -186,13 +188,15 @@ export class FieldEngine {
       else hi = mid
     }
     // Keep the order of the bands: deeper evidence stays closer in, just compressed outward.
-    return hi + (r - 0.4) * 0.12
+    // Never past the rim, where labels live; beyond that a node may sit behind a chip instead.
+    return Math.min(Math.max(r, 1.02), hi + (r - 0.4) * 0.12)
   }
 
   setLayout(l: FieldLayout, instant = false) {
     this.layoutRef = l
     this.nodes.forEach((n, i) => {
       const s = l.place[i] ?? -1
+      n.placedTarget = s >= 0 ? 1 : 0
       const sector = s >= 0 ? l.sectors[s] : undefined
       const [r0, r1] = bandOf(n.cap.uplift, n.cap.level, s >= 0)
       n.r = lerp(r0, r1, jitter(n.cap.digest, 1))
@@ -207,6 +211,22 @@ export class FieldEngine {
         n.z = n.tz
       }
     })
+  }
+
+  /**
+   * Settles the layout before the first frame: springs and collisions only, no drift. Used for
+   * reduced motion, where the field is drawn once in its resting state.
+   */
+  settle(iterations = 240) {
+    const saved = this.pointer.active
+    this.pointer.active = false
+    for (let i = 0; i < iterations; i++) this.step(1 / 60)
+    this.pointer.active = saved
+    for (const n of this.nodes) {
+      n.ignite = 1
+      n.vx = 0
+      n.vz = 0
+    }
   }
 
   get layout() {
@@ -293,10 +313,6 @@ export class FieldEngine {
     for (const n of nodes) {
       n.x += n.vx * dt
       n.z += n.vz * dt
-      if (this.reduced && !this.oracle) {
-        n.x = n.tx
-        n.z = n.tz
-      }
       // Critically damped spring toward the Oracle's orbit, or back into the field.
       const target = n.slot ? 1 : 0
       if (this.reduced) {
@@ -309,6 +325,7 @@ export class FieldEngine {
       }
       const dimTarget = this.oracle && !n.slot ? 0.13 : 1
       n.dim += (dimTarget - n.dim) * Math.min(1, dt * 4)
+      n.placed += (n.placedTarget - n.placed) * Math.min(1, dt * 3)
       const hv =
         this.hovered >= 0 && nodes[this.hovered] === n
           ? 1
@@ -382,6 +399,7 @@ export class FieldEngine {
         n.style.scale *
         persp *
         (0.55 + 0.45 * n.ignite) *
+        (0.78 + 0.22 * n.placed) *
         (1 + n.near * 0.25 + n.hover * 0.55)
       const f = n.focus
       const e = f <= 0 ? 0 : Math.min(f, 1)
@@ -422,7 +440,8 @@ export class FieldEngine {
   intensity(n: FieldNode): number {
     const pulse =
       n.style.pulse && !this.reduced ? 0.82 + 0.18 * Math.sin(this.time * 2.2 + n.phase) : 1
-    return n.ignite * n.dim * pulse * (1 + n.near * 0.35 + n.hover * 0.4)
+    const off = 0.3 + 0.7 * n.placed
+    return n.ignite * n.dim * pulse * off * (1 + n.near * 0.35 + n.hover * 0.4)
   }
 }
 

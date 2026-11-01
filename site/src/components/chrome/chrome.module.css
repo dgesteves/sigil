@@ -261,6 +261,10 @@
 .kInput:focus {
   border-bottom-color: var(--flare);
 }
+/* The underline is this field's focus indicator; the global ring would double it. */
+.kInput:focus-visible {
+  outline: none;
+}
 .kInput::placeholder {
   color: var(--bone-3);
 }

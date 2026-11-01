@@ -57,6 +57,8 @@ export function drawGraticule(
   ring(BANDS.untested[0] - 0.01, 0.045, [2, 6], true)
   ring(1, 0.16)
   ring(1.045, 0.05)
+  const unplaced = layout.place.filter((p) => p < 0).length
+  if (unplaced) ring(1.105, 0.035, [1, 5])
 
   // Sector ticks.
   ctx.lineWidth = 1
@@ -111,7 +113,7 @@ export function drawGraticule(
   }
   const small = engine.compact ? 8.5 : 9.5
   for (const g of layout.groups) {
-    const p = place((g.start + g.end) / 2, 1.13)
+    const p = place((g.start + g.end) / 2, 1.22)
     ctx.font = `500 ${engine.compact ? 8.5 : 10}px ${fonts.mono}`
     ctx.fillStyle = `rgba(214,206,192,${0.95 * labelsOn * depthFade(p.depth, engine)})`
     const label = (engine.compact ? g.short : g.label).toUpperCase()
@@ -125,15 +127,32 @@ export function drawGraticule(
       const d = Math.hypot(probe.x - pointer.x, probe.y - pointer.y)
       alpha = Math.max(0, 1 - d / 170) * 0.95
     }
+    if (!layout.groups.length && s.count > 0) alpha = Math.max(alpha, 0.72)
     if (hover === s.key) alpha = 1
     alpha *= labelsOn * depthFade(probe.depth, engine)
     if (alpha < 0.02) continue
-    const p = place(mid, layout.groups.length ? 1.06 : 1.1)
+    const p = place(mid, layout.groups.length ? 1.05 : 1.2)
     ctx.font = `400 ${small}px ${fonts.mono}`
     ctx.fillStyle = `rgba(236,229,216,${alpha})`
     const text = `${s.label.toUpperCase()}${s.count ? ` · ${s.count}` : ''}`
     letterSpaced(ctx, text, clampX(ctx, text, p.x, w, 0.8), p.y, 0.8)
   }
+  if (unplaced && labelsOn) {
+    const p = engine.polar(Math.PI * 0.82, 1.15)
+    ctx.textAlign = 'center'
+    ctx.textBaseline = 'top'
+    ctx.font = `400 ${small}px ${fonts.mono}`
+    ctx.fillStyle = 'rgba(144,138,127,0.85)'
+    const text = `${(UNPLACED[layout.dimension] ?? 'other').toUpperCase()} · ${unplaced}`
+    letterSpaced(ctx, text, clampX(ctx, text, p.x, w, 0.8), p.y + 6, 0.8)
+  }
+}
+
+const UNPLACED: Record<string, string> = {
+  industry: 'industry-agnostic',
+  lifecycle: 'no stage declared',
+  domain: 'no discipline',
+  type: 'untyped',
 }
 
 /** Keeps a label inside the canvas, whatever its alignment. */

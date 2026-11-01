@@ -12,8 +12,8 @@ import { GLRenderer } from './render-gl'
 export interface FieldHandle {
   setSlots(slots: Map<string, Slot> | null): void
   focus(id: string | null): void
-  /** The screen rectangle the field should bend around (the intent line). */
-  setClear(rect: DOMRect | null): void
+  /** Screen rectangles the field should bend around (the intent line and its companions). */
+  setClear(rects: DOMRect[]): void
 }
 
 interface Props {
@@ -44,17 +44,17 @@ export default function Field({ caps, dimension, reducedMotion, onOpen, onReady,
     setSlots(slots) {
       engineRef.current?.setSlots(slots)
     },
-    setClear(rect) {
+    setClear(rects) {
       const e = engineRef.current
       if (!e) return
-      e.clear = rect
-        ? {
-            x: rect.left + rect.width / 2,
-            y: rect.top + rect.height / 2,
-            rx: rect.width / 2 + 36,
-            ry: rect.height / 2 + 34,
-          }
-        : null
+      e.clear = rects
+        .filter((r) => r.width > 0 && r.height > 0)
+        .map((r) => ({
+          x: r.left + r.width / 2,
+          y: r.top + r.height / 2,
+          rx: r.width / 2 + 30,
+          ry: r.height / 2 + 26,
+        }))
     },
     focus(id) {
       const e = engineRef.current
@@ -111,6 +111,7 @@ export default function Field({ caps, dimension, reducedMotion, onOpen, onReady,
     }
     size()
     engine.setLayout(layoutRef.current, reducedMotion)
+    if (reducedMotion) engine.settle()
     const ro = new ResizeObserver(size)
     ro.observe(el)
 

@@ -184,3 +184,10 @@
 .algo code {
   color: var(--bone-2);
 }
+
+@media (max-width: 960px) {
+  .stage {
+    width: min(300px, 100%);
+    justify-self: center;
+  }
+}

@@ -252,7 +252,21 @@
 @media (max-width: 960px) {
   .grid {
     grid-template-columns: 1fr;
+    gap: 40px;
     padding-top: 28px;
+  }
+  /* On phones: who it is, then its seal, then the evidence. */
+  .body {
+    display: contents;
+  }
+  .head {
+    order: 0;
+  }
+  .sealCol {
+    order: 1;
+  }
+  .body > :not(.head) {
+    order: 2;
   }
   .sealCol {
     position: static;
