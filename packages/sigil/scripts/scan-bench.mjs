@@ -29,7 +29,10 @@ for (const [rel, kind] of Object.entries(REPOS)) {
   }
   let json
   try {
-    json = execFileSync('node', [CLI, 'scan', dir, '--json'], { encoding: 'utf8', maxBuffer: 64 << 20 })
+    json = execFileSync('node', [CLI, 'scan', dir, '--json'], {
+      encoding: 'utf8',
+      maxBuffer: 64 << 20,
+    })
   } catch (e) {
     // scan exits non-zero when it finds something at/above --fail-on; that is expected.
     json = e.stdout?.toString() ?? '{}'
@@ -37,6 +40,9 @@ for (const [rel, kind] of Object.entries(REPOS)) {
   const findings = JSON.parse(json).findings ?? []
   const counts = Object.fromEntries(ORDER.map((s) => [s, 0]))
   for (const f of findings) counts[f.severity]++
-  const line = ORDER.filter((s) => counts[s]).map((s) => `${counts[s]} ${s}`).join(', ') || 'clean'
+  const line =
+    ORDER.filter((s) => counts[s])
+      .map((s) => `${counts[s]} ${s}`)
+      .join(', ') || 'clean'
   console.log(`${rel} [${kind}]: ${line}`)
 }

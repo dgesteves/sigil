@@ -1,5 +1,4 @@
-import { execFileSync } from 'node:child_process'
-import { cpSync, mkdirSync, mkdtempSync, symlinkSync, writeFileSync } from 'node:fs'
+import { mkdirSync, mkdtempSync, symlinkSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
@@ -306,10 +305,10 @@ describe('bundled files', () => {
       `---\nname: skill\ndescription: ${'d'.repeat(70)}\n---\n\n# S\n`,
     )
     // A tiny ZIP (empty) written to a .txt name.
-    const zip = Buffer.from('504b0506' + '00'.repeat(18), 'hex')
+    const zip = Buffer.from(`504b0506${'00'.repeat(18)}`, 'hex')
     writeFileSync(join(dir, 'skill', 'notes.docx.txt'), zip)
     // Python bytecode magic.
-    writeFileSync(join(dir, 'skill', 'mod.pyc'), Buffer.from('550d0d0a' + '00'.repeat(12), 'hex'))
+    writeFileSync(join(dir, 'skill', 'mod.pyc'), Buffer.from(`550d0d0a${'00'.repeat(12)}`, 'hex'))
     const report = await scanReport([join(dir, 'skill')], dir)
     const f = report.units.flatMap((u) => u.findings)
     expect(f.some((x) => x.rule === 'SIG-SEC-080' && x.message.includes('bytecode'))).toBe(true)
