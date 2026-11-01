@@ -1,0 +1,72 @@
+# Sources
+
+Checked on 2026-11-01 against `pandas==3.1.0` (PyPI, released 2026-10-22) with `numpy==2.5.4`,
+`python-dateutil==4.0.0`, `tzdata==2026.6` on CPython 3.14, once without pyarrow (string storage
+`python`) and once with `pyarrow==26.0.0` (storage `pyarrow`). pandas 2 behaviour was reproduced
+with `pandas==2.3.3` (2025-09-29) and `numpy==2.2.6` on CPython 3.13.
+
+## Release notes (pandas-dev/pandas, `doc/source/whatsnew/`)
+
+- What's new in 3.0.0 (January 21, 2026): string dtype by default, Copy-on-Write, `pd.col`,
+  datetime resolution inference, zoneinfo, `Day` as a calendar day, NaN vs NA in nullable floats,
+  `value_counts(sort=False)`, `concat` sort, the removal list and the 3.0 deprecations.
+  https://pandas.pydata.org/docs/whatsnew/v3.0.0.html
+- What's new in 3.1.0 (October 22, 2026): `DataFrame.select`, `filter(cond=)`, numeric input
+  defaulting to microseconds, `inplace` deprecation (PDEP-8), lossy `.values` deprecation,
+  `infer_freq` returning offsets, `read_csv(dtype="category")` inference, NumPy >= 2 requirement.
+  https://pandas.pydata.org/docs/whatsnew/v3.1.0.html
+
+## User guide and PDEPs
+
+- Copy-on-Write user guide and migration guide: https://pandas.pydata.org/docs/user_guide/copy_on_write.html
+- Migration guides (string dtype, Copy-on-Write): https://pandas.pydata.org/docs/user_guide/migration.html
+- Time series, epoch conversion ("From timestamps to epoch"): https://pandas.pydata.org/docs/user_guide/timeseries.html
+- Offset aliases: https://pandas.pydata.org/docs/user_guide/timeseries.html#offset-aliases
+- PDEP-6 (ban upcasting in setitem): https://pandas.pydata.org/pdeps/0006-ban-upcasting.html
+- PDEP-7 (Copy-on-Write): https://pandas.pydata.org/pdeps/0007-copy-on-write.html
+- PDEP-8 (inplace): https://pandas.pydata.org/pdeps/0008-inplace-methods-in-pandas.html
+- PDEP-14 (string dtype): https://pandas.pydata.org/pdeps/0014-string-dtype.html
+- PDEP-17 (deprecation policy, `Pandas4Warning`): https://pandas.pydata.org/pdeps/0017-backwards-compatibility-and-deprecation-policy.html
+
+## Reproduced by running it
+
+On pandas 3.1.0 unless stated:
+
+- Chained assignment (`df["b"][mask] = v`, `df[mask]["b"] = v`, `df.loc[label]["b"] = v`) and
+  `df["b"].fillna(..., inplace=True)` / `.replace(..., inplace=True)` left the frame unchanged and
+  emitted `ChainedAssignmentError` (a `Warning`), at module level, in functions and in methods.
+  On 2.3.3 the same code updated the frame with a `FutureWarning`.
+- `python -W error::pandas.errors.ChainedAssignmentError -m pytest` did not turn the warning into
+  a failure; `python -m pytest -W error::pandas.errors.ChainedAssignmentError` and a
+  `filterwarnings` ini entry did.
+- Arrays from `Series.to_numpy()`, `np.asarray(ser)` and single-dtype `DataFrame.values` were
+  read-only; `to_numpy(copy=True)` and mixed-dtype `.values` were writable. On 2.3.3 all were
+  writable.
+- `read_csv` text columns were `<StringDtype(storage='python', na_value=nan)>` (no pyarrow) and
+  `<StringDtype(na_value=nan)>` (pyarrow); `dtype == object` was `False`; `select_dtypes("object")`
+  matched them with a `Pandas4Warning`; `astype(str)` kept NaN while 2.3.3 produced `"nan"`;
+  `.str.contains` returned `bool` with `False` for missing while 2.3.3 returned `object` holding
+  `None`.
+- `to_datetime` of second-precision strings gave `datetime64[us]`; `astype("int64")` gave
+  microseconds; `astype("int64") // 10**9` was 1000x too small; `Timestamp.value` stayed in
+  nanoseconds; floor division by `pd.Timedelta` gave exact epoch values; `astype("int64")` with
+  `NaT` returned `-9223372036854775808` without raising; `as_unit("ms")` truncated `.2509` s.
+- On 2.3.3, `Series.view` warned "Use `astype` as an alternative"; on 3.1.0 `view` is gone and
+  `astype` returns microseconds.
+- `merge_asof` with `datetime64[us]` and `datetime64[ns]` keys raised `MergeError`; `merge`,
+  `join`, arithmetic and comparisons accepted them.
+- `groupby` on a categorical dropped unobserved categories (2.3.3 kept them with a
+  `FutureWarning`); `pct_change` no longer forward-filled; `stack()` kept NaN and
+  `stack(dropna=True)` raised; `agg(sum)` and `agg(max)` returned NaN for a group containing NaN
+  while 2.3.3 returned 2.0; `agg(np.max)` still skipped NaN.
+- Every removed alias in the migration table raised `ValueError: Invalid frequency` with the
+  message shown; `to_period("ME")` raised; `Timedelta("1H")` warned and `Timedelta("5T")` raised.
+- Every removed method in the migration table raised `AttributeError` or `TypeError`.
+- `Timestamp("2026-03-28 08:00", tz="Europe/Lisbon") + pd.offsets.Day(1)` gave 08:00 the next day
+  and `+ Timedelta(days=1)` gave 09:00; daily `resample` over the 2026-03-29 DST change had a
+  23-hour bin.
+- Parquet round trips (pyarrow 26) wrote `timestamp[us]`; sqlite3 `to_sql` stored ISO text with
+  microseconds.
+
+The proof suite `tasks/pandas-3` pins the 2.3.3 outputs used for comparison in its hidden
+fixtures, generated by running the original modules on pandas 2.3.3.

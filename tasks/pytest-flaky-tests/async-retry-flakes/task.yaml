@@ -1,0 +1,27 @@
+sigil: 1
+id: async-retry-flakes
+title: Fix the flaky and hollow async tests in a webhook relay toolkit
+prompt: |
+  relaykit's tests are the worst offenders in our CI:
+  - test_cache.py and test_ratelimit.py fail a few times a week on busy runners;
+  - one test in test_retry.py errors with "fixture 'event_loop' not found" since we upgraded
+    pytest-asyncio to 1.4;
+  - the run prints "RuntimeWarning: coroutine ... was never awaited".
+
+  Please make the suite trustworthy. The time-based tests must not depend on real time: no real
+  sleeping and no assertions on measured durations, so a slow or paused runner can't break them. Keep
+  what every test checks, and make sure each one actually runs its checks, so that a bug in relaykit
+  fails the suite. Tests must also pass in any order (CI uses pytest-randomly; keep it on).
+
+  relaykit/ is correct and must not change. Don't add dependencies (requirements.lock stays as it
+  is). Everything under tests/ and the pytest settings in pyproject.toml are yours to change.
+verify:
+  command: .venv/bin/python .verify/check.py
+  timeoutSeconds: 180
+protected:
+  - relaykit/*.py
+  - requirements.lock
+image: python:3.14-slim
+setup: python -m venv .venv && .venv/bin/pip install --quiet --no-cache-dir --disable-pip-version-check --require-hashes --no-deps -r requirements.lock
+timeoutSeconds: 900
+tags: [pytest, flaky-tests, asyncio, pytest-asyncio, python]

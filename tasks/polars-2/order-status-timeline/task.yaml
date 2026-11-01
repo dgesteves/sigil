@@ -1,0 +1,33 @@
+sigil: 1
+id: order-status-timeline
+title: Per-order status timeline and running customer spend over a lazy event stream
+prompt: |
+  The fulfilment dashboard needs two new views. Please implement `order_timeline` and
+  `customer_spend` in orderlog/timeline.py. Both take the LazyFrames returned by
+  `scan_events` / `scan_orders` (orderlog/io.py) and must return a LazyFrame; the dashboard job
+  collects them itself. The README explains the data, including how to order events that share a
+  timestamp and which events to ignore.
+
+  `order_timeline(events, orders)`: one row per order that has events, sorted by order_id, with
+  columns order_id, customer_id, region, n_events, first_event_at, last_event_at,
+  current_status (the status of the order's latest event) and previous_status (the status of the
+  event right before the latest one; null if the order has a single event).
+
+  `customer_spend(events, orders)`: one row per `payment_captured` or `refund_issued` event, with
+  columns customer_id, order_id, event_id, occurred_at, amount_cents (positive for captures,
+  negative for refunds) and spend_to_date_cents: the customer's running total of captures minus
+  refunds up to and including that event, in the order the events happened. Sort the result by
+  customer_id, then in event order.
+
+  Use Polars (already installed); don't load the files with anything else.
+verify:
+  command: .venv/bin/python -m pytest -q -p no:cacheprovider tests
+  timeoutSeconds: 120
+protected:
+  - tests/test_io.py
+  - orderlog/io.py
+  - data/sample/*.csv
+image: python:3.14-slim
+setup: python -m venv .venv && .venv/bin/pip install --quiet --no-cache-dir --disable-pip-version-check --require-hashes --no-deps -r requirements.lock
+timeoutSeconds: 900
+tags: [polars, python, lazy-api, data-engineering]

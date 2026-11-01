@@ -1,0 +1,14 @@
+[project]
+name = "shipping-reports"
+version = "3.4.0"
+description = "Nightly shipping reports for warehouse operations"
+requires-python = ">=3.14"
+# Bumped from polars==0.19.19 by Renovate.
+dependencies = ["polars==2.1.0"]
+
+[dependency-groups]
+dev = ["pytest==9.2.0"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]

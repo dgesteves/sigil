@@ -1,0 +1,38 @@
+sigil: 1
+id: pydantic/pydantic-2
+type: skill
+version: 1.0.0
+name: Pydantic 2 Models and Migration
+summary: Correct Pydantic 2 models, validators and JSON output, and Pydantic 1 upgrades that keep defaults, messages and JSON identical.
+description: >-
+  Teaches an agent the current Pydantic 2 API (checked against pydantic 2.14.2 on Python 3.14) for
+  request bodies, webhooks, response contracts and database rows, and how to port Pydantic 1 code
+  without silent behaviour changes. It concentrates on what still runs but behaves differently:
+  Optional and Any fields that became required, defaults that skip validators, renamed Config keys
+  that are ignored, "Value error, " prefixed messages, numbers no longer coerced to strings, Decimal,
+  UTC datetime and timedelta JSON that differs from v1, subclass fields dropped from dumps, aliases
+  that block construction by field name, error lists that echo input or fail json.dumps, and the
+  Rust regex engine rejecting lookarounds.
+domains: [backend, api-design, migration, data-engineering]
+lifecycle: [build, maintain]
+technologies: [pydantic, python, fastapi]
+license: MIT
+authors:
+  - github: dgesteves
+payload:
+  format: agent-skill
+  entry: SKILL.md
+targets: [claude-code, codex, cursor, github-copilot, gemini-cli, opencode]
+permissions:
+  network: []
+  shell: [python, rg]
+  filesystem: write
+  env: []
+proof:
+  suites: [pydantic-2]
+limitations:
+  - Written and verified against pydantic 2.14.2 and pydantic-core 2.50.2. Later 2.x releases may change defaults or deprecate more APIs; check HISTORY.md when the installed version is newer.
+  - Pydantic 1 comparisons were run against 1.10.26. Older 1.x releases differ in details (for example Decimal JSON output before 1.10).
+  - Covers pydantic itself. pydantic-settings, pydantic-extra-types, FastAPI integration and the mypy plugin are mentioned only where they affect model code.
+  - JSON schema generation and custom core schemas (__get_pydantic_core_schema__) are not taught.
+  - Money as JSON numbers goes through float; the skill states the precision trade-off but does not cover arbitrary-precision JSON encoders.

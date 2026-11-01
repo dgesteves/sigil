@@ -1,0 +1,39 @@
+sigil: 1
+id: sqlalchemy/sqlalchemy-2
+type: skill
+version: 1.0.0
+name: SQLAlchemy 2 ORM, Transactions and asyncio
+summary: Typed SQLAlchemy 2.1 data access, query budgets, asyncio, and 1.x upgrades that keep every write, for SQLAlchemy 2.1.6.
+description: >-
+  Teaches an agent current SQLAlchemy (checked against 2.1.6): DeclarativeBase/Mapped models,
+  select() queries, rows versus scalars, Session and Connection transactions, relationship loading
+  and fixed query budgets (selectinload, joinedload with unique(), raiseload, statement counting),
+  bulk inserts and ORM upserts that return fresh objects, the asyncio extension, and SQLite
+  specifics. It concentrates on what code written for 1.x gets wrong silently on 2.x: Connection
+  work rolled back without commit, children attached through a backref never inserted, stale
+  identity-map objects after an upsert, and in async code MissingGreenlet from lazy loads,
+  expire_on_commit and columns expired by onupdate. Every claim was reproduced on 2.1.6, with 1.4.54
+  as the comparison for upgrade behaviour.
+domains: [databases, backend, migration]
+lifecycle: [build, maintain, review]
+technologies: [sqlalchemy, python, sqlite, postgresql]
+license: MIT
+authors:
+  - github: dgesteves
+payload:
+  format: agent-skill
+  entry: SKILL.md
+targets: [claude-code, codex, cursor, github-copilot, gemini-cli, opencode]
+permissions:
+  network: []
+  shell: [python, rg]
+  filesystem: write
+  env: []
+proof:
+  suites: [sqlalchemy-2]
+limitations:
+  - Written and verified against SQLAlchemy 2.1.6 with SQLite (sqlite3 and aiosqlite). PostgreSQL and MySQL notes are limited to API shape; dialect-specific locking, isolation levels and type behaviour are not covered.
+  - The proof suite runs on SQLite, so it measures transaction outcomes, statement counts and loading behaviour, not concurrency, isolation or lock contention.
+  - Alembic migrations, SQLModel and framework integrations (FastAPI, Flask-SQLAlchemy) are out of scope beyond the session and loading rules they share.
+  - The 1.x upgrade guidance targets 1.4-era code; 1.3-only APIs that 1.4 had already removed are mentioned only where they still appear in code bases.
+  - Grep patterns for backref-attached children are deliberately broad and line-based; they narrow the reading but do not replace it.

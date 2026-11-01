@@ -1,0 +1,25 @@
+sigil: 1
+id: billing-clock-flakes
+title: Make date-dependent billing tests deterministic
+prompt: |
+  The billing tests only fail on certain days. CI went red in mid-December, on January 30th, on the
+  last leap day and once on the Saturday before Lisbon switched back from summer time, and the suite
+  fails every morning for Aroha in Auckland and every evening for Sam in Los Angeles. It's green on
+  my machine right now, which is half the problem.
+
+  Please make tests/ deterministic: the suite must give the same result whatever the date, the time of
+  day or the machine's timezone. The code in billing/ is correct (it matches what production
+  invoices) and must not change; fix the tests. Keep what each test checks. If a check only holds on
+  some days, make it test the real rule rather than dropping it, so a regression in billing/ still
+  fails the suite. Keep pytest-randomly on.
+verify:
+  command: .venv/bin/python .verify/check.py
+  timeoutSeconds: 180
+protected:
+  - billing/*.py
+  - pyproject.toml
+  - requirements.lock
+image: python:3.14-slim
+setup: python -m venv .venv && .venv/bin/pip install --quiet --no-cache-dir --disable-pip-version-check --require-hashes --no-deps -r requirements.lock
+timeoutSeconds: 900
+tags: [pytest, flaky-tests, time, timezones, python]

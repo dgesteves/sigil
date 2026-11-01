@@ -1,0 +1,10 @@
+event_id,order_id,occurred_at,status,amount_cents
+58,1002,2026-09-03T09:12:00,payment_captured,1250
+12,1001,2026-09-01T08:00:00,created,
+91,1003,2026-09-04T10:00:00,created,
+14,1001,2026-09-01T08:05:00,payment_captured,4999
+57,1002,2026-09-03T09:10:00,created,
+33,1001,2026-09-02T16:40:00,shipped,
+93,1003,2026-09-04T10:02:00,cancelled,
+40,1001,2026-09-05T11:00:00,refund_issued,999
+59,1002,2026-09-03T09:12:00,packed,

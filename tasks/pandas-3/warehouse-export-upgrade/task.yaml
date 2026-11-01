@@ -1,0 +1,26 @@
+sigil: 1
+id: warehouse-export-upgrade
+title: Port a warehouse export from pandas 2.3 to 3.1 without changing its output
+prompt: |
+  Renovate bumped pandas from 2.3.3 to 3.1.0 (pyproject.toml and requirements.lock are already
+  updated) and the export tests fail now. Please port export/events.py to pandas 3 so
+  `.venv/bin/python -m pytest` passes again.
+
+  This module feeds the warehouse loader, which is strict: for the same input, every column of
+  to_warehouse_rows, session_table and plan_summary has to keep exactly the values it had on
+  pandas 2.3, and the integer columns stay integers. The docstrings describe the contract.
+  Before we switch, staging diffs a full day of output against the pandas 2.3 export, so silent
+  changes would be caught there, but I'd rather catch them here. Stay on pandas 3.1.0 and don't
+  change the tests or the fixtures.
+verify:
+  command: .venv/bin/python -m pytest -q -p no:cacheprovider tests
+  timeoutSeconds: 120
+protected:
+  - tests/test_export.py
+  - fixtures/events.csv
+  - pyproject.toml
+  - requirements.lock
+image: python:3.14-slim
+setup: python -m venv .venv && .venv/bin/pip install --quiet --no-cache-dir --disable-pip-version-check --require-hashes --no-deps -r requirements.lock
+timeoutSeconds: 900
+tags: [pandas, python, migration, upgrade, datetime, copy-on-write]

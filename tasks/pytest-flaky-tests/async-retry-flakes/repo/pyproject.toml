@@ -1,0 +1,18 @@
+[project]
+name = "relaykit"
+version = "0.9.3"
+description = "Building blocks for the webhook relay"
+requires-python = ">=3.14"
+dependencies = []
+
+[dependency-groups]
+dev = [
+    "pytest==9.2.0",
+    "pytest-asyncio==1.4.1",
+    "pytest-randomly==5.0.0",
+    "time-machine==3.6.0",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]

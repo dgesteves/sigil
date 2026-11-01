@@ -1,0 +1,7 @@
+shipment_id,ship_date,carrier,recipient,postcode,weight_g,volume_cm3,tags
+000101,2026-10-01,UPS,Ana Silva,1011 ab,1200,3000,fragile|gift
+000102,2026-10-01,DHL,Bram de Vries,2512 cd,800,1500,
+000103,2026-10-02,UPS,Chen Wei,3011 ef,2500,8000, oversize | fragile
+000104,2026-10-02,GLS,Dana Okafor,4811 gh,300,500,gift
+000105,2026-10-02,UPS,Eli Cohen,5611 ij,950,2200,hazmat
+000106,2026-10-03,DHL,Femke Jansen,6511 kl,4100,12000,oversize

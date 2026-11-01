@@ -1,0 +1,27 @@
+sigil: 1
+id: statement-json-contract
+title: Serialize Pydantic statement models to a documented JSON contract
+prompt: |
+  The customer portal team says GET /statements/{id} doesn't match the contract they built
+  against (docs/statement-api.md): keys are snake_case, money comes through as strings, discount
+  lines lose their discount details, there are nulls everywhere, and cost centers and internal
+  notes are leaking to customers.
+
+  Please make render_statement and statement_payload in statements/render.py produce exactly the
+  documented document. statement_payload must return the same document as a plain dict that
+  json.dumps can store. The billing run builds Statement, Line and DiscountLine objects with their
+  Python field names, as the tests do, and that must keep working; rendering must not change the
+  statement objects themselves.
+verify:
+  command: .venv/bin/python -m pytest -q -p no:cacheprovider tests
+  timeoutSeconds: 120
+protected:
+  - tests/conftest.py
+  - tests/test_models.py
+  - docs/statement-api.md
+  - pyproject.toml
+  - requirements.lock
+image: python:3.14-slim
+setup: python -m venv .venv && .venv/bin/pip install --quiet --no-cache-dir --disable-pip-version-check --require-hashes --no-deps -r requirements.lock
+timeoutSeconds: 900
+tags: [pydantic, python, serialization, api-design]

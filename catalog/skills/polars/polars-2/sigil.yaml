@@ -1,0 +1,39 @@
+sigil: 1
+id: polars/polars-2
+type: skill
+version: 1.0.0
+name: Polars 2
+summary: Correct Polars 2 pipelines and 0.19/0.20/1.x ports, including the row-order, NaN, join and explode changes that return wrong data silently.
+description: >-
+  Teaches an agent current Polars (checked against polars 2.1.0 on Python 3.14): the lazy API with
+  the streaming engine that LazyFrame.collect now uses by default, where row order is and is not
+  kept (joins, group_by, sorts the optimizer drops before a join, and how to order last, shift and
+  cum_sum with sort_by and over(order_by=...)), null versus NaN in aggregations and CSV input, full
+  joins that keep two key columns, replace versus replace_strict, empty lists that explode to no
+  rows, strict casts and is_in, string-to-date parsing and time zones. It also carries a porting
+  guide from 0.19, 0.20 and 1.x that separates renames that raise from the changes that keep running
+  with different output, including removal hints that lead to the wrong fix (how="full" for
+  how="outer", len_chars for str.lengths, replace for map_dict, group_by().len() for count()).
+domains: [data-engineering, data-science, migration]
+lifecycle: [build, maintain, review]
+technologies: [polars, python]
+license: MIT
+authors:
+  - github: dgesteves
+payload:
+  format: agent-skill
+  entry: SKILL.md
+targets: [claude-code, codex, cursor, github-copilot, gemini-cli, opencode]
+permissions:
+  network: []
+  shell: [python, rg]
+  filesystem: write
+  env: []
+proof:
+  suites: [polars-2]
+limitations:
+  - Written and verified against polars 2.1.0 (polars-runtime-32) on CPython 3.14. Later 2.x releases may change defaults, especially around the streaming engine and SQL.
+  - Covers the Python API. The Rust crate, the SQL interface beyond its engine and literal changes, Polars Cloud, GPU execution and plugins are out of scope.
+  - Old-version behaviour was reproduced on 0.19.19, 0.20.31 and 1.44.2 only; intermediate 0.20 and 1.x releases may differ in details such as warning text.
+  - Row-order findings come from the 2.1.0 optimizer and engines; Polars does not document an order for these operations, so the advice is to set order explicitly rather than rely on any observed order.
+  - Interop with pandas, NumPy and PyArrow is covered only where Polars 2 changes it (Int128, Map, nan_to_null).

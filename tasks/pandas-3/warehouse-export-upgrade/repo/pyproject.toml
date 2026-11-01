@@ -1,0 +1,13 @@
+[project]
+name = "events-export"
+version = "4.2.0"
+description = "Nightly export of product-analytics events to the warehouse"
+requires-python = ">=3.14"
+dependencies = ["pandas==3.1.0"]
+
+[dependency-groups]
+dev = ["pytest==9.2.0"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]

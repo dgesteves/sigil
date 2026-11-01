@@ -1,0 +1,35 @@
+sigil: 1
+id: normalize-crm-export
+title: Normalize the CRM customer export before the billing sync
+prompt: |
+  Billing keeps rejecting rows from the nightly CRM sync because of messy values. Please add a
+  `normalize_customers(df)` function to crm/clean.py and use it in build_sync_batch
+  (crm/sync.py), after latest_per_customer. It takes the DataFrame from load_export and returns
+  the cleaned one:
+
+  - Every text column: strip leading/trailing whitespace and collapse any run of whitespace
+    inside the value (spaces, tabs) to a single space. A value that ends up empty becomes
+    missing. The CRM team adds free-text columns every few months, so this has to cover whatever
+    text columns are in the export, not a fixed list.
+  - email: also lowercased.
+  - country: missing becomes "unknown".
+  - orders: missing becomes 0, and the column must be an integer column.
+  - Missing values in other text columns stay missing (not the text "nan" or "None").
+  - Numeric and date columns are left as they are; same columns, same order, same index.
+
+  Don't modify the DataFrame that's passed in: build_sync_batch returns the raw export for the
+  audit log, and it has to show exactly what the CRM sent. Leave load_export as it is (other jobs
+  use it). data/customers.csv is a real (scrubbed) sample of the export.
+verify:
+  command: .venv/bin/python -m pytest -q -p no:cacheprovider tests
+  timeoutSeconds: 120
+protected:
+  - tests/test_clean.py
+  - data/customers.csv
+  - crm/export.py
+  - pyproject.toml
+  - requirements.lock
+image: python:3.14-slim
+setup: python -m venv .venv && .venv/bin/pip install --quiet --no-cache-dir --disable-pip-version-check --require-hashes --no-deps -r requirements.lock
+timeoutSeconds: 900
+tags: [pandas, python, data-cleaning, string-dtype, copy-on-write]

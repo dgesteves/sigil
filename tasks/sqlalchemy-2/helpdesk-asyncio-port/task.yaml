@@ -1,0 +1,26 @@
+sigil: 1
+id: helpdesk-asyncio-port
+title: Port a SQLAlchemy helpdesk service to asyncio
+prompt: |
+  The new support API runs on asyncio, so helpdesk needs to move to SQLAlchemy's asyncio extension.
+  aiosqlite is already installed. Please port helpdesk/db.py and helpdesk/service.py:
+
+  - `make_engine(url)` returns an AsyncEngine for a `sqlite+aiosqlite://` URL, `init_db(engine)`
+    becomes `async`, and `make_sessionmaker(engine)` returns an `async_sessionmaker`.
+  - Every function in service.py becomes `async def`, takes an `AsyncSession`, and keeps its
+    arguments, return values, errors and commit behaviour.
+  - Keep everything else working as it does now, foreign key enforcement included.
+
+  helpdesk/serializers.py stays synchronous and unchanged. The API handlers call
+  `ticket_to_dict` / `comment_to_dict` on whatever the service functions return, sometimes inside
+  the `async with session` block and sometimes after it has closed, and both must work. Port
+  tests/ to the async API as well (pytest-asyncio is installed).
+verify:
+  command: .venv/bin/python -m pytest -q -p no:cacheprovider tests
+  timeoutSeconds: 120
+protected:
+  - helpdesk/serializers.py
+image: python:3.14-slim
+setup: python -m venv .venv && .venv/bin/pip install --quiet --no-cache-dir --disable-pip-version-check --require-hashes --no-deps -r requirements.lock
+timeoutSeconds: 900
+tags: [sqlalchemy, python, asyncio, orm, migration]

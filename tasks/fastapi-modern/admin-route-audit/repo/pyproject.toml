@@ -1,0 +1,18 @@
+[project]
+name = "backoffice"
+version = "5.2.1"
+description = "Back-office API for support and finance staff"
+requires-python = ">=3.14"
+dependencies = [
+    "fastapi==0.162.0",
+]
+
+[dependency-groups]
+dev = [
+    "httpx2==2.16.0",
+    "pytest==9.2.0",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]

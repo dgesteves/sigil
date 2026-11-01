@@ -1,0 +1,27 @@
+sigil: 1
+id: sensor-daily-stats
+title: Daily per-sensor rollups from gateway CSV exports with failed probe readings
+prompt: |
+  The growers' dashboard needs a daily rollup per sensor. Please implement `daily_stats(path)` in
+  telemetry/daily.py: it reads one gateway export (CSV, format in the README, sample in
+  data/sample.csv) and returns a Polars DataFrame with one row per sensor and UTC day that appears
+  in the file, sorted by sensor_id and then day, with these columns:
+
+  - sensor_id
+  - day: the UTC calendar date (a date, not a datetime)
+  - readings: how many temperature measurements the sensor actually took that day
+  - temp_min, temp_max, temp_mean: over those temperature measurements (null if there were none)
+  - humidity_mean: mean of that day's humidity measurements (null if there were none)
+
+  Don't round the means. A day where a probe failed every time still gets its row. Use Polars
+  (already installed).
+verify:
+  command: .venv/bin/python -m pytest -q -p no:cacheprovider tests
+  timeoutSeconds: 120
+protected:
+  - tests/test_sample_export.py
+  - data/sample.csv
+image: python:3.14-slim
+setup: python -m venv .venv && .venv/bin/pip install --quiet --no-cache-dir --disable-pip-version-check --require-hashes --no-deps -r requirements.lock
+timeoutSeconds: 900
+tags: [polars, python, data-cleaning, aggregation]

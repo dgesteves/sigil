@@ -1,0 +1,13 @@
+[project]
+name = "roastery-ops"
+version = "1.8.0"
+description = "Rollups for the roastery's weekly ops review"
+requires-python = ">=3.14"
+dependencies = ["pandas==3.1.0"]
+
+[dependency-groups]
+dev = ["pytest==9.2.0"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]

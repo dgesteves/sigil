@@ -1,0 +1,334 @@
+{
+ "rows": [
+  {
+   "event_id": "e-0001",
+   "event_ms": 1774742292250,
+   "hour": "2026-03-28T23:00Z",
+   "user_id": "u-104",
+   "session_id": "s-9001",
+   "plan": "pro",
+   "channel": "app",
+   "event": "session_start",
+   "amount_cents": 0
+  },
+  {
+   "event_id": "e-0002",
+   "event_ms": 1774742320900,
+   "hour": "2026-03-28T23:00Z",
+   "user_id": "u-104",
+   "session_id": "s-9001",
+   "plan": "pro",
+   "channel": "app",
+   "event": "view_invoice",
+   "amount_cents": 0
+  },
+  {
+   "event_id": "e-0003",
+   "event_ms": 1774742465125,
+   "hour": "2026-03-29T00:00Z",
+   "user_id": "u-104",
+   "session_id": "s-9001",
+   "plan": "pro",
+   "channel": "web",
+   "event": "purchase",
+   "amount_cents": 4900
+  },
+  {
+   "event_id": "e-0004",
+   "event_ms": 1774742639999,
+   "hour": "2026-03-29T00:00Z",
+   "user_id": "u-104",
+   "session_id": "s-9001",
+   "plan": "pro",
+   "channel": "app",
+   "event": "session_end",
+   "amount_cents": 0
+  },
+  {
+   "event_id": "e-0005",
+   "event_ms": 1774745999500,
+   "hour": "2026-03-29T00:00Z",
+   "user_id": "u-221",
+   "session_id": "s-9002",
+   "plan": "free",
+   "channel": "email",
+   "event": "session_start",
+   "amount_cents": 0
+  },
+  {
+   "event_id": "e-0006",
+   "event_ms": 1774746000000,
+   "hour": "2026-03-29T01:00Z",
+   "user_id": "u-221",
+   "session_id": "s-9002",
+   "plan": "free",
+   "channel": "email",
+   "event": "signup_step",
+   "amount_cents": 0
+  },
+  {
+   "event_id": "e-0007",
+   "event_ms": 1774746000750,
+   "hour": "2026-03-29T01:00Z",
+   "user_id": "u-221",
+   "session_id": "s-9002",
+   "plan": "free",
+   "channel": "web",
+   "event": "signup_step",
+   "amount_cents": 0
+  },
+  {
+   "event_id": "e-0008",
+   "event_ms": 1774772130000,
+   "hour": "2026-03-29T08:00Z",
+   "user_id": "u-305",
+   "session_id": "s-9003",
+   "plan": "starter",
+   "channel": "web",
+   "event": "session_start",
+   "amount_cents": 0
+  },
+  {
+   "event_id": "e-0009",
+   "event_ms": 1774772162333,
+   "hour": "2026-03-29T08:00Z",
+   "user_id": "u-305",
+   "session_id": "s-9003",
+   "plan": "starter",
+   "channel": "web",
+   "event": "purchase",
+   "amount_cents": 1200
+  },
+  {
+   "event_id": "e-0010",
+   "event_ms": 1774773730010,
+   "hour": "2026-03-29T08:00Z",
+   "user_id": "u-305",
+   "session_id": "s-9003",
+   "plan": "starter",
+   "channel": "web",
+   "event": "purchase",
+   "amount_cents": 1200
+  },
+  {
+   "event_id": "e-0011",
+   "event_ms": 1774775100000,
+   "hour": "2026-03-29T09:00Z",
+   "user_id": "u-412",
+   "session_id": "s-9004",
+   "plan": "enterprise",
+   "channel": "partner",
+   "event": "session_start",
+   "amount_cents": 0
+  },
+  {
+   "event_id": "e-0012",
+   "event_ms": 1774780500000,
+   "hour": "2026-03-29T10:00Z",
+   "user_id": "u-412",
+   "session_id": "s-9004",
+   "plan": "enterprise",
+   "channel": "partner",
+   "event": "purchase",
+   "amount_cents": 250000
+  },
+  {
+   "event_id": "e-0013",
+   "event_ms": 1774780500001,
+   "hour": "2026-03-29T10:00Z",
+   "user_id": "u-412",
+   "session_id": "s-9004",
+   "plan": "enterprise",
+   "channel": "partner",
+   "event": "session_end",
+   "amount_cents": 0
+  },
+  {
+   "event_id": "e-0014",
+   "event_ms": 1774785600000,
+   "hour": "2026-03-29T12:00Z",
+   "user_id": "u-104",
+   "session_id": "s-9005",
+   "plan": "pro",
+   "channel": "app",
+   "event": "session_start",
+   "amount_cents": 0
+  },
+  {
+   "event_id": "e-0015",
+   "event_ms": 1774785600400,
+   "hour": "2026-03-29T12:00Z",
+   "user_id": "u-104",
+   "session_id": "s-9005",
+   "plan": "pro",
+   "channel": "app",
+   "event": "session_end",
+   "amount_cents": 0
+  },
+  {
+   "event_id": "e-0016",
+   "event_ms": 1774790445678,
+   "hour": "2026-03-29T13:00Z",
+   "user_id": "u-517",
+   "session_id": "s-9006",
+   "plan": "free",
+   "channel": "web",
+   "event": "session_start",
+   "amount_cents": 0
+  },
+  {
+   "event_id": "e-0019",
+   "event_ms": 1774790445678,
+   "hour": "2026-03-29T13:00Z",
+   "user_id": "u-221",
+   "session_id": "s-9007",
+   "plan": "free",
+   "channel": "email",
+   "event": "session_start",
+   "amount_cents": 0
+  },
+  {
+   "event_id": "e-0017",
+   "event_ms": 1774790475000,
+   "hour": "2026-03-29T13:00Z",
+   "user_id": "u-517",
+   "session_id": "s-9006",
+   "plan": "free",
+   "channel": "web",
+   "event": "view_pricing",
+   "amount_cents": 0
+  },
+  {
+   "event_id": "e-0018",
+   "event_ms": 1774792079002,
+   "hour": "2026-03-29T13:00Z",
+   "user_id": "u-517",
+   "session_id": "s-9006",
+   "plan": "free",
+   "channel": "web",
+   "event": "purchase",
+   "amount_cents": 900
+  },
+  {
+   "event_id": "e-0020",
+   "event_ms": 1774828799999,
+   "hour": "2026-03-29T23:00Z",
+   "user_id": "u-305",
+   "session_id": "s-9008",
+   "plan": "starter",
+   "channel": "app",
+   "event": "session_start",
+   "amount_cents": 0
+  }
+ ],
+ "sessions": [
+  {
+   "session_id": "s-9001",
+   "start_ms": 1774742292250,
+   "end_ms": 1774742639999,
+   "duration_s": 347,
+   "events": 4
+  },
+  {
+   "session_id": "s-9002",
+   "start_ms": 1774745999500,
+   "end_ms": 1774746000750,
+   "duration_s": 1,
+   "events": 3
+  },
+  {
+   "session_id": "s-9003",
+   "start_ms": 1774772130000,
+   "end_ms": 1774773730010,
+   "duration_s": 1600,
+   "events": 3
+  },
+  {
+   "session_id": "s-9004",
+   "start_ms": 1774775100000,
+   "end_ms": 1774780500001,
+   "duration_s": 5400,
+   "events": 3
+  },
+  {
+   "session_id": "s-9005",
+   "start_ms": 1774785600000,
+   "end_ms": 1774785600400,
+   "duration_s": 0,
+   "events": 2
+  },
+  {
+   "session_id": "s-9006",
+   "start_ms": 1774790445678,
+   "end_ms": 1774792079002,
+   "duration_s": 1633,
+   "events": 3
+  },
+  {
+   "session_id": "s-9007",
+   "start_ms": 1774790445678,
+   "end_ms": 1774790445678,
+   "duration_s": 0,
+   "events": 1
+  },
+  {
+   "session_id": "s-9008",
+   "start_ms": 1774828799999,
+   "end_ms": 1774828799999,
+   "duration_s": 0,
+   "events": 1
+  }
+ ],
+ "plans_all": [
+  {
+   "plan": "free",
+   "events": 7,
+   "users": 2,
+   "revenue_cents": 900
+  },
+  {
+   "plan": "starter",
+   "events": 4,
+   "users": 1,
+   "revenue_cents": 2400
+  },
+  {
+   "plan": "pro",
+   "events": 6,
+   "users": 1,
+   "revenue_cents": 4900
+  },
+  {
+   "plan": "enterprise",
+   "events": 3,
+   "users": 1,
+   "revenue_cents": 250000
+  }
+ ],
+ "plans_no_enterprise": [
+  {
+   "plan": "free",
+   "events": 7,
+   "users": 2,
+   "revenue_cents": 900
+  },
+  {
+   "plan": "starter",
+   "events": 4,
+   "users": 1,
+   "revenue_cents": 2400
+  },
+  {
+   "plan": "pro",
+   "events": 6,
+   "users": 1,
+   "revenue_cents": 4900
+  },
+  {
+   "plan": "enterprise",
+   "events": 0,
+   "users": 0,
+   "revenue_cents": 0
+  }
+ ]
+}

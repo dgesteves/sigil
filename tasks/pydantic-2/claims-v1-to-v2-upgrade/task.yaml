@@ -1,0 +1,30 @@
+sigil: 1
+id: claims-v1-to-v2-upgrade
+title: Finish a Pydantic 1 to 2 upgrade without changing API behaviour
+prompt: |
+  Renovate bumped pydantic from 1.10.26 to 2.14.2 (pyproject.toml and requirements.lock are already
+  updated) and the test suite no longer even imports. Please port the code in claims/ to the
+  Pydantic 2 API so the tests pass again.
+
+  This is an upgrade, not a behaviour change. The mobile app and the partner portals must see
+  exactly what they saw before: the same validation rules (including inputs that used to be
+  accepted), the same custom error messages in the 422 body, the same defaults, and the same JSON in
+  responses and in the stored documents. The existing tests describe part of that behaviour and
+  must keep passing unchanged.
+
+  Stay on pydantic 2.14.2 and don't use the bundled `pydantic.v1` compatibility namespace. CI
+  treats Pydantic deprecation warnings as errors (see pyproject.toml); don't silence them. Don't
+  touch the tests or pyproject.toml.
+verify:
+  command: .venv/bin/python -m pytest -q -p no:cacheprovider tests
+  timeoutSeconds: 120
+protected:
+  - tests/conftest.py
+  - tests/test_*.py
+  - pyproject.toml
+  - requirements.lock
+  - claims/rows.py
+image: python:3.14-slim
+setup: python -m venv .venv && .venv/bin/pip install --quiet --no-cache-dir --disable-pip-version-check --require-hashes --no-deps -r requirements.lock
+timeoutSeconds: 900
+tags: [pydantic, python, migration, upgrade, validation, serialization]

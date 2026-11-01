@@ -1,0 +1,22 @@
+sigil: 1
+id: billing-upgrade-from-1-4
+title: Finish a SQLAlchemy 1.4 to 2.1 upgrade without changing what billing writes
+prompt: |
+  Renovate bumped sqlalchemy from 1.4.54 to 2.1.6 (pyproject.toml and requirements.lock are
+  already updated) and the test suite is red. Please port the billing package to SQLAlchemy 2.1 so
+  it runs properly on the new version.
+
+  This is a dependency upgrade, not a behaviour change. Every function keeps its signature and
+  must write and return exactly what it did on 1.4: the finance exports and the bank feed importer
+  call these functions directly, and some of them have no tests in this repo. Stay on 2.1.6 and
+  don't edit the existing tests.
+verify:
+  command: .venv/bin/python -m pytest -q -p no:cacheprovider tests
+  timeoutSeconds: 120
+protected:
+  - tests/*.py
+  - requirements.lock
+image: python:3.14-slim
+setup: python -m venv .venv && .venv/bin/pip install --quiet --no-cache-dir --disable-pip-version-check --require-hashes --no-deps -r requirements.lock
+timeoutSeconds: 900
+tags: [sqlalchemy, python, migration, upgrade, orm, transactions]

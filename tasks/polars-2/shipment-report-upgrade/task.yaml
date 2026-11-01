@@ -1,0 +1,22 @@
+sigil: 1
+id: shipment-report-upgrade
+title: Port shipping reports from Polars 0.19 to Polars 2 without changing their output
+prompt: |
+  Renovate bumped polars from 0.19.19 to 2.1.0 (pyproject.toml and requirements.lock are already
+  updated, the venv has 2.1.0) and our test suite is red. Please port shipping/report.py to the
+  current Polars API so the tests pass again.
+
+  This is a dependency upgrade, not a behaviour change: every function has to return the same
+  columns and the same values it returned on 0.19.19, including for inputs the current tests don't
+  cover. The ops dashboard and the BI exports read these frames by column name, and the docstrings
+  describe the contract. Stay on polars 2.1.0, and don't edit the tests.
+verify:
+  command: .venv/bin/python -m pytest -q -p no:cacheprovider tests
+  timeoutSeconds: 120
+protected:
+  - tests/test_report.py
+  - tests/fixtures/shipments.csv
+image: python:3.14-slim
+setup: python -m venv .venv && .venv/bin/pip install --quiet --no-cache-dir --disable-pip-version-check --require-hashes --no-deps -r requirements.lock
+timeoutSeconds: 900
+tags: [polars, python, migration, upgrade, data-engineering]

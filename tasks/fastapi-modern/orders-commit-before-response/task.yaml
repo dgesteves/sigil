@@ -1,0 +1,28 @@
+sigil: 1
+id: orders-commit-before-response
+title: Only answer 2xx once the order is committed, and 503 when the commit fails
+prompt: |
+  Two production bugs in the orders API, both started after we upgraded FastAPI in September:
+
+  1. The mobile app sometimes gets a 404 when it opens an order straight after `POST /orders`
+     answered 201. A second later the order is there. Cancellations do the same: the app shows
+     "cancelled", refreshes, and briefly sees "placed" again.
+  2. On Monday the disk filled up and SQLite could not commit. Clients still got 201 for orders that
+     were never saved.
+
+  Please fix this for every endpoint that writes. A 2xx may only be sent once the request's changes
+  are committed. If the commit fails, the client must get a 503 with the body
+  `{"detail": "Could not save your changes, please try again"}`, and nothing from that request may
+  end up saved. Everything else stays as it is: status codes, the Location header, the 404/409/422
+  responses, and `create_app(database, *, connection_class=...)`, which the tests use (see the
+  README).
+verify:
+  command: .venv/bin/python -m pytest -q -p no:cacheprovider tests
+  timeoutSeconds: 120
+protected:
+  - tests/conftest.py
+  - tests/test_orders.py
+image: python:3.14-slim
+setup: python -m venv .venv && .venv/bin/pip install --quiet --no-cache-dir --disable-pip-version-check --require-hashes --no-deps -r requirements.lock
+timeoutSeconds: 900
+tags: [fastapi, dependencies, transactions, sqlite]

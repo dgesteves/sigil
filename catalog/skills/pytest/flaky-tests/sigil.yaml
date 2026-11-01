@@ -1,0 +1,40 @@
+sigil: 1
+id: pytest/flaky-tests
+type: skill
+version: 1.0.0
+name: Fixing Flaky Python Tests
+summary: Find and fix the root cause of flaky, order-dependent, time-dependent and hollow pytest tests, and prove the fix, for pytest 9 and pytest-asyncio 1.x.
+description: >-
+  Teaches an agent to repair flaky Python tests by controlling the input they depend on instead of
+  retrying, sleeping longer or widening tolerances. Covers state that leaks between tests
+  (environment variables, lru_cache, module globals, fixed temp paths) and pytest-randomly 5; dates, timezones
+  and DST (date.today() vs UTC, month ends, leap days); what time-machine 3.6 and freezegun 1.5 do
+  and do not freeze (time.monotonic, the asyncio loop clock); real sleeps and duration assertions
+  replaced by injected clocks and fake sleeps; seeded randomness, hash ordering and pytest.approx;
+  pytest-asyncio 1.x (the removed event_loop fixture, strict mode, loop scopes); async tests that
+  pass without running their assertions; and how to prove a fix with seeds, edge instants, isolated
+  runs and mutation checks. Checked against pytest 9.2.0, pytest-asyncio 1.4.1, pytest-randomly
+  5.0.0, time-machine 3.6.0 and freezegun 1.5.5 on Python 3.14.
+domains: [testing, developer-workflow]
+lifecycle: [test, maintain]
+technologies: [python, pytest]
+license: MIT
+authors:
+  - github: dgesteves
+payload:
+  format: agent-skill
+  entry: SKILL.md
+targets: [claude-code, codex, cursor, github-copilot, gemini-cli, opencode]
+permissions:
+  network: []
+  shell: [python, pytest, rg, grep, sed, sort, seq]
+  filesystem: write
+  env: []
+proof:
+  suites: [pytest-flaky-tests]
+limitations:
+  - Written and verified against pytest 9.2.0, pytest-asyncio 1.4.1, pytest-randomly 5.0.0, time-machine 3.6.0 and freezegun 1.5.5. Earlier pytest-asyncio (0.2x) behaves differently around event_loop and loop scopes.
+  - Covers asyncio. Trio and the anyio pytest plugin are mentioned, not taught.
+  - Flakes caused by external systems (real networks, shared databases, browsers) are out of scope beyond isolating their state; the advice is for unit and integration tests that run in one process.
+  - The proof suite checks order, clock, timezone and real-time independence and runs mutation checks; it cannot reproduce genuine thread races or CPU starvation.
+  - Timezone mocking with time-machine needs time.tzset() and works on Unix only.

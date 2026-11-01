@@ -1,0 +1,6 @@
+customer_id,email,full_name,company,country,orders,lifetime_value_eur,notes,updated_at
+c-001,"  Ana.Silva@Example.COM ",Ana   Silva," Silva  &  Filhos ",PT,3,129.9,"  called twice,  wants invoice ",2026-10-01T09:30:00
+c-002,bob@example.org,"Bob	Stone",,,,0.0,,2026-10-02T10:00:00
+c-003,"CARLA@EXAMPLE.NET",Carla Mendes,Mendes Lda,"  ",12,1540.25,"   ",2026-10-03T11:15:00
+c-004,  dmitri@example.com,"  Dmitri  ",,DE,,,"VIP   since 2019",2026-10-04T08:00:00
+c-005,eve@example.io,Eve,"Acme   Corp",FR,1,49.0,ok,2026-10-05T12:45:00

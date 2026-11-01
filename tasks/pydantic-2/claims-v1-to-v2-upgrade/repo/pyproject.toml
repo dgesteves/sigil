@@ -1,0 +1,14 @@
+[project]
+name = "claims-intake"
+version = "3.8.0"
+requires-python = ">=3.14"
+dependencies = ["pydantic==2.14.2"]
+
+[dependency-groups]
+dev = ["pytest==9.2.0"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+# Deprecated Pydantic APIs fail CI so they don't pile up until the next major.
+filterwarnings = ["error::pydantic.warnings.PydanticDeprecationWarning"]

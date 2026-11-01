@@ -1,0 +1,12 @@
+[project]
+name = "parcel-tracking"
+version = "0.9.0"
+requires-python = ">=3.14"
+dependencies = ["pydantic==2.14.2"]
+
+[dependency-groups]
+dev = ["pytest==9.2.0"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]

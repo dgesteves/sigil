@@ -1,0 +1,41 @@
+sigil: 1
+id: pandas/pandas-3
+type: skill
+version: 1.0.0
+name: pandas 3
+summary: Write and upgrade pandas 3.x code without the silent pandas-2 regressions in Copy-on-Write, the str dtype and datetime64[us] math.
+description: >-
+  Current knowledge for pandas 3.1.0 (NumPy 2.5, Python 3.14), every claim run on the installed
+  package with and without pyarrow and compared against pandas 2.3.3. It concentrates on the
+  changes that keep code running while changing results: chained assignment and column-level
+  inplace calls that silently do nothing under Copy-on-Write, read-only NumPy views, when a copy
+  is still needed at an API boundary, the default str dtype (dtype == object checks,
+  select_dtypes, NaN as the missing value, astype(str)), datetime64[us] resolution inference
+  (epoch and duration math that is 1000x off, Series.view replaced by astype, merge_asof unit
+  mismatches, Timestamp.value still in ns), groupby observed=True, pct_change without forward
+  fill, stack keeping NaN, builtin functions in agg, zoneinfo and calendar-day offsets. Includes
+  the removed APIs and frequency aliases with faithful replacements, the 3.1 deprecations, grep
+  patterns and an upgrade procedure that diffs outputs against pandas 2.3.
+domains: [data-engineering, data-science, data, migration]
+lifecycle: [build, maintain, review]
+technologies: [pandas, python, numpy]
+license: MIT
+authors:
+  - github: dgesteves
+payload:
+  format: agent-skill
+  entry: SKILL.md
+targets: [claude-code, codex, cursor, github-copilot, gemini-cli, opencode]
+permissions:
+  network: []
+  shell: [python, rg, uv]
+  filesystem: write
+  env: []
+proof:
+  suites: [pandas-3]
+limitations:
+  - Written and checked against pandas 3.1.0 with NumPy 2.5.4. Later 3.x releases may enforce the 3.1 deprecations differently or add new defaults; check the release notes when the installed version is newer.
+  - Covers the default NumPy-backed and str dtypes. ArrowDtype columns (dtype_backend="pyarrow"), nullable extension dtypes and Categorical internals are mentioned only where their behaviour changed.
+  - The grep patterns are line-based and noisy; they narrow the audit but do not replace diffing outputs against pandas 2.3.
+  - I/O engines (pyarrow, fastparquet, openpyxl, calamine, SQLAlchemy) are covered only for datetime units and string inference, not their own version changes.
+  - Does not cover pandas-on-Spark, Modin, cuDF or Polars, which have their own semantics.

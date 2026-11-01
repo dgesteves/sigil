@@ -1,0 +1,23 @@
+sigil: 1
+id: rollup-frequency-aliases
+title: Fix the ops-review rollups after the pandas 3.1 upgrade
+prompt: |
+  We upgraded pandas from 2.3.3 to 3.1.0 (the lockfile is already updated) and
+  roastery/rollups.py now blows up in several places, so the test suite is red. Please port it to
+  pandas 3 so `.venv/bin/python -m pytest` passes.
+
+  The ops review compares each week's charts with the previous week's, so the reports must come
+  out exactly as they did on pandas 2.3 for the same data: same labels (index values) in the same
+  order, same values. Don't edit the tests or the sample data in data/.
+verify:
+  command: .venv/bin/python -m pytest -q -p no:cacheprovider tests
+  timeoutSeconds: 120
+protected:
+  - tests/test_rollups.py
+  - data/*.csv
+  - pyproject.toml
+  - requirements.lock
+image: python:3.14-slim
+setup: python -m venv .venv && .venv/bin/pip install --quiet --no-cache-dir --disable-pip-version-check --require-hashes --no-deps -r requirements.lock
+timeoutSeconds: 900
+tags: [pandas, python, migration, upgrade, time-series]

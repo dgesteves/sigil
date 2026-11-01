@@ -87,7 +87,14 @@ export const claudeCode: AgentDriver = {
 
   dockerLayers(version) {
     if (!/^\d+\.\d+\.\d+$/.test(version)) throw new Error(`invalid Claude Code version: ${version}`)
-    return [`RUN npm install -g ${CLAUDE_NPM_PACKAGE}@${version} && npm cache clean --force`]
+    // LOCAL CALIBRATION PATCH (not for commit): bring Node into task images that lack it.
+    const node = 'node:24-bookworm@sha256:e7add2a490bb17d97b485b8641bd88455fff7839ade0f5eba493c3508124d413'
+    return [
+      `COPY --from=${node} /usr/local/bin/node /opt/sigil-node/bin/node`,
+      `COPY --from=${node} /usr/local/lib/node_modules/npm /opt/sigil-node/lib/node_modules/npm`,
+      'RUN if ! command -v npm >/dev/null 2>&1; then ln -s /opt/sigil-node/bin/node /usr/local/bin/node && ln -s /opt/sigil-node/lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm; fi',
+      `RUN npm install -g --prefix /usr/local ${CLAUDE_NPM_PACKAGE}@${version} && npm cache clean --force`,
+    ]
   },
 
   versionArgv: () => ['claude', '--version'],

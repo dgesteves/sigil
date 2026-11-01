@@ -1,0 +1,22 @@
+sigil: 1
+id: dispatch-manifest-queries
+title: Load the dispatch manifest in a bounded number of queries
+prompt: |
+  The morning dispatch manifest for our big North warehouse takes most of a minute to build:
+  `dispatch_manifest` in warehouse/manifest.py fires off a query for every shipment, parcel and
+  item. Please make it load what it needs up front, in at most 4 SELECT statements no matter how
+  many shipments, parcels or items the day has.
+
+  The output must stay exactly the same, ordering included (the carrier integration diffs it).
+  Other services import these models, so keep the fix inside the manifest code: don't change how
+  the model relationships load by default.
+verify:
+  command: .venv/bin/python -m pytest -q -p no:cacheprovider tests
+  timeoutSeconds: 120
+protected:
+  - tests/*.py
+  - warehouse/models.py
+image: python:3.14-slim
+setup: python -m venv .venv && .venv/bin/pip install --quiet --no-cache-dir --disable-pip-version-check --require-hashes --no-deps -r requirements.lock
+timeoutSeconds: 900
+tags: [sqlalchemy, python, orm, performance, n-plus-one]

@@ -1,0 +1,23 @@
+sigil: 1
+id: order-dependent-flags
+title: Make the feature-flag tests pass in any order
+prompt: |
+  We turned on pytest-randomly in CI last week and the flagship test suite has been red on most runs
+  since. Locally, `python -m pytest -p no:randomly` passes every time, so it's something about the
+  order. Please make the tests reliable: the suite has to pass in any order, and any single test has
+  to pass when it is run on its own (`pytest tests/test_x.py::test_y`).
+
+  The library code in flagship/ is fine and must not change; fix the tests (anything under tests/,
+  including adding a conftest.py). Keep every test meaningful: each one should still fail if the
+  behaviour it describes breaks. Don't turn pytest-randomly off.
+verify:
+  command: .venv/bin/python .verify/check.py
+  timeoutSeconds: 180
+protected:
+  - flagship/*.py
+  - pyproject.toml
+  - requirements.lock
+image: python:3.14-slim
+setup: python -m venv .venv && .venv/bin/pip install --quiet --no-cache-dir --disable-pip-version-check --require-hashes --no-deps -r requirements.lock
+timeoutSeconds: 900
+tags: [pytest, flaky-tests, test-isolation, python]

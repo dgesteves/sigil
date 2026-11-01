@@ -1,0 +1,9 @@
+sensor_id,recorded_at,temperature_c,humidity_pct
+gh1-north,2026-10-03T22:10:00Z,18.4,71.0
+gh1-north,2026-10-03T22:20:00Z,NaN,70.5
+gh1-north,2026-10-03T23:55:00Z,17.9,
+gh1-north,2026-10-04T00:05:00Z,17.6,72.4
+gh1-south,2026-10-03T22:10:00Z,19.2,NaN
+gh1-south,2026-10-03T22:20:00Z,,NaN
+gh2-center,2026-10-04T00:00:00Z,NaN,NaN
+gh2-center,2026-10-04T00:10:00Z,21.3,64.0

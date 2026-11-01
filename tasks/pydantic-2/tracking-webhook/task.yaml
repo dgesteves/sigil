@@ -1,0 +1,25 @@
+sigil: 1
+id: tracking-webhook
+title: Validate a carrier tracking webhook with a Pydantic model
+prompt: |
+  We're integrating the carrier's tracking webhook. Please implement TrackingEvent, parse_event and
+  event_row in tracking/webhook.py following docs/carrier-webhook.md, using pydantic (already a
+  dependency).
+
+  parse_event gets the raw request body. For anything we reject, including bodies that aren't
+  a JSON object, it raises InvalidEvent with the payload paths of every problem at once, as the
+  carrier names them (for example ["location.countryCode", "weightGrams"]), so the 422 tells
+  their support team exactly what to fix. Keep in mind that the replay tool builds TrackingEvent
+  objects directly with snake_case keyword arguments (see the README), so that has to work too.
+verify:
+  command: .venv/bin/python -m pytest -q -p no:cacheprovider tests
+  timeoutSeconds: 120
+protected:
+  - tests/test_webhook_smoke.py
+  - docs/carrier-webhook.md
+  - pyproject.toml
+  - requirements.lock
+image: python:3.14-slim
+setup: python -m venv .venv && .venv/bin/pip install --quiet --no-cache-dir --disable-pip-version-check --require-hashes --no-deps -r requirements.lock
+timeoutSeconds: 900
+tags: [pydantic, python, webhooks, validation]

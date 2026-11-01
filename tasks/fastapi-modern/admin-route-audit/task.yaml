@@ -1,0 +1,29 @@
+sigil: 1
+id: admin-route-audit
+title: Repair the boot-time check that every /admin route requires the admin guard
+prompt: |
+  A security review found that `GET /admin/exports/{export_id}/download` can be called without an
+  admin token. That should have been impossible: `create_app` runs a boot-time check,
+  `assert_admin_routes_guarded` in app/audit.py, that refuses to start the app when any route under
+  /admin can be reached without `require_admin`. The check stayed silent. Its tests are green, and
+  nobody has touched it since before we moved to the current FastAPI release.
+
+  Please fix the check so it judges every route the app actually serves, and keep the contract in
+  its docstring: (METHOD, full path) pairs, sorted, for paths equal to /admin or under /admin/.
+  Routers are included with prefixes and nested, a router can be included more than once, routes can
+  be added to a router after it was included, and the guard can be declared on the endpoint (as a
+  parameter or in `dependencies`), on a router, at `include_router(..., dependencies=...)`, on the
+  app, or inside another dependency. A route guarded in any of those ways must not be reported.
+  Then close the hole in the download endpoint: no token is a 401, a wrong token a 403, like the
+  other admin routes.
+verify:
+  command: .venv/bin/python -m pytest -q -p no:cacheprovider tests
+  timeoutSeconds: 120
+protected:
+  - tests/conftest.py
+  - tests/test_backoffice.py
+  - tests/test_audit.py
+image: python:3.14-slim
+setup: python -m venv .venv && .venv/bin/pip install --quiet --no-cache-dir --disable-pip-version-check --require-hashes --no-deps -r requirements.lock
+timeoutSeconds: 900
+tags: [fastapi, routing, security, upgrade]

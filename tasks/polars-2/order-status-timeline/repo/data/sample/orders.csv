@@ -1,0 +1,4 @@
+order_id,customer_id,region
+1001,7,eu-west
+1002,7,eu-west
+1003,9,us-east

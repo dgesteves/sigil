@@ -1,0 +1,14 @@
+[project]
+name = "billing"
+version = "4.2.0"
+description = "Invoices, payments and receivables reports"
+requires-python = ">=3.14"
+# sqlalchemy bumped from 1.4.54 (renovate)
+dependencies = ["sqlalchemy==2.1.6"]
+
+[dependency-groups]
+dev = ["pytest==9.2.0"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
