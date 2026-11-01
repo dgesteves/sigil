@@ -10,6 +10,7 @@ import {
 } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
+import { stripVTControlCharacters } from 'node:util'
 import { describe, expect, it } from 'vitest'
 import { main } from '../../src/cli/main.js'
 import { digestDir } from '../../src/core/digest.js'
@@ -172,7 +173,9 @@ describe('sigil prove --rescore', () => {
     const ctx = { cwd: root, out: (l = '') => lines.push(l), err: (l = '') => lines.push(l) }
     // The stub's runs are recorded as the generic agent, which has no lab driver.
     expect(await main(['prove', '--rescore', run.runId, '--no-evidence'], ctx)).toBe(2)
-    expect(lines.join('\n')).toMatch(/ran generic, which has no lab driver/)
+    expect(stripVTControlCharacters(lines.join('\n'))).toMatch(
+      /ran generic, which has no lab driver/,
+    )
     expect(await main(['prove', '--rescore', run.runId, '--resume', run.runId], ctx)).toBe(2)
     expect(existsSync(join(root, 'catalog/skills/sample/unicode-slugs/evidence.json'))).toBe(false)
     expect(await main(['prove', '--rescore', 'no-such-run'], ctx)).toBe(2)
@@ -186,7 +189,9 @@ describe('sigil prove --rescore', () => {
     )
     lines.length = 0
     expect(await main(['prove', '--rescore', run.runId, '--no-evidence'], ctx)).toBe(0)
-    expect(lines.join('\n')).toMatch(/_sample\s+baseline 1\/1\s+treatment 1\/1/)
+    expect(stripVTControlCharacters(lines.join('\n'))).toMatch(
+      /_sample\s+baseline 1\/1\s+treatment 1\/1/,
+    )
     expect(existsSync(join(root, 'catalog/skills/sample/unicode-slugs/evidence.json'))).toBe(false)
     expect(
       await main(['prove', 'catalog/skills/sample/unicode-slugs', '--rescore', run.runId], ctx),
