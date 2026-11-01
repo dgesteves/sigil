@@ -85,9 +85,11 @@ describe('egress proxy', () => {
   it('denies anything else with 403 and logs the attempt', async () => {
     expect(await tunnel('evil.example:443')).toMatch(/^HTTP\/1\.1 403/)
     expect(await tunnel('127.0.0.1:1')).toMatch(/^HTTP\/1\.1 403/)
-    const denied = proxy.records().filter((r) => r.event === 'connect' && !r.allowed)
-    expect(denied.map((r) => r.host)).toContain('evil.example')
-    expect(denied.every((r) => r.phase === 'agent')).toBe(true)
+    await vi.waitFor(() => {
+      const denied = proxy.records().filter((r) => r.event === 'connect' && !r.allowed)
+      expect(denied.map((r) => r.host)).toContain('evil.example')
+      expect(denied.every((r) => r.phase === 'agent')).toBe(true)
+    })
   })
 
   it('survives clients that reset the connection (a hostile agent cannot kill it)', async () => {
@@ -108,8 +110,10 @@ describe('egress proxy', () => {
   it('proxies plain HTTP for allowed hosts and logs the path', async () => {
     expect(await get(`http://127.0.0.1:${webPort}/hello?x=1`)).toEqual({ status: 200, body: 'hi' })
     expect((await get('http://blocked.example/leak?k=v')).status).toBe(403)
-    const leak = proxy.records().find((r) => r.event === 'http' && r.host === 'blocked.example')
-    expect(leak?.path).toBe('/leak?k=v')
+    await vi.waitFor(() => {
+      const leak = proxy.records().find((r) => r.event === 'http' && r.host === 'blocked.example')
+      expect(leak?.path).toBe('/leak?k=v')
+    })
   })
 
   it('switches policy on reload, failing closed', async () => {
