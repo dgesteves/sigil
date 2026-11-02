@@ -106,10 +106,11 @@ Levels are computed from evidence, never declared.
 Sigil is new, and the numbers say so. The [observatory](https://sigil-lab.vercel.app) shows the live
 state, and the header image above is rendered from the registry on every deploy.
 
-- **Catalog:** 11 skills and a launch collection, covering React, Express 5, Zod 4, the AI SDK, MCP
-  servers in TypeScript, Postgres migrations, GitHub Actions hardening, Kubernetes, Spring Boot 4,
-  axum 0.8 and ASP.NET Core minimal APIs, with 33 hidden-test tasks between them. All are
-  `submitted` and `untested` until their first published runs.
+- **Catalog:** 16 skills and a launch collection, covering React, Next.js 16, Vue 3.5, Svelte 5,
+  Angular 22, Express 5, Zod 4, the AI SDK, MCP servers in TypeScript, OAuth/OIDC, Postgres
+  migrations, GitHub Actions hardening, Kubernetes, Spring Boot 4, axum 0.8 and ASP.NET Core minimal
+  APIs, with 48 hidden-test tasks between them. All are `submitted` and `untested` until their first
+  published runs.
 - **First lab runs** (Claude Code with Claude Haiku, local) found ceiling effects: today's models
   already pass many library-migration tasks without help. Suites are being hardened with tasks the
   baseline fails before any result is published. No number goes up until a run produced it.
