@@ -2,7 +2,6 @@ import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { type CapView, toView } from '@/lib/model'
-import { matchFiles, packagesIn } from '@/lib/oracle/github'
 import { emptySignals, meantAsTech, parseRepo, readText, type Tech } from '@/lib/oracle/intent'
 import { buildIndex, compose, search, weigh } from '@/lib/oracle/rank'
 
@@ -47,37 +46,6 @@ describe('intent', () => {
     expect(s.techs.get('nextjs')?.source).toMatch(/next\.js/)
     expect(s.techs.get('react')?.source).toBe('implied by Next.js')
     expect(readText('our checkout is slow and the audit is next week', techs).techs.size).toBe(0)
-  })
-})
-
-describe('stack detection', () => {
-  it('reads dependency names from manifests', () => {
-    expect(
-      packagesIn(
-        'package.json',
-        JSON.stringify({ dependencies: { next: '1' }, devDependencies: { vitest: '1' } }),
-      ),
-    ).toEqual(['next', 'vitest'])
-    expect(
-      packagesIn('requirements.txt', 'Django>=5\n# comment\n-e .\nfastapi[all]==0.1\n'),
-    ).toEqual(['django', 'fastapi'])
-    expect(
-      packagesIn('go.mod', 'module x\n\nrequire (\n\tgithub.com/gin-gonic/gin v1.9.0\n)\n'),
-    ).toEqual(['github.com/gin-gonic/gin'])
-    expect(
-      packagesIn(
-        'Cargo.toml',
-        '[package]\nname = "x"\n[dependencies]\naxum = "0.7"\ntokio = { version = "1" }\n',
-      ),
-    ).toEqual(['axum', 'tokio'])
-    expect(packagesIn('package.json', '{ not json')).toEqual([])
-  })
-
-  it('matches taxonomy file signatures', () => {
-    const files = ['README.md', 'src/app.css', '.github/workflows/ci.yml', 'deep/a/b/c/x.tf']
-    expect(matchFiles('.github/workflows/*.yml', files)).toBe('.github/workflows/ci.yml')
-    expect(matchFiles('*.css', files)).toBe('src/app.css')
-    expect(matchFiles('*.tf', files)).toBeUndefined()
   })
 })
 

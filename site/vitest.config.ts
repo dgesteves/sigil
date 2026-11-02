@@ -8,6 +8,7 @@ export default defineConfig({
     alias: {
       '@core/glyph': src('../packages/sigil/src/core/glyph.ts'),
       '@core/ids': src('../packages/sigil/src/core/ids.ts'),
+      '@core/stack': src('../packages/sigil/src/core/stack.ts'),
       '@/': src('./src/'),
     },
   },
