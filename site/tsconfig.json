@@ -16,7 +16,8 @@
     "paths": {
       "@/*": ["./src/*"],
       "@core/glyph": ["../packages/sigil/src/core/glyph.ts"],
-      "@core/ids": ["../packages/sigil/src/core/ids.ts"]
+      "@core/ids": ["../packages/sigil/src/core/ids.ts"],
+      "@core/stack": ["../packages/sigil/src/core/stack.ts"]
     }
   },
   "include": [

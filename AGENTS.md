@@ -13,6 +13,7 @@ working in this repo.
 | `packages/sigil/src/scan` | `sigil scan`: static security analysis mapped to the OWASP Agentic Skills Top 10. |
 | `packages/sigil/src/compile` | Adapters from native payloads to each agent's files. `sigil add/remove/list/init`. |
 | `packages/sigil/src/lab` | `sigil prove`: sandboxed A/B runs, canary tripwires, traces, evidence. |
+| `packages/sigil/src/mcp` | `sigil mcp`: read-only stdio MCP server (recommend, search, get, plan_install). Never writes to the project. |
 | `packages/sigil/src/cli` | Command router. One file per command in `commands/`, registered in `main.ts`. |
 | `spec/` | Generated JSON Schemas (`pnpm --dir packages/sigil schemas`) plus the methodology and threat model. |
 | `catalog/<type>/<namespace>/<slug>/` | Capabilities: `sigil.yaml` plus the native payload. |
