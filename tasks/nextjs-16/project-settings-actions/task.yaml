@@ -1,0 +1,28 @@
+sigil: 1
+id: project-settings-actions
+title: Owner-only rename and delete server actions on a Next.js 16 settings page
+prompt: |
+  Please add project deletion to the project settings page (app/projects/[id]/settings): a
+  "Delete project" button in its own form, next to the rename form (no confirmation step for now).
+  Like the rename form, it has to work without JavaScript. After deleting, send the owner to
+  /projects.
+
+  Rules:
+  - Only the project's owner may delete a project.
+  - Members can open the settings page, but they must not be able to rename or delete the project.
+    Right now that isn't enforced everywhere it should be, so please make sure of it for both.
+  - Project names are 1 to 80 characters after trimming whitespace, and we store the trimmed name.
+
+  lib/db.ts is shared with other services: don't change it. Keep the tests in test/ passing
+  (`npm test`).
+verify:
+  command: node test/hidden/build.ts && node --test test/settings.test.ts && node --test test/hidden/actions.test.ts
+  timeoutSeconds: 240
+protected:
+  - lib/db.ts
+  - test/harness.ts
+  - test/settings.test.ts
+image: node:24-bookworm
+setup: npm ci --ignore-scripts --no-audit --no-fund
+timeoutSeconds: 1200
+tags: [nextjs, react, server-actions, security, authorization]

@@ -1,0 +1,39 @@
+sigil: 1
+id: svelte/svelte-5-runes
+type: skill
+version: 1.0.0
+name: Svelte 5 Runes and Migration
+summary: Correct Svelte 5 runes components, shared state modules and mount() code, and Svelte 4 ports that keep bindings, events and timing intact.
+description: >-
+  Teaches an agent the current Svelte 5 API (checked against svelte 5.57.3) and how to port Svelte
+  3/4 code without silent behaviour changes. It concentrates on what agents trained on Svelte 4 get
+  wrong: export let and $: versus $props, $derived and $effect (and why syncing state in effects
+  breaks reads outside components), missing $bindable that silently stops bind: from reaching the
+  parent, createEventDispatcher versus callback props, slots versus snippets, runes outside
+  .svelte.ts files, exporting reassigned module state, Map and Set inside $state, proxies that
+  structuredClone and postMessage reject, mount() deferring onMount and bind:this until flushSync,
+  $set replaced by a $state props object, intro transitions on mount, and testing all of it with
+  Vitest and jsdom.
+domains: [frontend, migration, testing]
+lifecycle: [build, maintain, test]
+technologies: [svelte, typescript, javascript, vite, vitest]
+license: MIT
+authors:
+  - github: dgesteves
+payload:
+  format: agent-skill
+  entry: SKILL.md
+targets: [claude-code, codex, cursor, github-copilot, gemini-cli, opencode]
+permissions:
+  network: []
+  shell: [node, npm ls, npm test, npm run check, rg]
+  filesystem: write
+  env: []
+proof:
+  suites: [svelte-5-runes]
+limitations:
+  - Written and verified against svelte 5.57.3 with @sveltejs/vite-plugin-svelte 7.3.1 and vitest 5.0.5. Later 5.x releases may add runes or promote experimental features; check the changelog when the installed version is newer.
+  - Covers Svelte itself. SvelteKit routing, load functions, form actions and remote functions are out of scope; SvelteKit 3.0 is mentioned only for its version requirements.
+  - Async Svelte (await in components, $state.eager, hydratable, fork) is still behind experimental.async in 5.57.3 and is described, not taught or measured.
+  - The proof suite runs in jsdom, which has no layout and no Element.animate, so transitions, animations and SSR hydration are covered by guidance only.
+  - Custom elements (customElement, $host) and Svelte Native are not covered.

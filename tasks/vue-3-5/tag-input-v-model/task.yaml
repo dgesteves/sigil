@@ -1,0 +1,32 @@
+sigil: 1
+id: tag-input-v-model
+title: Port a Vue 2 tag input to a Vue 3 v-model component
+prompt: |
+  TagInput (src/components/TagInput.vue) was copied over from our old Vue 2 editor and is broken
+  here: `v-model` on it does nothing (see ArticleForm.vue), and on the search page
+  (SearchFilters.vue) adding a tag throws. Please port it properly to Vue 3.
+
+  It needs to:
+  - work with `v-model` holding a `string[]`, so ArticleForm stays in sync with the draft store;
+  - also work without v-model: SearchFilters only listens to `update:modelValue`, and then
+    TagInput keeps its own list, starting empty;
+  - support `v-model.lowercase`, which lowercases tags as they are added (ArticleForm uses it for
+    the SEO keywords);
+  - add the typed tag when the user presses Enter or types a comma; trim it, and ignore blank
+    tags and tags already in the list (case-insensitively);
+  - remove the last tag on Backspace when the text field is empty, and a specific tag with its
+    remove button;
+  - never modify the array it receives: the draft store hands out frozen arrays, so it must emit
+    a new array for every change.
+
+  Keep the `placeholder` prop, the markup and the class names, and keep the tests in test/ passing.
+verify:
+  command: ./node_modules/.bin/vitest run --config test/hidden/vitest.config.ts
+  timeoutSeconds: 120
+protected:
+  - test/TagInput.test.ts
+  - src/draftStore.ts
+image: node:24-bookworm
+setup: npm ci --ignore-scripts --no-audit --no-fund
+timeoutSeconds: 900
+tags: [vue, v-model, components, migration, typescript]

@@ -1,0 +1,30 @@
+sigil: 1
+id: embed-widget-mount
+title: Port an embeddable widget's JavaScript API to Svelte 5 mount
+prompt: |
+  We're shipping 3.0 of our embeddable feedback widget on Svelte 5. FeedbackWidget.svelte was
+  already moved to runes last sprint (it takes callback props now instead of dispatching events),
+  but src/embed.ts, the plain JavaScript API that customers' pages call, still uses the Svelte 4
+  class component API, so creating a widget throws and `npm test` fails.
+
+  Please port src/embed.ts to the Svelte 5 API. Do it properly: no svelte/legacy helpers and no
+  `compatibility.componentApi` flag. `src/embed.ts` stays the package entry point, and the public
+  API (`createFeedbackWidget`, `WidgetOptions`, the returned handle) must not change, nor must its
+  behaviour, because customers depend on it:
+  - when `createFeedbackWidget` returns, the widget is ready: `onReady` has already been called, and
+    with `autofocus` the comment box already has focus;
+  - `update()` changes the title or placeholder in place, without losing the rating or the comment
+    the visitor has typed;
+  - `onSubmit` receives `{ rating, comment }` and `onClose` fires on Escape or the close button;
+  - `destroy()` removes the widget and everything it attached to the page.
+
+  Keep test/embed.test.ts passing.
+verify:
+  command: ./node_modules/.bin/vitest run --config test/hidden/vitest.config.ts
+  timeoutSeconds: 120
+protected:
+  - test/embed.test.ts
+image: node:24-bookworm
+setup: npm ci --ignore-scripts --no-audit --no-fund
+timeoutSeconds: 900
+tags: [svelte, runes, migration, mount, embedding]

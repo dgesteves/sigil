@@ -1,0 +1,25 @@
+sigil: 1
+id: upgrade-from-15
+title: Finish a Next.js 15 to 16 upgrade without changing what readers see
+prompt: |
+  Renovate bumped next from 15.5.28 to 16.4.3 (package.json and package-lock.json are already
+  updated) and `npm run build` fails now. Please finish the upgrade so the site builds and runs on
+  Next.js 16.4.3, and clean up the deprecation warnings `next build` prints while you're at it.
+
+  Readers must not notice the upgrade: same pages and URLs (including the post sitemaps under
+  /posts/sitemap/), the theme cookie keeps working, the hero photo keeps the image quality we set,
+  and when the CMS calls POST /api/revalidate after publishing, the very next page view must show
+  the new content, exactly as it does today.
+
+  Stay on 16.4.3 with Turbopack (don't switch the build to webpack) and don't change the tests in
+  test/.
+verify:
+  command: node test/hidden/build.ts && node --test test/site.test.ts && node --test test/hidden/upgrade.test.ts
+  timeoutSeconds: 240
+protected:
+  - test/harness.ts
+  - test/site.test.ts
+image: node:24-bookworm
+setup: npm ci --ignore-scripts --no-audit --no-fund
+timeoutSeconds: 1200
+tags: [nextjs, react, migration, upgrade, caching]

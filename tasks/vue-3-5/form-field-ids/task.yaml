@@ -1,0 +1,29 @@
+sigil: 1
+id: form-field-ids
+title: Fix SSR hydration mismatches in form field ids
+prompt: |
+  Our account page is rendered on the server (`renderPage` in src/entry-server.ts, run by a
+  long-running Node process) and hydrated in the browser (`hydratePage` in src/entry-client.ts).
+  Every page load logs Vue hydration mismatch warnings for the `id`, `for` and `name` attributes
+  of our form fields, and screen reader users report hints being read for the wrong field.
+
+  Please fix how the form components in src/components generate their ids, so that:
+  - the server renders the same markup on every request, and hydration in the browser matches it
+    with no mismatch warnings;
+  - every field instance gets its own ids, and labels (`for`), hints and errors
+    (`aria-describedby`) and radio groups (`name`) stay wired to the right elements;
+  - the header search bar, a separate Vue app (`createSearchApp` in src/apps.ts) rendered and
+    hydrated on the same page as the account app, never produces an id that collides with one
+    from the account app.
+
+  Keep the components' props, v-model bindings and markup otherwise unchanged, and keep the tests
+  in test/ passing.
+verify:
+  command: ./node_modules/.bin/vitest run --config test/hidden/vitest.config.ts
+  timeoutSeconds: 120
+protected:
+  - test/fields.test.ts
+image: node:24-bookworm
+setup: npm ci --ignore-scripts --no-audit --no-fund
+timeoutSeconds: 900
+tags: [vue, ssr, hydration, accessibility, typescript]

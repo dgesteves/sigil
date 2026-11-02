@@ -1,0 +1,39 @@
+sigil: 1
+id: vue/vue-3-5
+type: skill
+version: 1.0.0
+name: Vue 3.5 Composition and Reactivity
+summary: Current Vue 3.5 composition API, reactivity and component contracts, and the Vue 2 and early Vue 3 habits that silently break them.
+description: >-
+  Teaches an agent the Vue 3.5 APIs as they behave in vue 3.5.44: reactive props destructure and
+  why a destructured prop passed to a function or composable loses reactivity, composables that
+  take MaybeRefOrGetter and read it with toValue() inside an effect, watch semantics (shallow refs,
+  numeric deep, once, pause/resume, onWatcherCleanup and its synchronous-only rule, cleanup when an
+  effectScope stops), defineModel (local mode without v-model, modifiers and get/set transforms,
+  factory defaults, never mutating an array or object model in place), declared emits and listener
+  fallthrough, $attrs, useTemplateRef, defineExpose, useId with app.config.idPrefix for SSR-stable
+  ids, data-allow-mismatch, provide/inject with typed keys, and how to test all of it with Vitest
+  and @vue/test-utils. Every behaviour was run against vue 3.5.44.
+domains: [frontend, migration, testing]
+lifecycle: [build, maintain, test]
+technologies: [vue, typescript, javascript, vite, vitest]
+license: MIT
+authors:
+  - github: dgesteves
+payload:
+  format: agent-skill
+  entry: SKILL.md
+targets: [claude-code, codex, cursor, github-copilot, gemini-cli, opencode]
+permissions:
+  network: []
+  shell: [npm ls, vitest, vue-tsc, rg]
+  filesystem: write
+  env: []
+proof:
+  suites: [vue-3-5]
+limitations:
+  - Written and verified against vue 3.5.44 (npm latest on 2026-11-01). Vue 3.6 (Vapor mode, alien-signals reactivity) is a release candidate and is not covered.
+  - Nuxt 4, Pinia and Vue Router are out of scope beyond using composables inside an effectScope; their data-fetching and store APIs have their own rules.
+  - The proof suite runs in jsdom with @vue/test-utils, so it measures behaviour, hydration warnings and SSR markup but not layout, transitions or real browser focus.
+  - The Vue 2 migration notes cover the behaviour changes that fail silently in components; the @vue/compat build and its per-feature flags are not taught.
+  - Type-level guidance (generic components, defineSlots typing) is brief; run vue-tsc for the final word on types.

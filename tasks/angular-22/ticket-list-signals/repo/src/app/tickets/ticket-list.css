@@ -1,0 +1,22 @@
+.ticket-list header {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+.ticket {
+  display: flex;
+  gap: 0.75rem;
+  padding: 0.25rem 0;
+}
+.ticket.selected {
+  background: #eef4ff;
+}
+.compact .ticket {
+  padding: 0;
+}
+.status-open {
+  color: #b42318;
+}
+.status-solved {
+  color: #067647;
+}

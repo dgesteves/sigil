@@ -1,0 +1,36 @@
+sigil: 1
+id: stock-level-polling
+title: Live, cancellable stock polling in a reusable Vue composable
+prompt: |
+  StockBadge (src/components/StockBadge.vue) fetches stock once on mount and never again. On the
+  product page the variant picker swaps its `sku` prop when the shopper picks another size, and
+  the badge keeps showing the old variant's stock. Please move the logic into a reusable composable,
+  `useStockLevel(sku, warehouse, options?)` exported from src/composables/useStockLevel.ts, and use
+  it in StockBadge.
+
+  What we need from it:
+  - `sku` and `warehouse` can each be a plain string, a ref or a getter: StockBadge passes its
+    props, the cart drawer passes computed refs.
+  - It returns refs `stock` (StockLevel or null), `loading` and `error`, plus a `refresh()` function.
+  - It fetches with `fetchStock` from src/api.ts right away, then again every `options.pollMs`
+    milliseconds (default 30000).
+  - Whenever `sku` or `warehouse` changes it fetches the new one right away, aborts the request
+    that is still in flight (fetchStock takes an AbortSignal) and restarts the polling interval.
+    While the new one loads, `stock` is null: never show stock for a different SKU than the
+    current one, even when an older response arrives late.
+  - `loading` is true while a request is in flight. A failed fetch sets `error`; the next
+    successful fetch clears it. Aborted requests are not errors.
+  - The cart drawer's store calls it inside its own `effectScope()`, outside any component.
+    When the component unmounts or that scope is stopped, polling stops and the request in flight
+    is aborted.
+
+  Keep StockBadge's props and markup as they are, and keep the tests in test/ passing.
+verify:
+  command: ./node_modules/.bin/vitest run --config test/hidden/vitest.config.ts
+  timeoutSeconds: 120
+protected:
+  - test/StockBadge.test.ts
+image: node:24-bookworm
+setup: npm ci --ignore-scripts --no-audit --no-fund
+timeoutSeconds: 900
+tags: [vue, composables, reactivity, typescript, async]
