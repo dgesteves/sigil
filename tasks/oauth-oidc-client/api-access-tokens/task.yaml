@@ -1,0 +1,30 @@
+sigil: 1
+id: api-access-tokens
+title: Validate the IdP's JWT access tokens in an Express API instead of decoding them
+prompt: |
+  Our security review flagged src/auth.ts: `requireAuth` only base64-decodes the bearer token, so
+  anyone can hand-craft a token with any `sub` and scopes. Please make it properly validate the
+  access tokens our identity provider issues. Keep the routes, the scopes they need and
+  `res.locals.principal` as they are. jose is already installed.
+
+  What we know about the tokens:
+  - They are JWT access tokens in the RFC 9068 profile (header `typ: at+jwt`), issued by
+    `config.issuer` for this API's audience `config.audience`, signed with RS256 or ES256.
+  - The IdP publishes its metadata at the standard OpenID Connect discovery URL for that issuer;
+    take the signing keys from what it advertises there.
+  - The IdP rotates its signing keys without telling us. Tokens signed with a newly published key
+    have to keep working without restarting the service.
+
+  Responses should follow RFC 6750: a request without a usable token gets a 401 with a
+  `WWW-Authenticate: Bearer ...` challenge (with `error="invalid_token"` when a token was sent but
+  rejected), and a valid token that lacks the route's scope gets a 403 with
+  `error="insufficient_scope"`.
+verify:
+  command: node --test "test/**/*.test.ts"
+  timeoutSeconds: 120
+protected:
+  - test/**
+image: node:24-bookworm
+setup: npm ci --ignore-scripts --no-audit --no-fund
+timeoutSeconds: 900
+tags: [oauth, jwt, express, security, typescript]
