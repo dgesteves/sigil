@@ -85,11 +85,15 @@ export function packagesIn(file: string, text: string): string[] {
   }
   if (file === 'pyproject.toml' || file === 'Pipfile') {
     const names = new Set<string>()
+    // Bounded, and never past a quote or a line end: a crafted manifest must not make these
+    // quadratic (`recommend` reads whatever project the agent is in).
     for (const m of text.matchAll(
-      /["']([A-Za-z0-9][A-Za-z0-9._-]*)(?:\[[^\]]*\])?\s*(?:[<>=!~;][^"']*)?["']/g,
+      /["']([A-Za-z0-9][A-Za-z0-9._-]{0,99})(?:\[[^\]"'\n]{0,99}\])?[ \t]{0,9}(?:[<>=!~;][^"'\n]{0,199})?["']/g,
     ))
       names.add(normPy(m[1]!))
-    for (const m of text.matchAll(/^\s*([A-Za-z0-9][A-Za-z0-9._-]*)\s*=\s*(?:["'{])/gm))
+    for (const m of text.matchAll(
+      /^[ \t]{0,20}([A-Za-z0-9][A-Za-z0-9._-]{0,99})[ \t]{0,9}=[ \t]{0,9}["'{]/gm,
+    ))
       names.add(normPy(m[1]!))
     return [...names]
   }

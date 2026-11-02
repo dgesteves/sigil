@@ -24,6 +24,24 @@ describe('stack detection', () => {
     expect(packagesIn('package.json', '{ not json')).toEqual([])
   })
 
+  it('reads pyproject dependencies in every common shape, in linear time', () => {
+    const names = packagesIn(
+      'pyproject.toml',
+      [
+        '[project]',
+        'dependencies = ["fastapi[standard]>=0.115", "pydantic >= 2", \'SQLAlchemy\']',
+        '[tool.poetry.dependencies]',
+        'Django = { version = "5" }',
+      ].join('\n'),
+    )
+    expect(names).toEqual(expect.arrayContaining(['fastapi', 'pydantic', 'sqlalchemy', 'django']))
+    // A crafted manifest that made the old pattern quadratic.
+    const hostile = `x = ${'"0['.repeat(100_000)}`
+    const t0 = performance.now()
+    packagesIn('pyproject.toml', hostile)
+    expect(performance.now() - t0).toBeLessThan(1_000)
+  })
+
   it('matches taxonomy file signatures', () => {
     const files = ['README.md', 'src/app.css', '.github/workflows/ci.yml', 'deep/a/b/c/x.tf']
     expect(matchFiles('.github/workflows/*.yml', files)).toBe('.github/workflows/ci.yml')
