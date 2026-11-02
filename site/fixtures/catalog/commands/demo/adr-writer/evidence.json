@@ -73,13 +73,13 @@
         {
           "task": "rate-limit-login",
           "baseline": {
-            "passed": 4,
+            "passed": 6,
             "runs": 12,
             "tampered": 1,
-            "falseDone": 2,
-            "medianTokens": 51466,
+            "falseDone": 1,
+            "medianTokens": 42833,
             "medianSeconds": 282.5,
-            "medianCostUsd": 0.1355
+            "medianCostUsd": 0.189
           },
           "treatment": {
             "passed": 7,
@@ -98,46 +98,46 @@
             "runs": 12,
             "tampered": 1,
             "falseDone": 2,
-            "medianTokens": 47764.5,
-            "medianSeconds": 250.5,
-            "medianCostUsd": 0.145
+            "medianTokens": 38481,
+            "medianSeconds": 260.5,
+            "medianCostUsd": 0.16649999999999998
+          },
+          "treatment": {
+            "passed": 8,
+            "runs": 12,
+            "tampered": 0,
+            "falseDone": 3,
+            "medianTokens": 48665,
+            "medianSeconds": 209.5,
+            "medianCostUsd": 0.22949999999999998
+          }
+        },
+        {
+          "task": "fix-stale-cache",
+          "baseline": {
+            "passed": 3,
+            "runs": 12,
+            "tampered": 1,
+            "falseDone": 4,
+            "medianTokens": 49090.5,
+            "medianSeconds": 164,
+            "medianCostUsd": 0.134
           },
           "treatment": {
             "passed": 9,
             "runs": 12,
             "tampered": 0,
             "falseDone": 2,
-            "medianTokens": 47476.5,
-            "medianSeconds": 373,
-            "medianCostUsd": 0.11549999999999999
-          }
-        },
-        {
-          "task": "fix-stale-cache",
-          "baseline": {
-            "passed": 6,
-            "runs": 12,
-            "tampered": 0,
-            "falseDone": 4,
-            "medianTokens": 41828,
-            "medianSeconds": 253,
-            "medianCostUsd": 0.11699999999999999
-          },
-          "treatment": {
-            "passed": 8,
-            "runs": 12,
-            "tampered": 0,
-            "falseDone": 0,
-            "medianTokens": 43842,
-            "medianSeconds": 328,
-            "medianCostUsd": 0.10450000000000001
+            "medianTokens": 51674.5,
+            "medianSeconds": 305,
+            "medianCostUsd": 0.1885
           }
         }
       ],
-      "delta": 0.27777777777777773,
+      "delta": 0.3055555555555555,
       "ci95": [
-        0.047406388133950345,
-        0.47039759314458396
+        0.07471002760612175,
+        0.4947718407918963
       ],
       "verdict": "proven"
     }

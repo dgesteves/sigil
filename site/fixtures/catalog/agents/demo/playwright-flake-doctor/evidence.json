@@ -124,21 +124,21 @@
         {
           "task": "fix-stale-cache",
           "baseline": {
-            "passed": 2,
+            "passed": 3,
             "runs": 6,
             "tampered": 1,
-            "falseDone": 1,
-            "medianTokens": 63348,
-            "medianSeconds": 183.5,
-            "medianCostUsd": 0.175
+            "falseDone": 0,
+            "medianTokens": 45463,
+            "medianSeconds": 240,
+            "medianCostUsd": 0.134
           },
           "treatment": {
-            "passed": 1,
+            "passed": 2,
             "runs": 6,
             "tampered": 0,
             "falseDone": 2,
             "medianTokens": 65488,
-            "medianSeconds": 264.5,
+            "medianSeconds": 236,
             "medianCostUsd": 0.2155
           }
         }
@@ -146,7 +146,7 @@
       "delta": 0.05555555555555558,
       "ci95": [
         -0.24720608192162402,
-        0.34453796916694035
+        0.3445379691669404
       ],
       "verdict": "inconclusive"
     }
