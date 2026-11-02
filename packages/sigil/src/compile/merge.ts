@@ -22,6 +22,21 @@ export interface JsonDoc {
 
 const isObject = (v: unknown): v is JsonObject => !!v && typeof v === 'object' && !Array.isArray(v)
 
+/**
+ * Keys that reach Object.prototype through ordinary property access. Pointers come from capability
+ * payloads (an MCP server's name, a hook's event) and from the lockfile, so they are untrusted: a
+ * `__proto__` segment would let a capability change every object in the CLI process.
+ */
+function isUnsafeKey(key: string): boolean {
+  return key === '__proto__' || key === 'constructor' || key === 'prototype'
+}
+
+function safeKey(key: string, pointer: string[], path: string): string {
+  if (isUnsafeKey(key))
+    throw new MergeError(`${path}: refusing the key "${key}" in ${pointer.join('.')}`)
+  return key
+}
+
 export function parseJsonDoc(buf: Buffer | undefined, path: string): JsonDoc {
   if (buf === undefined || buf.toString('utf8').trim() === '')
     return {
@@ -64,8 +79,8 @@ function parentOf(
   const created: string[][] = []
   let node: JsonObject = doc.value
   for (let i = 0; i < pointer.length - 1; i++) {
-    const key = pointer[i]!
-    const next = node[key]
+    const key = safeKey(pointer[i]!, pointer, path)
+    const next = Object.hasOwn(node, key) ? node[key] : undefined
     if (next === undefined) {
       node[key] = {}
       created.push(pointer.slice(0, i + 1))
@@ -84,9 +99,9 @@ export interface Applied {
 }
 
 export function applySet(doc: JsonDoc, pointer: string[], value: JsonValue, path: string): Applied {
+  const key = safeKey(pointer.at(-1)!, pointer, path)
   const { parent, created } = parentOf(doc, pointer, path)
-  const key = pointer.at(-1)!
-  if (key in parent) {
+  if (Object.hasOwn(parent, key)) {
     if (isDeepStrictEqual(parent[key], value)) return { createdContainers: created, adopted: true }
     throw new MergeError(
       `${path} already defines ${pointer.join('.')}; Sigil will not replace settings it did not write`,
@@ -102,9 +117,9 @@ export function applyAppend(
   value: JsonValue,
   path: string,
 ): Applied {
+  const key = safeKey(pointer.at(-1)!, pointer, path)
   const { parent, created } = parentOf(doc, pointer, path)
-  const key = pointer.at(-1)!
-  if (parent[key] === undefined) {
+  if (!Object.hasOwn(parent, key)) {
     parent[key] = []
     created.push(pointer)
   }
@@ -119,7 +134,7 @@ export function applyAppend(
 function get(doc: JsonDoc, pointer: string[]): JsonValue | undefined {
   let node: JsonValue | undefined = doc.value
   for (const key of pointer) {
-    if (!isObject(node)) return undefined
+    if (!isObject(node) || isUnsafeKey(key) || !Object.hasOwn(node, key)) return undefined
     node = node[key]
   }
   return node
@@ -151,7 +166,7 @@ export function revert(
   const parentPath = pointer.slice(0, -1)
   const parent = parentPath.length ? get(doc, parentPath) : doc.value
   const key = pointer.at(-1)!
-  if (!isObject(parent) || parent[key] === undefined) return 'missing'
+  if (!isObject(parent) || isUnsafeKey(key) || !Object.hasOwn(parent, key)) return 'missing'
   if (op === 'set') {
     if (!isDeepStrictEqual(parent[key], value) && !force) return 'modified'
     delete parent[key]
@@ -171,7 +186,7 @@ export function pruneContainers(doc: JsonDoc, created: string[][]): string[][] {
   for (const pointer of [...created].sort((a, b) => b.length - a.length)) {
     const parent = pointer.length > 1 ? get(doc, pointer.slice(0, -1)) : doc.value
     const key = pointer.at(-1)!
-    if (!isObject(parent) || parent[key] === undefined) continue
+    if (!isObject(parent) || isUnsafeKey(key) || !Object.hasOwn(parent, key)) continue
     const v = parent[key]
     const empty = Array.isArray(v) ? v.length === 0 : isObject(v) && Object.keys(v).length === 0
     if (empty) delete parent[key]
@@ -204,7 +219,10 @@ export function appendBlock(
   content: string,
 ): { text: string; inserted: string } {
   const { begin, end } = markers(syntax, id)
-  const block = `${begin}\n${content.replace(/\n+$/, '')}\n${end}\n`
+  let stop = content.length
+  // A loop, not /\n+$/: that pattern is quadratic on content with long runs of newlines.
+  while (stop > 0 && content[stop - 1] === '\n') stop--
+  const block = `${begin}\n${content.slice(0, stop)}\n${end}\n`
   const base = text ?? ''
   const sep = base === '' || base.endsWith('\n\n') ? '' : base.endsWith('\n') ? '\n' : '\n\n'
   return { text: base + sep + block, inserted: sep + block }

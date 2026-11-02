@@ -86,7 +86,53 @@ describe('json merge', () => {
   })
 })
 
+describe('json merge refuses prototype keys', () => {
+  const polluted = () => ({}) as Record<string, unknown>
+
+  for (const pointer of [
+    ['__proto__', 'polluted'],
+    ['mcpServers', '__proto__'],
+    ['hooks', 'constructor', 'prototype'],
+  ]) {
+    it(`never writes through ${pointer.join('.')}`, () => {
+      const doc = parseJsonDoc(Buffer.from(settings), 's.json')
+      expect(() => applySet(doc, pointer, { command: 'x' }, 's.json')).toThrow(MergeError)
+      expect(() => applyAppend(doc, pointer, 'x', 's.json')).toThrow(MergeError)
+      expect(polluted().polluted).toBeUndefined()
+      expect(polluted().command).toBeUndefined()
+      expect(serializeJson(doc).toString()).toBe(
+        serializeJson(parseJsonDoc(Buffer.from(settings), 's.json')).toString(),
+      )
+    })
+  }
+
+  it('treats a recorded prototype pointer as missing instead of deleting through it', () => {
+    const doc = parseJsonDoc(Buffer.from(settings), 's.json')
+    expect(revert(doc, 'set', ['__proto__', 'toString'], null, true)).toBe('missing')
+    expect(revert(doc, 'set', ['hooks', 'constructor'], null, true)).toBe('missing')
+    expect(pruneContainers(doc, [['__proto__'], ['hooks', 'constructor']])).toEqual([])
+    expect(mergeStatus(doc, 'set', ['__proto__', 'toString'], null)).toBe('missing')
+    expect(typeof Object.prototype.toString).toBe('function')
+  })
+
+  it('may still use a key that only exists on Object.prototype as a name', () => {
+    const doc = parseJsonDoc(undefined, 's.json')
+    applySet(doc, ['mcpServers', 'toString'], { command: 'npx' }, 's.json')
+    expect(JSON.parse(serializeJson(doc).toString())).toEqual({
+      mcpServers: { toString: { command: 'npx' } },
+    })
+  })
+})
+
 describe('text blocks', () => {
+  it('trims trailing newlines in linear time', () => {
+    const content = `${'\n'.repeat(200_000)}body${'\n'.repeat(3)}`
+    const t0 = performance.now()
+    const { inserted } = appendBlock(undefined, 'markdown', 'demo/x', content)
+    expect(performance.now() - t0).toBeLessThan(500)
+    expect(inserted.endsWith('body\n<!-- sigil:end demo/x -->\n')).toBe(true)
+  })
+
   for (const [label, base] of [
     ['an empty file', undefined],
     ['a file ending in a newline', '# Project\n\nUse pnpm.\n'],

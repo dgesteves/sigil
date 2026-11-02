@@ -92,7 +92,7 @@ export function addTech(s: Signals, techs: Map<string, Tech>, id: string, signal
 /** "React app", "a Go service", "REST": yes. "react to", "next week", "let's go": no. */
 export function meantAsTech(text: string, word: string): boolean {
   const re = new RegExp(
-    `(^|[^A-Za-z0-9])(${word.replace(/[.+]/g, '\\$&')})(?=$|[^A-Za-z0-9])`,
+    `(^|[^A-Za-z0-9])(${word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})(?=$|[^A-Za-z0-9])`,
     'gi',
   )
   for (const m of text.matchAll(re)) {

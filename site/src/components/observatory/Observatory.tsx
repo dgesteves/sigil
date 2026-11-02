@@ -608,7 +608,8 @@ function describe(c: CapView): string {
 }
 
 function fmtLog(l: FetchLog): string {
-  const host = l.url.includes('raw.githubusercontent.com') ? 'raw' : 'api'
+  const host =
+    URL.canParse(l.url) && new URL(l.url).hostname === 'raw.githubusercontent.com' ? 'raw' : 'api'
   const size =
     l.bytes !== undefined
       ? ` · ${l.bytes > 1024 ? `${(l.bytes / 1024).toFixed(1)} KB` : `${l.bytes} B`}`

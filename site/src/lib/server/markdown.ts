@@ -1,4 +1,4 @@
-import { Marked } from 'marked'
+import { Marked, TextRenderer } from 'marked'
 import { REPO_URL } from '../model'
 
 export interface Heading {
@@ -7,11 +7,10 @@ export interface Heading {
   depth: number
 }
 
-/** GitHub-compatible heading anchors, so links like #the-seal keep working. */
+/** GitHub-compatible heading anchors from plain text, so links like #the-seal keep working. */
 export function slugify(text: string): string {
   return text
     .toLowerCase()
-    .replace(/<[^>]+>/g, '')
     .replace(/[^\p{L}\p{N}\s-]/gu, '')
     .trim()
     .replace(/\s/g, '-')
@@ -26,6 +25,13 @@ const ENTITIES: Record<string, string> = {
 }
 const decode = (s: string) => s.replace(/&(?:amp|lt|gt|quot|#39);/g, (e) => ENTITIES[e]!)
 
+/** Heading text without markup: inline HTML is dropped, not stripped from rendered output. */
+class PlainText extends TextRenderer {
+  override html(): string {
+    return ''
+  }
+}
+
 /** Renders repo-authored markdown (trusted input). Relative links resolve to the repo on GitHub. */
 export function renderMarkdown(md: string, from = 'spec'): { html: string; headings: Heading[] } {
   const headings: Heading[] = []
@@ -34,7 +40,8 @@ export function renderMarkdown(md: string, from = 'spec'): { html: string; headi
     renderer: {
       heading({ tokens, depth }) {
         const html = this.parser.parseInline(tokens)
-        const text = decode(html.replace(/<[^>]+>/g, ''))
+        const plain = Object.assign(new PlainText(), { parser: this.parser })
+        const text = decode(this.parser.parseInline(tokens, plain))
         const id = slugify(text)
         if (depth <= 3) headings.push({ id, text, depth })
         return `<h${depth} id="${id}"><a href="#${id}" aria-hidden="true" tabindex="-1">#</a>${html}</h${depth}>\n`
