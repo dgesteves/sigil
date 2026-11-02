@@ -795,12 +795,14 @@ function simulateTrace(cap, task, condition, run, passed, r, flags) {
       ? 'Done. The change is in place and the tests pass.'
       : 'I could not get the last test to pass in the time available.',
   )
+  if (flags.tampered)
+    push('system', 'protected file test/login.test.ts restored before the hidden verifier ran')
   push(
     'verify',
-    passed
-      ? 'hidden verifier: ✓ all checks passed'
-      : `hidden verifier: ✗ ${flags.tampered ? 'protected test file was modified' : task.fail}`,
-    { ok: passed },
+    passed ? 'hidden verifier: ✓ all checks passed' : `hidden verifier: ✗ ${task.fail}`,
+    {
+      ok: passed,
+    },
   )
   const seconds = Math.round(t / 1000)
   return Trace.parse({
@@ -820,11 +822,7 @@ function simulateTrace(cap, task, condition, run, passed, r, flags) {
     tokens: Math.round(18000 + r() * 60000 + (condition === 'treatment' ? 3000 : 0)),
     seconds,
     costUsd: Math.round((0.04 + r() * 0.3) * 1000) / 1000,
-    verifyOutput: passed
-      ? '✓ all checks passed'
-      : flags.tampered
-        ? '✗ protected file test/login.test.ts was modified'
-        : `✗ ${task.fail}`,
+    verifyOutput: passed ? '✓ all checks passed' : `✗ ${task.fail}`,
     events: ev,
   })
 }
@@ -851,9 +849,10 @@ function simulateUplift(cap, scenario, withTraces) {
         Math.max(0.03, sc.base + (condition === 'treatment' ? sc.lift : 0) + (r() - 0.5) * 0.1),
       )
       for (let run = 1; run <= sc.runs; run++) {
+        // Tampering is recorded, not scored: protected files are restored before the verifier runs.
         const tampered = condition === 'baseline' && r() < 0.06
-        const passed = !tampered && r() < p
-        const falseDone = !passed && !tampered && r() < 0.3
+        const passed = r() < p
+        const falseDone = !passed && r() < 0.3
         const tokens = Math.round(18000 + r() * 60000)
         const seconds = Math.round(60 + r() * 400)
         if (withTraces) {

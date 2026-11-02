@@ -99,7 +99,11 @@ export function IntervalChart({ runs }: { runs: UpliftSummary[] }) {
   )
 }
 
-/** One dot per run, passes first. Counts are recorded; the order is only for reading. */
+/**
+ * One dot per run, passes first: the hidden verifier alone decides pass or fail. Tampering is
+ * recorded, not scored (protected files are restored before the verifier runs), and evidence keeps
+ * only counts, so it is shown beside the strip rather than as a kind of run.
+ */
 function Strip({
   passed,
   runs,
@@ -115,20 +119,13 @@ function Strip({
 }) {
   const dots = Array.from({ length: runs }, (_, i) => ({
     id: `run-${i}`,
-    kind:
-      i < passed
-        ? 'pass'
-        : i < passed + tampered
-          ? 'tampered'
-          : i < passed + tampered + falseDone
-            ? 'false'
-            : 'fail',
+    kind: i < passed ? 'pass' : i < passed + falseDone ? 'false' : 'fail',
   }))
   return (
     <span
       className={styles.strip}
       role="img"
-      aria-label={`${passed} of ${runs} passed${tampered ? `, ${tampered} tampered` : ''}${falseDone ? `, ${falseDone} falsely claimed done` : ''}`}
+      aria-label={`${passed} of ${runs} passed${falseDone ? `, ${falseDone} falsely claimed done` : ''}${tampered ? `, ${tampered} edited protected tests (restored, not scored)` : ''}`}
     >
       {dots.map((d) => (
         <span
@@ -138,6 +135,11 @@ function Strip({
           style={d.kind === 'pass' ? { background: tone, boxShadow: `0 0 6px ${tone}` } : undefined}
         />
       ))}
+      {tampered ? (
+        <span className={styles.tampered}>
+          <span className={styles.dot} data-kind="tampered" />×{tampered}
+        </span>
+      ) : null}
     </span>
   )
 }
@@ -200,12 +202,20 @@ export function TaskTable({
         </tbody>
       </table>
       <p className={styles.key}>
-        <span className={styles.dot} data-kind="pass" style={{ background: tone }} /> passed hidden
-        tests
-        <span className={styles.dot} data-kind="fail" /> failed
-        <span className={styles.dot} data-kind="tampered" /> tampered with protected tests (counted
-        as failed)
-        <span className={styles.dot} data-kind="false" /> claimed done, verifier failed
+        <span>
+          <span className={styles.dot} data-kind="pass" style={{ background: tone }} /> passed
+          hidden tests
+        </span>
+        <span>
+          <span className={styles.dot} data-kind="fail" /> failed
+        </span>
+        <span>
+          <span className={styles.dot} data-kind="false" /> claimed done, verifier failed
+        </span>
+        <span>
+          <span className={styles.dot} data-kind="tampered" /> edited protected tests (restored
+          before the verifier ran: recorded, not scored)
+        </span>
       </p>
     </div>
   )

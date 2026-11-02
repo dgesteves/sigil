@@ -117,27 +117,27 @@
           "baseline": {
             "passed": 5,
             "runs": 12,
-            "tampered": 3,
-            "falseDone": 0,
-            "medianTokens": 62834.5,
-            "medianSeconds": 297.5,
-            "medianCostUsd": 0.20650000000000002
+            "tampered": 1,
+            "falseDone": 2,
+            "medianTokens": 52760.5,
+            "medianSeconds": 307,
+            "medianCostUsd": 0.1585
           },
           "treatment": {
-            "passed": 8,
+            "passed": 10,
             "runs": 12,
             "tampered": 0,
-            "falseDone": 2,
-            "medianTokens": 47273.5,
-            "medianSeconds": 276.5,
-            "medianCostUsd": 0.122
+            "falseDone": 1,
+            "medianTokens": 49065,
+            "medianSeconds": 258.5,
+            "medianCostUsd": 0.138
           }
         }
       ],
-      "delta": 0.3055555555555556,
+      "delta": 0.36111111111111116,
       "ci95": [
-        0.07896254232914043,
-        0.49227898710230344
+        0.13794458226950457,
+        0.5388825632651386
       ],
       "verdict": "proven"
     }
