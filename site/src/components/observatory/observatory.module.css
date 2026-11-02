@@ -796,6 +796,25 @@
   .bc > :global(.micro) {
     display: none;
   }
+  /* Phones have no number keys to press: drop the hints so all four dimensions fit unscrolled. */
+  .bc {
+    justify-content: space-between;
+    padding: 4px;
+  }
+  .dim {
+    padding: 4px 8px;
+    letter-spacing: 0.06em;
+  }
+  .dim kbd {
+    display: none;
+  }
+  @media (max-width: 400px) {
+    .dim {
+      padding: 4px 6px;
+      font-size: 10px;
+      letter-spacing: 0.02em;
+    }
+  }
   .center,
   .root[data-oracle="true"] .center {
     position: relative;
