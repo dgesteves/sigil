@@ -1,0 +1,39 @@
+sigil: 1
+id: axum/axum-0-8
+type: skill
+version: 1.0.0
+name: axum 0.8 Services
+summary: Rust HTTP services on axum 0.8 that keep body limits, JSON errors, cancellation and shutdown right, plus the 0.7 to 0.8 upgrade.
+description: >-
+  Current knowledge for axum 0.8.9 on tokio 1.54, hyper 1.12 and tower-http 0.7: the 0.7 to 0.8
+  changes ({id} paths, native async extractors, OptionalFromRequestParts, moved and removed APIs)
+  and, above all, the behaviours that never fail a build: the 2 MB DefaultBodyLimit that
+  RequestBodyLimitLayer cannot raise, raw Body extractors with no limit, plain-text 400/413/415/422
+  rejections that bypass the app's error type, layers that skip later routes, Query and repeated
+  keys, handler futures dropped on client disconnect or timeout so cleanup after .await never runs,
+  and graceful shutdown that waits forever. Includes one error type for every failure path that
+  never leaks internals, per-key limits with Drop guards, SIGTERM-aware shutdown with a drain
+  deadline, and in-process tests for all of it. Every behaviour claim was reproduced on axum 0.8.9.
+domains: [backend, security, migration]
+lifecycle: [build, maintain, operate]
+technologies: [rust, axum, tokio]
+license: MIT
+authors:
+  - github: dgesteves
+payload:
+  format: agent-skill
+  entry: SKILL.md
+targets: [claude-code, codex, cursor, github-copilot, gemini-cli, opencode]
+permissions:
+  network: []
+  shell: [cargo, rg]
+  filesystem: write
+  env: []
+proof:
+  suites: [axum-0-8]
+limitations:
+  - Written and verified against axum 0.8.9, tower-http 0.7.1, tokio 1.54.1 and hyper 1.12.0. The unreleased axum main branch already changes serve's output type and timeouts; check the CHANGELOG when a 0.9 ships.
+  - Covers HTTP/1.1 and JSON APIs. WebSockets, SSE, gRPC (tonic) and multipart parsing are mentioned only where limits or shutdown affect them.
+  - Does not cover authentication libraries, OpenAPI generation, database pools or tracing setup beyond logging errors.
+  - The proof suite runs handlers in-process with tower's oneshot; client disconnects are simulated by dropping the request future, which matches what hyper does but is not a real socket test.
+  - Rejection message texts are quoted from 0.8.9 and may change in patch releases; the status codes are part of axum's documented behaviour.

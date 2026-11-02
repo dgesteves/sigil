@@ -1,0 +1,31 @@
+sigil: 1
+id: catalog-input-validation
+title: Validate catalog API parameters and bodies and report every violation as problem details
+prompt: |
+  Bad input on the catalog API either blows up (`GET /products?size=0` is a 500) or gets stored as
+  is (blank names, negative prices). Please add request validation with these rules:
+
+  - GET /products: `page` >= 0 and `size` from 1 to 100 (the defaults stay 0 and 20).
+  - SKUs, as a path variable or in a body, look like MUG-0001: three capital letters, a dash, four
+    digits.
+  - POST /products: `sku`, `name` (not blank, at most 80 characters), `category` (not blank) and
+    `price` (greater than 0, at most 2 decimals) are all required.
+  - POST /stores/{storeId}/price-changes: `storeId` looks like ST-001; `reason` is required (not
+    blank); `changes` must have 1 to 50 entries, each with a valid `sku` and a `newPrice` greater
+    than 0 with at most 2 decimals.
+
+  Every rejected request, including malformed JSON or a non-numeric `size`, must get a 400 with an
+  RFC 9457 problem details body (`application/problem+json`). For validation failures, add an
+  `errors` array that lists every violation in the request at once, parameters and body together,
+  each as `{"field": "...", "message": "..."}`. `field` is the parameter name (`size`, `storeId`)
+  or the property path inside the body (`price`, `changes[1].newPrice`). Successful responses and
+  the 404 for unknown SKUs must not change.
+verify:
+  command: mvn -o -B -q clean test
+  timeoutSeconds: 180
+protected:
+  - src/test/java/com/acme/catalog/ProductControllerTest.java
+image: maven:3.9.16-eclipse-temurin-25
+setup: mvn -B -q clean test && mvn -B -q dependency:go-offline
+timeoutSeconds: 900
+tags: [spring-boot, java, validation, problem-details, api-design]
