@@ -1,0 +1,25 @@
+sigil: 1
+id: distroless-graceful-shutdown
+title: Stop the 502s and cut-off exports when ledger-api pods terminate
+prompt: |
+  Every deploy of ledger-api (and every node drain) gives us a burst of 502s at the ingress, plus a
+  few CSV exports that get cut off halfway. What we know so far: when a pod starts terminating,
+  ingress-nginx and kube-proxy keep sending it new requests for up to about 10 seconds, but the app
+  closes its listener the moment it gets SIGTERM, so those requests fail. Separately, exports of big
+  accounts stream for up to 45 seconds and get killed mid-download when the pod goes away.
+
+  Please fix shutdown so rollouts and drains are clean: a terminating pod has to keep accepting new
+  requests until the load balancers have caught up, and every request it has accepted has to be
+  allowed to finish. The clusters run Kubernetes 1.37. The runtime image stays distroless (security
+  policy; the Dockerfile is owned by the security team, don't change it).
+verify:
+  command: node --test test/server.test.js test/manifests.test.js test/hidden/graceful-shutdown.test.mjs
+  timeoutSeconds: 120
+protected:
+  - Dockerfile
+  - test/*.test.js
+  - scripts/fetch-k8s-tools.sh
+image: node:24-bookworm
+setup: npm ci --ignore-scripts --no-audit --no-fund && sh scripts/fetch-k8s-tools.sh
+timeoutSeconds: 900
+tags: [kubernetes, graceful-shutdown, lifecycle-hooks, distroless]

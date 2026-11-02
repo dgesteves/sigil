@@ -94,22 +94,22 @@
         {
           "task": "backfill-column",
           "baseline": {
-            "passed": 4,
+            "passed": 0,
             "runs": 12,
             "tampered": 1,
-            "falseDone": 4,
-            "medianTokens": 45448,
-            "medianSeconds": 227.5,
-            "medianCostUsd": 0.196
+            "falseDone": 5,
+            "medianTokens": 46846.5,
+            "medianSeconds": 223,
+            "medianCostUsd": 0.158
           },
           "treatment": {
-            "passed": 9,
+            "passed": 7,
             "runs": 12,
             "tampered": 0,
             "falseDone": 1,
-            "medianTokens": 46292.5,
-            "medianSeconds": 316.5,
-            "medianCostUsd": 0.1925
+            "medianTokens": 33501,
+            "medianSeconds": 278,
+            "medianCostUsd": 0.165
           }
         },
         {
@@ -118,26 +118,26 @@
             "passed": 5,
             "runs": 12,
             "tampered": 1,
-            "falseDone": 3,
-            "medianTokens": 49214,
-            "medianSeconds": 208.5,
-            "medianCostUsd": 0.2295
+            "falseDone": 1,
+            "medianTokens": 43806.5,
+            "medianSeconds": 196,
+            "medianCostUsd": 0.173
           },
           "treatment": {
-            "passed": 8,
+            "passed": 9,
             "runs": 12,
             "tampered": 0,
-            "falseDone": 1,
-            "medianTokens": 43992,
-            "medianSeconds": 198,
-            "medianCostUsd": 0.201
+            "falseDone": 0,
+            "medianTokens": 56864.5,
+            "medianSeconds": 186.5,
+            "medianCostUsd": 0.20450000000000002
           }
         }
       ],
-      "delta": 0.25,
+      "delta": 0.3333333333333333,
       "ci95": [
-        0.021768136209742134,
-        0.44484220710823796
+        0.10235451612975044,
+        0.5188599731290146
       ],
       "verdict": "proven"
     }

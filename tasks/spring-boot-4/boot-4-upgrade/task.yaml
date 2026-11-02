@@ -1,0 +1,59 @@
+sigil: 1
+id: boot-4-upgrade
+title: Finish a Spring Boot 3.5 to 4.1 upgrade without changing the API contract
+prompt: |
+  Renovate bumped Spring Boot from 3.5.16 to 4.1.2 (only the parent version in pom.xml changed)
+  and CI is red: `mvn -o test` doesn't even compile any more. Please finish the upgrade so the
+  build and the tests pass on 4.1.2.
+
+  This is an upgrade, not a behaviour change. Partner integrations depend on the JSON contract in
+  the README, so clients must get exactly the same responses, and the same requests must be
+  accepted or rejected, as on 3.5. Port the existing tests as well; don't delete or disable any.
+
+  Constraints: stay on Spring Boot 4.1.2; don't use the "classic" starters or the deprecated
+  Jackson 2 support (no spring-boot-jackson2, no com.fasterxml.jackson.databind); keep the existing
+  classes and their public methods, this is a port and not a redesign. The build runs offline (see
+  the README).
+verify:
+  command: mvn -o -B -q clean test
+  timeoutSeconds: 240
+protected:
+  - README.md
+image: maven:3.9.16-eclipse-temurin-25
+setup: |
+  set -e
+  # Fill the repo-local Maven repository the way the platform mirror would: the Boot 4.1.2 starters
+  # (and test starters) an upgraded build may need, plus every plugin the test lifecycle runs.
+  mkdir -p /tmp/prefetch/src/test/java/prefetch
+  cat > /tmp/prefetch/pom.xml <<'POM'
+  <project xmlns="http://maven.apache.org/POM/4.0.0">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-parent</artifactId>
+      <version>4.1.2</version>
+      <relativePath/>
+    </parent>
+    <groupId>prefetch</groupId>
+    <artifactId>prefetch</artifactId>
+    <version>1</version>
+    <properties><java.version>25</java.version></properties>
+    <dependencies>
+      <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-webmvc</artifactId></dependency>
+      <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-validation</artifactId></dependency>
+      <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-restclient</artifactId></dependency>
+      <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-jackson</artifactId></dependency>
+      <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-test</artifactId><scope>test</scope></dependency>
+      <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-webmvc-test</artifactId><scope>test</scope></dependency>
+      <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-restclient-test</artifactId><scope>test</scope></dependency>
+      <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-validation-test</artifactId><scope>test</scope></dependency>
+      <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-jackson-test</artifactId><scope>test</scope></dependency>
+    </dependencies>
+    <build><plugins><plugin><groupId>org.springframework.boot</groupId><artifactId>spring-boot-maven-plugin</artifactId></plugin></plugins></build>
+  </project>
+  POM
+  printf 'package prefetch;\nclass PrefetchTest { @org.junit.jupiter.api.Test void ok() {} }\n' > /tmp/prefetch/src/test/java/prefetch/PrefetchTest.java
+  mvn -B -q -f /tmp/prefetch/pom.xml -Dmaven.repo.local=/work/.m2/repository clean test dependency:go-offline
+  mvn -B -q dependency:go-offline
+timeoutSeconds: 1200
+tags: [spring-boot, java, upgrade, migration, jackson, testing]

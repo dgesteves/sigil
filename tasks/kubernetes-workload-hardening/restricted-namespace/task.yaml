@@ -1,0 +1,26 @@
+sigil: 1
+id: restricted-namespace
+title: Get parcelhub admitted under the restricted Pod Security Standard
+prompt: |
+  Heads-up from the platform team: next Monday they label our `parcelhub` namespace with
+  `pod-security.kubernetes.io/enforce: restricted` and `enforce-version: latest` (the clusters run
+  Kubernetes 1.37). Please update deploy/k8s so the api, the worker and the nightly cleanup CronJob
+  are all admitted under that policy, and so the pods still actually start and work afterwards.
+  Security review also asked for read-only root filesystems on all of our containers, so do that in
+  the same change.
+
+  Things to keep in mind: the label renderer writes temporary PDFs to the OS temp dir; host paths
+  will be blocked, but the platform team now publishes the corporate CA bundle as the
+  `corp-root-ca` ConfigMap (key `ca.crt`) in every namespace, and the carrier clients must keep
+  finding it where NODE_EXTRA_CA_CERTS points. Keep the same images, commands and init steps.
+verify:
+  command: node --test test/labels.test.js test/manifests.test.js test/hidden/restricted-namespace.test.mjs
+  timeoutSeconds: 120
+protected:
+  - test/*.test.js
+  - scripts/fetch-k8s-tools.sh
+  - src/**
+image: node:24-bookworm
+setup: npm ci --ignore-scripts --no-audit --no-fund && sh scripts/fetch-k8s-tools.sh
+timeoutSeconds: 900
+tags: [kubernetes, pod-security, security-context]

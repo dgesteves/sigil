@@ -82,13 +82,13 @@
         {
           "task": "rate-limit-login",
           "baseline": {
-            "passed": 0,
+            "passed": 2,
             "runs": 4,
             "tampered": 1,
             "falseDone": 0,
-            "medianTokens": 35349.5,
+            "medianTokens": 40782,
             "medianSeconds": 142.5,
-            "medianCostUsd": 0.2425
+            "medianCostUsd": 0.2015
           },
           "treatment": {
             "passed": 3,
@@ -122,10 +122,10 @@
           }
         }
       ],
-      "delta": 0.25,
+      "delta": 0,
       "ci95": [
-        -0.20149843544372226,
-        0.586803040944919
+        -0.3983008445872753,
+        0.3983008445872753
       ],
       "verdict": "inconclusive"
     }

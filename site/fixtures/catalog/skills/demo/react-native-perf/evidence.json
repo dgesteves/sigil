@@ -94,13 +94,13 @@
         {
           "task": "backfill-column",
           "baseline": {
-            "passed": 1,
+            "passed": 3,
             "runs": 4,
             "tampered": 1,
-            "falseDone": 2,
-            "medianTokens": 48351,
-            "medianSeconds": 281,
-            "medianCostUsd": 0.2465
+            "falseDone": 1,
+            "medianTokens": 45864.5,
+            "medianSeconds": 343,
+            "medianCostUsd": 0.27349999999999997
           },
           "treatment": {
             "passed": 0,
@@ -113,10 +113,10 @@
           }
         }
       ],
-      "delta": 0.125,
+      "delta": -0.125,
       "ci95": [
-        -0.30281691156969776,
-        0.4962412092101878
+        -0.4962412092101878,
+        0.30281691156969776
       ],
       "verdict": "inconclusive"
     }

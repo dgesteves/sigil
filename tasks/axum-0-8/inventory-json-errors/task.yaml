@@ -1,0 +1,39 @@
+sigil: 1
+id: inventory-json-errors
+title: Consistent JSON error responses for an axum inventory API
+prompt: |
+  The mobile team keeps tripping over this API's errors. Some are plain text, some are empty,
+  axum's own body and query parsing errors come back as text, and during last week's database
+  outage the Postgres connection error, user name included, went out to every client. Please make
+  every error response from the app JSON in one shape, with `Content-Type: application/json`:
+
+      {"error": {"code": "<code>", "message": "<human-readable message>"}}
+
+  Statuses and codes:
+  - body that isn't valid JSON: 400 `malformed_json`
+  - valid JSON with missing fields or wrong types: 422 `invalid_body`
+  - a body without a JSON `Content-Type`: 415 `unsupported_media_type`
+  - a body over our 16 KiB limit: 413 `payload_too_large`
+  - a query string that doesn't parse, or `limit` outside 1..=100: 400 `invalid_query`
+  - a value that breaks the rules in the README (sku format, blank name, price, stock, zero
+    delta): 422 `validation_failed`, with a message that names the field
+  - unknown product, or a path no route matches: 404 `not_found`
+  - duplicate SKU: 409 `already_exists`; stock that would go below zero: 409 `insufficient_stock`
+  - a known path with an unsupported method: 405 `method_not_allowed`, keeping the `Allow` header
+  - anything else, store failures included: 500 `internal` with the message
+    `internal server error`. Log the real error with tracing; never send it to the client.
+
+  Successful responses stay exactly as they are. Keep `app(AppState)` and the store API as they
+  are: the tests build the app with their own store implementations.
+verify:
+  command: find target vendor -exec touch -h -t 200001010000 {} + && cargo test --offline --locked --test '*'
+  timeoutSeconds: 300
+protected:
+  - tests/api.rs
+  - src/store.rs
+  - Cargo.toml
+  - Cargo.lock
+image: rust:1.99.1-slim-bookworm
+setup: mkdir -p .cargo && cargo vendor --locked --versioned-dirs vendor > .cargo/config.toml && cargo test --offline --locked --test '*' --no-run
+timeoutSeconds: 1200
+tags: [rust, axum, error-handling, api, security]

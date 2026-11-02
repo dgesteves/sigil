@@ -1,0 +1,27 @@
+sigil: 1
+id: drain-safe-autoscaling
+title: Autoscale search-api and keep node drains moving
+prompt: |
+  We're putting search-api on autoscaling and onto the cluster team's automated node-pool upgrades
+  (Kubernetes 1.37). Please add to deploy/k8s:
+
+  - a HorizontalPodAutoscaler for the search-api Deployment that keeps it between 3 and 12
+    replicas, targeting 70% average CPU utilization, and make sure it can actually compute CPU
+    utilization for these pods;
+  - a disruption budget for search-api, so the upgrade automation can drain nodes without anyone
+    stepping in, while never evicting more than one search-api pod at a time, whatever replica
+    count the autoscaler has picked.
+
+  Last quarter an upgrade stalled for hours because a bad release had every pod crash-looping and
+  the old budget wouldn't let the drain evict them. That must not happen with the new setup.
+verify:
+  command: node --test test/manifests.test.js test/hidden/drain-safe-autoscaling.test.mjs
+  timeoutSeconds: 120
+protected:
+  - test/*.test.js
+  - scripts/fetch-k8s-tools.sh
+  - src/**
+image: node:24-bookworm
+setup: npm ci --ignore-scripts --no-audit --no-fund && sh scripts/fetch-k8s-tools.sh
+timeoutSeconds: 900
+tags: [kubernetes, autoscaling, pod-disruption-budget]

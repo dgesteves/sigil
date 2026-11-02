@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Feature module: owns its endpoints, request types and services. The host only wires it in. -->
+  <PropertyGroup>
+    <RootNamespace>Parcels.Shipments</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+</Project>

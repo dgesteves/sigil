@@ -1,0 +1,40 @@
+sigil: 1
+id: spring-boot/spring-boot-4
+type: skill
+version: 1.0.0
+name: Spring Boot 4 Web Services
+summary: Spring Boot 4.1 REST services done right, and Boot 3.5 upgrades that keep the JSON contract, checked against Boot 4.1.2.
+description: >-
+  Teaches an agent the parts of Spring Boot 4 (4.1.2, Spring Framework 7.0.10, Jackson 3.1.7) that
+  agents trained on Boot 2 and 3 get wrong when they build or upgrade Spring MVC services: the split
+  starters and test starters, Jackson 3 packages and APIs (@JacksonComponent, ValueSerializer,
+  JsonMapperBuilderCustomizer), the ObjectMapper bean that Boot 4 silently ignores, Jackson 3
+  default changes that alter the wire format without a compile error (enums read and written with
+  toString, rejected missing primitives, sorted properties), built-in method validation versus a
+  class-level @Validated, HandlerMethodValidationException and RFC 9457 problem details with
+  per-field errors, the new test packages (@MockitoBean, RestTestClient, TestRestTemplate opt-in),
+  RestTemplateBuilder and HTTP client property moves, HTTP service client groups, API versioning,
+  core @Retryable and virtual threads. Every behaviour claim was measured on Boot 4.1.2.
+domains: [backend, api-design, migration, testing]
+lifecycle: [build, test, maintain]
+technologies: [spring-boot, java, jvm, junit]
+license: MIT
+authors:
+  - github: dgesteves
+payload:
+  format: agent-skill
+  entry: SKILL.md
+targets: [claude-code, codex, cursor, github-copilot, gemini-cli, opencode]
+permissions:
+  network: []
+  shell: [mvn, gradlew, javap, unzip, grep, ls]
+  filesystem: write
+  env: []
+proof:
+  suites: [spring-boot-4]
+limitations:
+  - Written and measured against Spring Boot 4.1.2 (Framework 7.0.10, Jackson 3.1.7). 4.0.x behaves the same for everything here except where noted; check the release notes for 4.2 and later.
+  - Covers Spring MVC on the servlet stack. WebFlux, Spring Security 7, Spring Data and messaging are only touched where they meet the upgrade checklist.
+  - Jackson default changes are listed for the JSON features a REST API typically exercises; formats like XML, CBOR and Smile and polymorphic typing are not covered.
+  - The proof suite builds with Maven offline in a container. Gradle is mentioned for commands only.
+  - The suite measures behaviour through MockMvc and real HTTP in tests; production concerns like observability and native images are out of scope.

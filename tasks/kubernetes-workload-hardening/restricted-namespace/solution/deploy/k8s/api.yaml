@@ -1,0 +1,121 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api
+  labels:
+    app.kubernetes.io/name: api
+    app.kubernetes.io/part-of: parcelhub
+spec:
+  replicas: 3
+  revisionHistoryLimit: 5
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: api
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: api
+        app.kubernetes.io/part-of: parcelhub
+    spec:
+      serviceAccountName: parcelhub
+      # restricted: non-root with a numeric uid (the image's USER is the name "node", which the
+      # kubelet cannot verify, and busybox has no USER at all), RuntimeDefault seccomp for every
+      # container. The old seccomp annotation has been ignored since Kubernetes 1.27.
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      initContainers:
+        - name: wait-for-db
+          image: busybox:1.37@sha256:a7dbc319b1438115a207e11930dc4bb3e643dcb3ec0bdd694bb36cd8fad289ec
+          command: ["sh", "-c", "until nc -z -w 2 \"$DB_HOST\" 5432; do echo \"waiting for $DB_HOST\"; sleep 2; done"]
+          env:
+            - name: DB_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: parcelhub-config
+                  key: DB_HOST
+          resources:
+            requests:
+              cpu: 10m
+              memory: 16Mi
+            limits:
+              memory: 16Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+        - name: migrate
+          image: ghcr.io/parcelhub/parcelhub:4.2.0
+          command: ["node", "src/migrate.js"]
+          envFrom:
+            - configMapRef:
+                name: parcelhub-config
+            - secretRef:
+                name: parcelhub-db
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              memory: 256Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+      containers:
+        - name: api
+          image: ghcr.io/parcelhub/parcelhub:4.2.0
+          command: ["node", "src/server.js"]
+          ports:
+            - name: http
+              containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: parcelhub-config
+            - secretRef:
+                name: parcelhub-db
+          env:
+            - name: NODE_EXTRA_CA_CERTS
+              value: /etc/parcelhub/ca/ca.crt
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: http
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: 250m
+              memory: 256Mi
+            limits:
+              memory: 512Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          volumeMounts:
+            - name: corp-ca
+              mountPath: /etc/parcelhub/ca
+              readOnly: true
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: corp-ca
+          configMap:
+            name: corp-root-ca
+            items:
+              - key: ca.crt
+                path: ca.crt
+        - name: tmp
+          emptyDir:
+            sizeLimit: 256Mi

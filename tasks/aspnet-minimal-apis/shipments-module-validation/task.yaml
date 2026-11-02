@@ -1,0 +1,39 @@
+sigil: 1
+id: shipments-module-validation
+title: Validate requests in a minimal API feature module that lives in its own class library
+prompt: |
+  Booking a shipment (POST /api/shipments, in the shipments module, src/Parcels.Shipments) accepts
+  anything: last week a booking with no delivery address and a 0 g parcel reached the carrier.
+  Please add request validation to the shipments module, behaving like the customers endpoints
+  already do: a 400 validation problem (application/problem+json) whose `errors` map lists every
+  invalid field by its path, e.g. `pickup.postcode` or `parcels[2].weightGrams` (the frontend
+  matches keys case-insensitively), and nothing gets booked.
+
+  Rules for POST /api/shipments:
+  - customerId: required
+  - service: required, one of standard, express or same-day
+  - pickup and delivery: required; each needs line1, city and a postcode of at most 10
+    characters, and a countryCode of two uppercase letters (like PT); name (at most 100
+    characters) and line2 are optional
+  - parcels: required, 1 to 20 of them; weightGrams between 1 and 30000, and lengthCm, widthCm
+    and heightCm between 1 and 150
+  - pickupWindow: optional; when given, from and to are both required and to must be later
+    than from
+  - reference: optional, at most 35 characters
+
+  GET /api/shipments/quote: weightGrams between 1 and 30000, and service one of the three above.
+
+  The shipments module should stay self-contained (the returns and invoicing modules will copy its
+  shape). Don't add NuGet packages, and keep the existing tests passing.
+verify:
+  command: dotnet test --project tests/Parcels.Tests
+  timeoutSeconds: 180
+protected:
+  - tests/Parcels.Tests/*.cs
+  - tests/Parcels.Tests/Parcels.Tests.csproj
+  - global.json
+  - nuget.config
+image: mcr.microsoft.com/dotnet/sdk:10.0.403
+setup: dotnet restore Parcels.slnx --locked-mode && dotnet build Parcels.slnx --no-restore
+timeoutSeconds: 1200
+tags: [aspnet-core, dotnet, csharp, minimal-apis, validation, modular-monolith]

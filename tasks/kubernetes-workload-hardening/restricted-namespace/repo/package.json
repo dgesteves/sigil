@@ -1,0 +1,17 @@
+{
+  "name": "parcelhub",
+  "version": "4.2.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "start": "node src/server.js",
+    "test": "node --test test/*.test.js",
+    "lint:k8s": ".tools/kubeconform -strict -summary -schema-location '.tools/schemas/{{ .ResourceKind }}{{ .KindSuffix }}.json' deploy/k8s"
+  },
+  "devDependencies": {
+    "yaml": "2.9.1"
+  }
+}
