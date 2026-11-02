@@ -1,0 +1,39 @@
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: search-api
+  labels:
+    app.kubernetes.io/name: search-api
+    app.kubernetes.io/part-of: tideway-search
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: search-api
+  minReplicas: 3
+  maxReplicas: 12
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: search-api
+  labels:
+    app.kubernetes.io/name: search-api
+    app.kubernetes.io/part-of: tideway-search
+spec:
+  # One pod at a time at any scale the HPA picks (minAvailable would need re-tuning per scale).
+  maxUnavailable: 1
+  # Pods that are Running but not Ready (crash-looping, failing readiness) can always be evicted,
+  # so a broken release cannot stall a node drain. The default, IfHealthyBudget, refuses them
+  # whenever the budget is already short of healthy pods.
+  unhealthyPodEvictionPolicy: AlwaysAllow
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: search-api

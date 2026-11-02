@@ -73,71 +73,71 @@
         {
           "task": "rate-limit-login",
           "baseline": {
-            "passed": 2,
+            "passed": 3,
             "runs": 6,
-            "tampered": 2,
-            "falseDone": 0,
-            "medianTokens": 38493,
-            "medianSeconds": 75,
-            "medianCostUsd": 0.23049999999999998
+            "tampered": 1,
+            "falseDone": 1,
+            "medianTokens": 56950.5,
+            "medianSeconds": 79,
+            "medianCostUsd": 0.22249999999999998
           },
           "treatment": {
-            "passed": 6,
+            "passed": 3,
             "runs": 6,
             "tampered": 0,
             "falseDone": 0,
-            "medianTokens": 58793.5,
-            "medianSeconds": 74.5,
-            "medianCostUsd": 0.163
+            "medianTokens": 49962.5,
+            "medianSeconds": 76.5,
+            "medianCostUsd": 0.11399999999999999
           }
         },
         {
           "task": "backfill-column",
           "baseline": {
-            "passed": 4,
+            "passed": 2,
             "runs": 6,
             "tampered": 0,
             "falseDone": 0,
-            "medianTokens": 63622.5,
-            "medianSeconds": 65,
-            "medianCostUsd": 0.182
+            "medianTokens": 42844.5,
+            "medianSeconds": 74.5,
+            "medianCostUsd": 0.19
           },
           "treatment": {
             "passed": 2,
             "runs": 6,
             "tampered": 0,
             "falseDone": 1,
-            "medianTokens": 51430,
-            "medianSeconds": 67.5,
-            "medianCostUsd": 0.20600000000000002
+            "medianTokens": 56683.5,
+            "medianSeconds": 75.5,
+            "medianCostUsd": 0.26349999999999996
           }
         },
         {
           "task": "fix-stale-cache",
           "baseline": {
-            "passed": 4,
-            "runs": 6,
-            "tampered": 1,
-            "falseDone": 0,
-            "medianTokens": 55184,
-            "medianSeconds": 87,
-            "medianCostUsd": 0.1945
-          },
-          "treatment": {
-            "passed": 4,
+            "passed": 3,
             "runs": 6,
             "tampered": 0,
-            "falseDone": 1,
-            "medianTokens": 57813,
-            "medianSeconds": 84,
-            "medianCostUsd": 0.20450000000000002
+            "falseDone": 0,
+            "medianTokens": 46283.5,
+            "medianSeconds": 84.5,
+            "medianCostUsd": 0.23349999999999999
+          },
+          "treatment": {
+            "passed": 5,
+            "runs": 6,
+            "tampered": 0,
+            "falseDone": 0,
+            "medianTokens": 55203.5,
+            "medianSeconds": 68,
+            "medianCostUsd": 0.101
           }
         }
       ],
-      "delta": 0.11111111111111105,
+      "delta": 0.11111111111111116,
       "ci95": [
-        -0.19230416893380875,
-        0.38820423636070994
+        -0.19774096745142244,
+        0.39232643596022765
       ],
       "verdict": "inconclusive",
       "traces": "evidence/demo/nextjs-cache-components/1.0.0/traces/demo/nextjs-cache-components"

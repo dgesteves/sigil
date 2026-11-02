@@ -1,0 +1,40 @@
+sigil: 1
+id: kubernetes/workload-hardening
+type: skill
+version: 1.0.0
+name: Kubernetes Workload Hardening
+summary: Production Kubernetes 1.34-1.37 workloads that pass Pod Security restricted, really start, shut down cleanly and survive drains.
+description: >-
+  Teaches an agent to write and fix Deployment, StatefulSet, Job and CronJob manifests as Kubernetes
+  works in late 2026 (1.37): the Pod Security Standards restricted profile control by control on
+  every init, sidecar and ephemeral container, seccompProfile instead of the removed annotations,
+  the kubelet's runAsNonRoot check that rejects images whose USER is a name or unset, read-only root
+  filesystems with emptyDir scratch space, probes that do not cascade, preStop delays that work in
+  distroless images (the sleep action, GA 1.34) with grace periods that cover them, PodDisruptionBudgets
+  that let drains finish (maxUnavailable and unhealthyPodEvictionPolicy, GA 1.31), HPA autoscaling/v2
+  with requests on every container, topology spread, native sidecars for Jobs (GA 1.33) and the API
+  versions 1.37 no longer serves. Rules were ported from the v1.37.2 source and reproduced on a 1.37
+  cluster.
+domains: [devops, security, platform-engineering, cloud]
+lifecycle: [build, secure, ship, operate]
+technologies: [kubernetes, docker]
+license: MIT
+authors:
+  - github: dgesteves
+payload:
+  format: agent-skill
+  entry: SKILL.md
+targets: [claude-code, codex, cursor, github-copilot, gemini-cli, opencode]
+permissions:
+  network: []
+  shell: [kubectl, kubeconform, docker image inspect]
+  filesystem: write
+  env: []
+proof:
+  suites: [kubernetes-workload-hardening]
+limitations:
+  - Written for upstream Kubernetes 1.34 to 1.37 as of November 2026. Managed platforms can add admission policies (GKE Autopilot, OpenShift SCCs, Kyverno or Gatekeeper rules) that are stricter than Pod Security Admission.
+  - Plain manifests only. Helm charts and Kustomize overlays are covered only through the YAML they render.
+  - The kubelet runAsNonRoot and preStop behaviour was measured with containerd (k3s v1.37.1); CRI-O and Windows nodes were not tested.
+  - Endpoint propagation delays depend on the ingress controller, kube-proxy mode and cloud load balancer; the skill gives the budget arithmetic, not the right number for a given cluster.
+  - The proof suite measures Pod Security restricted plus image users, PDB and HPA behaviour, and shutdown in a distroless image. Topology spread, probes and Job sidecars are taught but not scored.

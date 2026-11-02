@@ -10,6 +10,7 @@ import { exportCommand } from './commands/export.js'
 import { init } from './commands/init.js'
 import { lab } from './commands/lab.js'
 import { list } from './commands/list.js'
+import { mcp } from './commands/mcp.js'
 import { prove } from './commands/prove.js'
 import { registry } from './commands/registry.js'
 import { remove } from './commands/remove.js'
@@ -27,6 +28,7 @@ export const COMMANDS: Command[] = [
   validate,
   scan,
   prove,
+  mcp,
   task,
   lab,
   digest,

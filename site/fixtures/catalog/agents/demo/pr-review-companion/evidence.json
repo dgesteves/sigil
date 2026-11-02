@@ -73,34 +73,34 @@
         {
           "task": "rate-limit-login",
           "baseline": {
-            "passed": 8,
+            "passed": 7,
             "runs": 12,
             "tampered": 1,
-            "falseDone": 1,
-            "medianTokens": 48212.5,
-            "medianSeconds": 71.5,
-            "medianCostUsd": 0.2295
+            "falseDone": 2,
+            "medianTokens": 48585.5,
+            "medianSeconds": 67,
+            "medianCostUsd": 0.219
           },
           "treatment": {
-            "passed": 2,
+            "passed": 1,
             "runs": 12,
             "tampered": 0,
-            "falseDone": 4,
-            "medianTokens": 51895,
-            "medianSeconds": 81,
-            "medianCostUsd": 0.228
+            "falseDone": 2,
+            "medianTokens": 59016.5,
+            "medianSeconds": 88.5,
+            "medianCostUsd": 0.138
           }
         },
         {
           "task": "backfill-column",
           "baseline": {
-            "passed": 6,
+            "passed": 8,
             "runs": 12,
-            "tampered": 0,
+            "tampered": 1,
             "falseDone": 0,
             "medianTokens": 48568.5,
-            "medianSeconds": 78,
-            "medianCostUsd": 0.21750000000000003
+            "medianSeconds": 78.5,
+            "medianCostUsd": 0.20500000000000002
           },
           "treatment": {
             "passed": 3,
@@ -134,10 +134,10 @@
           }
         }
       ],
-      "delta": -0.4722222222222222,
+      "delta": -0.5277777777777778,
       "ci95": [
-        -0.6353243118175878,
-        -0.24647798336456353
+        -0.6810434557978018,
+        -0.30473351157272566
       ],
       "verdict": "harmful",
       "traces": "evidence/demo/pr-review-companion/1.0.0/traces/demo/pr-review-companion"

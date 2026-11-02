@@ -1,0 +1,40 @@
+sigil: 1
+id: aspnet-core/minimal-apis
+type: skill
+version: 1.0.0
+name: ASP.NET Core Minimal APIs on .NET 10
+summary: Validation, problem details, deny-by-default auth and cookie 401s for ASP.NET Core minimal APIs on .NET 10, measured on 10.0.14.
+description: >-
+  Teaches an agent the current ASP.NET Core minimal API stack on .NET 10 (10.0.14 LTS, SDK 10.0.403)
+  and the .NET 6-8 habits that quietly misbehave on it: built-in validation with AddValidation (and
+  that DataAnnotations do nothing without it), nested and collection error paths with PascalCase
+  keys, IValidatableObject running only after property rules pass, the per-assembly source generator
+  that silently skips endpoints and types in feature-module class libraries, Validator.TryValidateObject
+  ignoring record parameter attributes, TypedResults unions, RFC 9457 problem details and exception
+  handling that never leaks internals, fallback authorization policies, the .NET 10 cookie change that
+  returns 401/403 only for endpoints it recognises as APIs (Results.*, strings and text results still
+  redirect), antiforgery for form endpoints, and WebApplicationFactory tests with xunit v3 on
+  Microsoft.Testing.Platform. Every behavioural claim marked measured was run on 10.0.14.
+domains: [backend, api-design, security]
+lifecycle: [build, secure, test]
+technologies: [aspnet-core, dotnet, csharp]
+license: MIT
+authors:
+  - github: dgesteves
+payload:
+  format: agent-skill
+  entry: SKILL.md
+targets: [claude-code, codex, cursor, github-copilot, gemini-cli, opencode]
+permissions:
+  network: []
+  shell: [dotnet, grep]
+  filesystem: write
+  env: []
+proof:
+  suites: [aspnet-minimal-apis]
+limitations:
+  - Written and measured against .NET 10.0.14 (SDK 10.0.403). .NET 11 changes validation (async rules, localization, non-experimental attributes) and is not covered.
+  - Covers minimal APIs. MVC controllers, Razor Pages and Blazor forms validate differently and are only mentioned where behaviour is shared.
+  - Authentication coverage is cookie-centred; JWT bearer, OpenID Connect and ASP.NET Core Identity endpoints get short notes only.
+  - OpenAPI document generation, rate limiting, output caching and Native AOT are out of scope.
+  - The proof suite runs through TestServer, so it measures HTTP behaviour but not Kestrel-specific limits, HTTPS or reverse-proxy headers.

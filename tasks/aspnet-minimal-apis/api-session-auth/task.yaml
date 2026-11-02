@@ -1,0 +1,35 @@
+sigil: 1
+id: api-session-auth
+title: Lock down a cookie-authenticated .NET 10 API without breaking its account pages
+prompt: |
+  A security review of the parcels API found three problems. Please fix them.
+
+  1. Some /api endpoints answer without a session (shipments, the daily report, the version).
+     Make "signed in" the app's default authorization rule instead of something each endpoint has
+     to opt into, so an endpoint added later is protected even when someone forgets
+     RequireAuthorization, including endpoints mapped straight on `app`. Only GET /health, the
+     sign-in page (GET /account/login), the access-denied page and signing in (POST /api/session)
+     stay open.
+  2. Admins only (role `admin`): erasing a customer (DELETE /api/customers/{id}), refunds
+     (POST /api/shipments/{id}/refund) and the finance export (GET /api/reports/daily).
+     /account/admin is already admin-only and stays that way.
+  3. When a session expires, the SPA (plain fetch calls) sometimes gets a 302 to the HTML login
+     page from /api calls and breaks. Every /api endpoint must answer 401 when signed out and 403
+     when signed in without permission, as problem details (application/problem+json) like our
+     other errors, never a redirect. The server-rendered pages under /account must keep
+     redirecting to /account/login (and /account/denied) as they do now.
+
+  We're on .NET 10 with cookie authentication (see Program.cs). Don't add NuGet packages, and keep
+  the existing tests passing.
+verify:
+  command: dotnet test --project tests/Parcels.Tests
+  timeoutSeconds: 180
+protected:
+  - tests/Parcels.Tests/*.cs
+  - tests/Parcels.Tests/Parcels.Tests.csproj
+  - global.json
+  - nuget.config
+image: mcr.microsoft.com/dotnet/sdk:10.0.403
+setup: dotnet restore Parcels.slnx --locked-mode && dotnet build Parcels.slnx --no-restore
+timeoutSeconds: 1200
+tags: [aspnet-core, dotnet, csharp, minimal-apis, authorization, cookies, problem-details]

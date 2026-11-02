@@ -1,0 +1,28 @@
+sigil: 1
+id: listing-photo-uploads
+title: Accept large photo uploads on one route of an axum API
+prompt: |
+  Agents can't upload listing photos yet. Please add `PUT /v1/listings/{id}/photos/{slot}`:
+  - The request body is the raw image, with `Content-Type` `image/jpeg`, `image/png` or
+    `image/webp`. `slot` is 1 to 20. Store it with `AppState::put_photo` (a new upload replaces
+    whatever was in the slot) and reply 201 with
+    `{"listing_id": <id>, "slot": <slot>, "content_type": "<type>", "size": <bytes>}`.
+  - The photos come straight from phone cameras, usually 4 to 12 MB. Accept anything up to
+    15 MiB (15 * 1024 * 1024 bytes) and answer anything bigger with 413. Some of our upload SDKs
+    stream the body with chunked transfer encoding and no Content-Length, so the limit has to
+    hold for those too.
+  - Any other content type: 415. Unknown listing: 404. A slot outside 1..=20 or not a number: 400.
+
+  The JSON endpoints must keep the 64 KiB body limit they have today.
+verify:
+  command: find target vendor -exec touch -h -t 200001010000 {} + && cargo test --offline --locked --test '*'
+  timeoutSeconds: 300
+protected:
+  - tests/listings.rs
+  - src/state.rs
+  - Cargo.toml
+  - Cargo.lock
+image: rust:1.99.1-slim-bookworm
+setup: mkdir -p .cargo && cargo vendor --locked --versioned-dirs vendor > .cargo/config.toml && cargo test --offline --locked --test '*' --no-run
+timeoutSeconds: 1200
+tags: [rust, axum, uploads, body-limits, tower-http]

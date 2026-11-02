@@ -168,8 +168,9 @@ find . -type f ! -name sigil.yaml ! -name evidence.json ! -name .DS_Store ! -pat
 ```
 
 `sigil add` recomputes the digest from the downloaded files and refuses to install on any mismatch.
-Evidence records are published with GitHub artifact attestations, so their origin in this repository's
-CI can be verified with `gh attestation verify`.
+Evidence records produced in CI are published with GitHub artifact attestations, so their origin in
+this repository's CI can be verified with `gh attestation verify`. The CI proving workflow is not live
+yet; until it is, every record is labelled as a local run.
 
 Each digest also has a sigil: a glyph generated from the digest bytes. Different content means a
 visibly different sigil.

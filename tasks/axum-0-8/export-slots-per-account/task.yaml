@@ -1,0 +1,29 @@
+sigil: 1
+id: export-slots-per-account
+title: Limit concurrent report exports per account in an axum service
+prompt: |
+  Exports hit the reporting warehouse hard, and yesterday one account fired off 40 at once and
+  slowed everyone down. Please limit each account to 2 exports running at the same time:
+
+  - If the account already has 2 running, answer 429 with a `Retry-After: 30` header and the body
+    `{"error": "too_many_exports"}`, without starting the export.
+  - One account's exports must not hold up or count against another account.
+  - A slot is free again as soon as its export ends, whether it succeeded or failed.
+  - Exports are slow and clients give up: the mobile app disconnects after 20 s, and our own 55 s
+    request timeout cuts off the rest. When the client has gone away or the request timed out,
+    the export should stop (nobody will download the file) and its slot must be free again.
+
+  Keep the other responses as they are, and keep `app(AppState)`, `AppState::new` and the
+  `Exporter` trait unchanged: the tests plug in their own exporter.
+verify:
+  command: find target vendor -exec touch -h -t 200001010000 {} + && cargo test --offline --locked --test '*'
+  timeoutSeconds: 300
+protected:
+  - tests/exports.rs
+  - src/exporter.rs
+  - Cargo.toml
+  - Cargo.lock
+image: rust:1.99.1-slim-bookworm
+setup: mkdir -p .cargo && cargo vendor --locked --versioned-dirs vendor > .cargo/config.toml && cargo test --offline --locked --test '*' --no-run
+timeoutSeconds: 1200
+tags: [rust, axum, tokio, concurrency, cancellation, rate-limiting]
