@@ -1,0 +1,95 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: search-api
+  labels:
+    app.kubernetes.io/name: search-api
+    app.kubernetes.io/part-of: tideway-search
+spec:
+  # No spec.replicas: the HorizontalPodAutoscaler owns the replica count, and a value here would
+  # reset it on every apply.
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: search-api
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: search-api
+        app.kubernetes.io/part-of: tideway-search
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: search-api
+          image: ghcr.io/tideway/search-api:5.3.1
+          ports:
+            - name: http
+              containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: search-api
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            periodSeconds: 10
+            failureThreshold: 6
+          resources:
+            requests:
+              cpu: 500m
+              memory: 768Mi
+            limits:
+              memory: 768Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+        - name: statsd-exporter
+          image: prom/statsd-exporter:v0.31.0@sha256:1d5d341c4eb7abdd3445a3f85c3d498402b676ad29b4cf0421f5d280943871ab
+          args:
+            - --statsd.listen-udp=:9125
+            - --web.listen-address=:9102
+          ports:
+            - name: metrics
+              containerPort: 9102
+          # CPU utilization is computed over every container in the pod, so the exporter needs a
+          # request too or the HPA cannot compute utilization at all.
+          resources:
+            requests:
+              cpu: 20m
+              memory: 32Mi
+            limits:
+              memory: 64Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: search-api
+  labels:
+    app.kubernetes.io/name: search-api
+    app.kubernetes.io/part-of: tideway-search
+spec:
+  selector:
+    app.kubernetes.io/name: search-api
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
