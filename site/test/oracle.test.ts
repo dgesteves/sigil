@@ -37,6 +37,10 @@ describe('intent', () => {
     expect(meantAsTech('make the UI react to scroll', 'react')).toBe(false)
     expect(meantAsTech("let's go ship it", 'go')).toBe(false)
     expect(meantAsTech('migrate our react app', 'react')).toBe(true)
+    // Words are regex-escaped in full: symbols match literally and never break the pattern.
+    expect(meantAsTech('we write C++ every day', 'C++')).toBe(true)
+    expect(() => meantAsTech('see C( and a\\b', 'C(')).not.toThrow()
+    expect(() => meantAsTech('see a\\b', 'a\\')).not.toThrow()
     expect(meantAsTech('rate limit our Go service', 'go')).toBe(true)
     expect(meantAsTech('design a REST API', 'rest')).toBe(true)
   })
