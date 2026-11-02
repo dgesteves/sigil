@@ -1,0 +1,10 @@
+name: Sigil CodeQL
+
+# CodeQL covers the code Sigil ships: the CLI, the site and the workflows. Proving-ground tasks are
+# deliberately flawed starting repos, hidden verifiers and reference solutions that only ever run
+# inside the lab sandbox, and fixtures are test data; flagging them is noise that grows with every
+# suite. Capabilities are scanned by Sigil's own scanner in CI ("Scan the catalog").
+paths-ignore:
+  - tasks
+  - site/fixtures
+  - packages/sigil/test/fixtures
