@@ -1,3 +1,5 @@
+import { Analytics } from '@vercel/analytics/next'
+import { SpeedInsights } from '@vercel/speed-insights/next'
 import type { Metadata, Viewport } from 'next'
 import { Instrument_Serif, Martian_Mono } from 'next/font/google'
 import { CommandK } from '@/components/chrome/CommandK'
@@ -55,6 +57,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         {demo ? <DemoMark /> : null}
         <MachineProvider>{children}</MachineProvider>
         <CommandK />
+        {/* Cookieless page views and Core Web Vitals; both only report from Vercel deployments. */}
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   )
