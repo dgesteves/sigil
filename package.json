@@ -16,7 +16,7 @@
     "check": "pnpm lint && pnpm typecheck && pnpm test && pnpm build && pnpm sigil validate catalog"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.6.4",
+    "@biomejs/biome": "2.6.5",
     "@types/node": "^24.19.2",
     "typescript": "^6.0.3"
   }

@@ -19,3 +19,11 @@ updates:
     directory: /
     schedule:
       interval: weekly
+    groups:
+      # init and analyze must run the same CodeQL version: separate PRs for each step fail CI ("All
+      # steps in a workflow that use github/codeql-action must use the same version"). One PR per
+      # release keeps every codeql-action step, upload-sarif included, on the same pin.
+      codeql-action:
+        patterns:
+          - github/codeql-action
+          - github/codeql-action/*
